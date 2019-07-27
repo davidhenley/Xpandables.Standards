@@ -25,7 +25,7 @@ namespace System
     /// </summary>
     public sealed class ValueEncryptor : IStringEncryptor
     {
-        string IStringEncryptor.Encrypt(string value, string key)
+        Optional<string> IStringEncryptor.Encrypt(string value, string key)
         {
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
