@@ -41,6 +41,10 @@ namespace System
             this Task<Optional<T>> optional, Func<T, CancellationToken, Task<U>> some, CancellationToken cancellationToken = default)
             => await (await optional.ConfigureAwait(false)).MapAsync(some, cancellationToken).ConfigureAwait(false);
 
+        public static async Task<Optional<(Optional<T> First, Optional<U> Second)>> AndAsync<T, U>(
+            this Task<Optional<T>> optional, Func<Optional<T>, CancellationToken, Task<Optional<U>>> second, CancellationToken cancellationToken = default)
+            => await (await optional.ConfigureAwait(false)).AndAsync(second, cancellationToken).ConfigureAwait(false);
+
         public static async Task<Optional<U>> MapAsync<T, U>(
             this Task<Optional<T>> optional,
             Func<T, CancellationToken, Task<U>> some,

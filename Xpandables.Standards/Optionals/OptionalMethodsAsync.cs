@@ -64,6 +64,22 @@ namespace System
         }
 
         /// <summary>
+        /// Asynchronously creates a pair optional with the second instance.
+        /// </summary>
+        /// <typeparam name="U">Type of the second instance.</typeparam>
+        /// <param name="second">The instance to be added.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
+        public async Task<Optional<(Optional<T> First, Optional<U> Second)>> AndAsync<U>(
+            Func<Optional<T>, CancellationToken, Task<Optional<U>>> second, CancellationToken cancellationToken = default)
+        {
+            if (second is null) throw new ArgumentNullException(nameof(second));
+
+            return (this, await second(this, cancellationToken).ConfigureAwait(false));
+        }
+
+        /// <summary>
         /// Asynchronously executes the some delegate only if the current optional instance contains a value,
         /// otherwise executes the empty delegate.
         /// </summary>

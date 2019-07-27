@@ -76,6 +76,20 @@ namespace System
         public Optional<U> Map<U>(Func<T, U> some) => Map(some, _ => default);
 
         /// <summary>
+        /// Creates a pair optional with the second instance.
+        /// </summary>
+        /// <typeparam name="U">Type of the second instance.</typeparam>
+        /// <param name="second">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
+        public Optional<(Optional<T> First, Optional<U> Second)> And<U>(Func<Optional<T>, Optional<U>> second)
+        {
+            if (second is null) throw new ArgumentNullException(nameof(second));
+
+            return (this, second(this));
+        }
+
+        /// <summary>
         /// Maps the current optional instance value to the target type using the specified delegate.
         /// The delegate will be applied only if optional contains a value,
         /// otherwise the empty delegate will be applied.
