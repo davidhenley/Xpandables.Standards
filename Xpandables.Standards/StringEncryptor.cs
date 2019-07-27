@@ -23,7 +23,7 @@ namespace System
     /// Default implementation of <see cref="IStringEncryptor"/>.
     /// <para>The implementation uses the <see cref="SHA512Managed"/>.</para>
     /// </summary>
-    public sealed class ValueEncryptor : IStringEncryptor
+    public sealed class StringEncryptor : IStringEncryptor
     {
         Optional<string> IStringEncryptor.Encrypt(string value, string key)
         {
