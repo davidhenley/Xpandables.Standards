@@ -28,6 +28,6 @@ namespace System.Drawing.QrCode
     public class QrCodeImageGenerator : IQrCodeImageGenerator
     {
         public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>();
+            => textCodeList.Select(QrCodeHelpers.GenerateImage);
     }
 }
