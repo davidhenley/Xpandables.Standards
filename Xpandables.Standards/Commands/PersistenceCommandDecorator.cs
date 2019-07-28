@@ -23,7 +23,7 @@ namespace System.Patterns
 {
     /// <summary>
     /// This class allows the application author to add persistence support to command.
-    /// <para>This decorator uses the <see cref="IDataContext.PersistEntitiesAsync(CancellationToken)"/> after a command execution.</para>
+    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a command execution.</para>
     /// </summary>
     /// <typeparam name="TCommand">Type of command.</typeparam>
     public sealed class PersistenceCommandDecorator<TCommand> : ICommandHandler<TCommand>
@@ -41,7 +41,7 @@ namespace System.Patterns
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
             await _decoratedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
-            await _dataContext.PersistEntitiesAsync(cancellationToken).ConfigureAwait(false);
+            await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

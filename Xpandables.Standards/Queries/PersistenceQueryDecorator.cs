@@ -23,7 +23,7 @@ namespace System.Patterns
 {
     /// <summary>
     /// This class allows the application author to add persistence support to all of the query handlers.
-    /// <para>This decorator uses the <see cref="IDataContext.PersistEntitiesAsync(CancellationToken)"/> after a query execution.</para>
+    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a query execution.</para>
     /// </summary>
     /// <typeparam name="TQuery">Type of the query to apply transaction.</typeparam>
     /// <typeparam name="TResult">Type of the result.</typeparam>
@@ -42,7 +42,7 @@ namespace System.Patterns
         public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             var result = await _decoratedHandler.HandleAsync(query, cancellationToken).ConfigureAwait(false);
-            await _dataContext.PersistEntitiesAsync(cancellationToken).ConfigureAwait(false);
+            await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
             return result;
         }
     }

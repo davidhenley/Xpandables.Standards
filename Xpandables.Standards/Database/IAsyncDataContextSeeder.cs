@@ -15,19 +15,22 @@
  *
 ************************************************************************************************************/
 
+using System.Threading.Tasks;
+
 namespace System.Data
 {
     /// <summary>
-    /// Allows an application author to dynamically seed a data context.
+    /// Allows an application author to asynchronously seed a data context.
     /// This is useful when you need a data context not to be empty.
     /// To be used with <see cref="DataContextSeederDecorator"/>.
     /// </summary>
-    public interface IDataContextSeeder
+    public interface IAsyncDataContextSeeder
     {
         /// <summary>
         /// Seeds the specified data context.
         /// </summary>
         /// <param name="dataContext">The data context instance to act on.</param>
-        void Seed(IDataContext dataContext);
+        /// <returns>A task that represents the asynchronous seed operation.</returns>
+        Task SeedAsync(IDataContext dataContext);
     }
 }

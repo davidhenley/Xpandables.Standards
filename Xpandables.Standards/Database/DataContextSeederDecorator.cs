@@ -36,9 +36,9 @@ namespace System.Data
         {
             var dataContext = _decoratedDataContextProvider.GetDataContext();
 
-            _dataContextSeeder.SeedDataContext(dataContext);
+            _dataContextSeeder.Seed(dataContext);
 
-            dataContext.PersistEntites();
+            dataContext.Persist();
 
             return dataContext;
         }
