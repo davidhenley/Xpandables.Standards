@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29123.89
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xpandables.Standards", "Xpandables.Standards\Xpandables.Standards.csproj", "{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Standards", "Xpandables.Standards\Xpandables.Standards.csproj", "{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xpandables.EntityFramework", "Xpandables.EntityFramework\Xpandables.EntityFramework.csproj", "{B5909E08-3168-4815-8016-5A8C4D4FB744}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,12 @@ Global
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|Any CPU.ActiveCfg = Release|x64
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|x64.ActiveCfg = Release|x64
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|x64.Build.0 = Release|x64
+		{B5909E08-3168-4815-8016-5A8C4D4FB744}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B5909E08-3168-4815-8016-5A8C4D4FB744}.Debug|x64.ActiveCfg = Debug|x64
+		{B5909E08-3168-4815-8016-5A8C4D4FB744}.Debug|x64.Build.0 = Debug|x64
+		{B5909E08-3168-4815-8016-5A8C4D4FB744}.Release|Any CPU.ActiveCfg = Release|x64
+		{B5909E08-3168-4815-8016-5A8C4D4FB744}.Release|x64.ActiveCfg = Release|x64
+		{B5909E08-3168-4815-8016-5A8C4D4FB744}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
