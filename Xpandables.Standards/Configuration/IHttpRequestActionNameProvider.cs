@@ -20,7 +20,7 @@ namespace System.Configuration
     /// <summary>
     /// Provides a method that returns the ambient http context action name.
     /// </summary>
-    public interface IHttpActionNameProvider
+    public interface IHttpRequestActionNameProvider
     {
         /// <summary>
         /// Gets the current http action path name.
