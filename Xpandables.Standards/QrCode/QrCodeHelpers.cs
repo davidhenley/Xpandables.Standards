@@ -15,8 +15,9 @@
  *
 ************************************************************************************************************/
 
-using QRCoder;
-using System.Drawing.Imaging;
+// TODO : Waitingfor stable version.
+//using QRCoder;
+//using System.Drawing.Imaging;
 using System.IO;
 
 namespace System.Drawing.QrCode
@@ -26,50 +27,50 @@ namespace System.Drawing.QrCode
     /// </summary>
     internal static class QrCodeHelpers
     {
-        /// <summary>
-        /// Converts the bitmap image to the byte format using the default Jpeg format.
-        /// </summary>
-        /// <remarks>If error, return default value. See trace listener output for exception.</remarks>
-        /// <param name="image">The source image to be converted.</param>
-        /// <returns>An array of byte that represents the image.</returns>
-        public static byte[] ToByte(this Bitmap image)
-            => ToByte(image, ImageFormat.Jpeg);
+        ///// <summary>
+        ///// Converts the bitmap image to the byte format using the default Jpeg format.
+        ///// </summary>
+        ///// <remarks>If error, return default value. See trace listener output for exception.</remarks>
+        ///// <param name="image">The source image to be converted.</param>
+        ///// <returns>An array of byte that represents the image.</returns>
+        //public static byte[] ToByte(this Bitmap image)
+        //    => ToByte(image, ImageFormat.Jpeg);
 
-        /// <summary>
-        /// Converts the bitmap image to the byte format using the specified format.
-        /// </summary>
-        /// <remarks>If error, return default value. See trace listener output for exception.</remarks>
-        /// <param name="image">The source image to be converted.</param>
-        /// <param name="imageFormat">The target image format.</param>
-        /// <returns>An array of byte that represents the image.</returns>
-        public static byte[] ToByte(this Bitmap image, ImageFormat imageFormat)
-        {
-            try
-            {
-                using var memoryStream = new MemoryStream();
-                image.Save(memoryStream, imageFormat);
-                return memoryStream.ToArray();
-            }
-            catch (Exception exception)
-            {
-                System.Diagnostics.Trace.WriteLine(exception);
-                return default;
-            }
-        }
+        ///// <summary>
+        ///// Converts the bitmap image to the byte format using the specified format.
+        ///// </summary>
+        ///// <remarks>If error, return default value. See trace listener output for exception.</remarks>
+        ///// <param name="image">The source image to be converted.</param>
+        ///// <param name="imageFormat">The target image format.</param>
+        ///// <returns>An array of byte that represents the image.</returns>
+        //public static byte[] ToByte(this Bitmap image, ImageFormat imageFormat)
+        //{
+        //    try
+        //    {
+        //        using var memoryStream = new MemoryStream();
+        //        image.Save(memoryStream, imageFormat);
+        //        return memoryStream.ToArray();
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        System.Diagnostics.Trace.WriteLine(exception);
+        //        return default;
+        //    }
+        //}
 
-        private static readonly QRCodeGenerator _qRCodeGenerator = new QRCodeGenerator();
+        //private static readonly QRCodeGenerator _qRCodeGenerator = new QRCodeGenerator();
 
-        /// <summary>
-        /// Generates image from the codes provided.
-        /// </summary>
-        /// <param name="source">List of code to be used.</param>
-        /// <returns>A list of image matching the codes.</returns>
-        public static byte[] GenerateImage(string source)
-        {
-            using var qrCodeData = _qRCodeGenerator.CreateQrCode(source, QRCodeGenerator.ECCLevel.Q, true);
-            using var qrCode = new QRCode(qrCodeData);
-            var image = qrCode.GetGraphic(20);
-            return image.ToByte();
-        }
+        ///// <summary>
+        ///// Generates image from the codes provided.
+        ///// </summary>
+        ///// <param name="source">List of code to be used.</param>
+        ///// <returns>A list of image matching the codes.</returns>
+        //public static byte[] GenerateImage(string source)
+        //{
+        //    using var qrCodeData = _qRCodeGenerator.CreateQrCode(source, QRCodeGenerator.ECCLevel.Q, true);
+        //    using var qrCode = new QRCode(qrCodeData);
+        //    var image = qrCode.GetGraphic(20);
+        //    return image.ToByte();
+        //}
     }
 }

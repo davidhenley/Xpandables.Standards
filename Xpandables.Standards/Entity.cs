@@ -17,9 +17,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+using System.Diagnostics;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace System
 {
@@ -29,6 +28,7 @@ namespace System
     /// This is an <see langword="abstract"/> and serializable class.
     /// </summary>
     [Serializable]
+    [DebuggerDisplay("{Id}")]
     public abstract class Entity
     {
         private string _id = string.Empty;

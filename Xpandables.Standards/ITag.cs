@@ -15,19 +15,20 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 
-namespace System.Drawing.QrCode
+namespace System
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Generates qr-code image.
-    /// You must derive from this class to implement a custom generator that match your requirement.
+    /// Provides a tag property to an object.
+    /// The tag uses the <see cref="TypeConverter"/> attribute with the <see cref="StringConverter"/> type.
     /// </summary>
-    public class QrCodeImageGenerator : IQrCodeImageGenerator
+    public interface ITag
     {
-        public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>(); // textCodeList.Select(QrCodeHelpers.GenerateImage);
+        /// <summary>
+        /// Gets or sets any type of data for the current object.
+        /// </summary>
+        [TypeConverter(typeof(StringConverter))]
+        object Tag { get; set; }
     }
 }

@@ -15,19 +15,22 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
-namespace System.Drawing.QrCode
+namespace System
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Generates qr-code image.
-    /// You must derive from this class to implement a custom generator that match your requirement.
+    /// Defines a mail sender.
     /// </summary>
-    public class QrCodeImageGenerator : IQrCodeImageGenerator
+    /// <typeparam name="T">Type of mail content.</typeparam>
+    public interface IMailSender<T>
+        where T : class
     {
-        public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>(); // textCodeList.Select(QrCodeHelpers.GenerateImage);
+        /// <summary>
+        /// Sends the message according to the content.
+        /// </summary>
+        /// <param name="content">content used for sending message.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="content"/> is null.</exception>
+        Task SendAsync(T content);
     }
 }

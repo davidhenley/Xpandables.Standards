@@ -15,19 +15,17 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
-
-namespace System.Drawing.QrCode
+namespace System.Configuration
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Generates qr-code image.
-    /// You must derive from this class to implement a custom generator that match your requirement.
+    /// Provides with a method that retrieves the http current user identity name.
     /// </summary>
-    public class QrCodeImageGenerator : IQrCodeImageGenerator
+    public interface IHttpContextUserNameProvider
     {
-        public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>(); // textCodeList.Select(QrCodeHelpers.GenerateImage);
+        /// <summary>
+        /// Returns the user name from the current http context.
+        /// If not found, returns an empty optional.
+        /// </summary>
+        Optional<string> GetUserName();
     }
 }

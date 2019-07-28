@@ -15,19 +15,17 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
-
-namespace System.Drawing.QrCode
+namespace System.Configuration
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Generates qr-code image.
-    /// You must derive from this class to implement a custom generator that match your requirement.
+    /// Provides a method that returns the ambient http context action name.
     /// </summary>
-    public class QrCodeImageGenerator : IQrCodeImageGenerator
+    public interface IHttpActionNameProvider
     {
-        public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>(); // textCodeList.Select(QrCodeHelpers.GenerateImage);
+        /// <summary>
+        /// Gets the current http action path name.
+        /// If not found, returns an empty optional.
+        /// </summary>
+        Optional<string> GetActionName();
     }
 }

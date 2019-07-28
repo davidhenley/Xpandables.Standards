@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System
 {
@@ -23,6 +24,7 @@ namespace System
     /// Describes an encrypted value and its key.
     /// </summary>
     [Serializable]
+    [DebuggerDisplay("{Key}, {Value}")]
     public sealed class ValueEncrypted : ValueObject
     {
         private ValueEncrypted(string key, string value)

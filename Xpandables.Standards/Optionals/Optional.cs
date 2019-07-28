@@ -25,7 +25,7 @@ namespace System
     /// You can make unconditional calls to its contents without testing whether the content is there or not.
     /// </summary>
     /// <typeparam name="T">Type of optional result.</typeparam>
-    public partial class Optional<T>
+    public partial class Optional<T> : IEnumerable<T>
     {
         private readonly T[] _values;
 

@@ -63,14 +63,14 @@ namespace System
             CancellationToken cancellationToken = default)
             => await (await optional.ConfigureAwait(false)).MapOptionalAsync(some, empty, cancellationToken).ConfigureAwait(false);
 
-        public static async Task<IOptional<T>> FilterAsync<T>(
+        public static async Task<Optional<T>> FilterAsync<T>(
             this Task<Optional<T>> optional,
             Predicate<T> predicate,
             Func<CancellationToken, Task<T>> replace,
             CancellationToken cancellationToken = default)
             => await (await optional.ConfigureAwait(false)).FilterAsync(predicate, replace, cancellationToken).ConfigureAwait(false);
 
-        public static async Task<IOptional<T>> FilterOptionalAsync<T>(
+        public static async Task<Optional<T>> FilterOptionalAsync<T>(
             this Task<Optional<T>> optional,
             Predicate<Optional<T>> predicate,
             Func<CancellationToken, Task<Optional<T>>> replace,

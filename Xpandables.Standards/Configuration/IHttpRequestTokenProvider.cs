@@ -15,19 +15,25 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
-
-namespace System.Drawing.QrCode
+namespace System.Configuration
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Generates qr-code image.
-    /// You must derive from this class to implement a custom generator that match your requirement.
+    /// Defines a method used to retrieve the ambient token string from the current http request header.
     /// </summary>
-    public class QrCodeImageGenerator : IQrCodeImageGenerator
+    public interface IHttpRequestTokenProvider
     {
-        public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>(); // textCodeList.Select(QrCodeHelpers.GenerateImage);
+        /// <summary>
+        /// Returns the current token value from the current http request matching the "Authorization" key.
+        /// If not found, returns an empty optional.
+        /// </summary>
+        Optional<string> GetRequestHttpToken();
+
+        /// <summary>
+        /// Returns the current token value from the current http request with the specified key.
+        /// If not found, returns an empty optional.
+        /// </summary>
+        /// <param name="key">The token key to find.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        Optional<string> GetRequestHttpToken(string key);
     }
 }

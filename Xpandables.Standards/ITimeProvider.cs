@@ -15,19 +15,16 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
-
-namespace System.Drawing.QrCode
+namespace System
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Generates qr-code image.
-    /// You must derive from this class to implement a custom generator that match your requirement.
+    /// Allows an application author to provide runtime date time according to the context.
     /// </summary>
-    public class QrCodeImageGenerator : IQrCodeImageGenerator
+    public interface ITimeProvider
     {
-        public virtual IEnumerable<byte[]> Generate(IEnumerable<string> textCodeList)
-            => Enumerable.Empty<byte[]>(); // textCodeList.Select(QrCodeHelpers.GenerateImage);
+        /// <summary>
+        /// Contains the ambient date time.
+        /// </summary>
+        DateTime Now { get; }
     }
 }
