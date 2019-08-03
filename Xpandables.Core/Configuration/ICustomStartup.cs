@@ -27,6 +27,11 @@ namespace Xpandables.Core.Configuration
     public interface ICustomStartup
     {
         /// <summary>
+        /// Determines the execution order.
+        /// </summary>
+        int Order { get; }
+
+        /// <summary>
         /// Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app">The application builder.</param>
