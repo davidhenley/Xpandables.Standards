@@ -15,7 +15,7 @@
     <Version>1.2.0</Version>
     <AssemblyVersion>1.2.0</AssemblyVersion>
     <FileVersion>1.2.0</FileVersion>
-    <PackageVersion>1.2.1</PackageVersion>
+    <PackageVersion>1.2.3</PackageVersion>
     <PackageId>Xpandables.EntityFramework</PackageId>
     <PackageTags>Database, EntityFramework</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
