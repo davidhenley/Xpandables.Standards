@@ -1,5 +1,5 @@
 ﻿/************************************************************************************************************
- * Copyright (C) 2018 Francis-Black EWANE
+ * Copyright (C) 2019 Francis-Black EWANE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,33 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System.Patterns
 {
     /// <summary>
-    /// This class allows the application author to add visitor support to a query.
+    /// This class allows the application author to add visitor support to a command.
     /// <para>This decorator uses the <see cref="CompositeVisitor{TArgument}"/>.</para>
-    /// <para>The query must implement the <see cref="IVisitable"/> interface.</para>
+    /// <para>The command must implement the <see cref="IVisitable"/> interface.</para>
     /// </summary>
-    /// <typeparam name="TQuery">Type of query.</typeparam>
-    /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class VisitorQueryDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
-         where TQuery : class, IQuery<TResult>, IVisitable
+    /// <typeparam name="TCommand">Type of the command.</typeparam>
+    public sealed class AsyncVisitorCommandDecorator<TCommand> : IAsyncCommandHandler<TCommand>
+         where TCommand : class, ICommand, IVisitable
     {
-        private readonly ICompositeVisitor<TQuery> _visitor;
-        private readonly IQueryHandler<TQuery, TResult> decoratee;
+        private readonly ICompositeVisitor<TCommand> _visitor;
+        private readonly IAsyncCommandHandler<TCommand> _decoratee;
 
-        public VisitorQueryDecorator(IQueryHandler<TQuery, TResult> decoratee, ICompositeVisitor<TQuery> visitor)
+        public AsyncVisitorCommandDecorator(IAsyncCommandHandler<TCommand> decoratee, ICompositeVisitor<TCommand> visitor)
         {
-            this.decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _visitor = visitor ?? throw new ArgumentNullException(nameof(visitor));
         }
 
-        public TResult Handle(TQuery query)
+        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
-            query.Accept(_visitor);
-            return decoratee.Handle(query);
+            command.Accept(_visitor);
+            await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
         }
     }
 }

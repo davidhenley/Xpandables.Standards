@@ -15,9 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace System
 {
     /// <summary>
@@ -28,15 +25,13 @@ namespace System
         where TEvent : class, IEvent
     {
         /// <summary>
-        /// When overridden, this method will be used when a specific type event is handled asynchronously.
+        /// When overridden, this method will be used when a specific type event is handled.
         /// </summary>
         /// <param name="event">The event instance that may be used in handling the notification.</param>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="event"/> can not be null.</exception>
         /// <exception cref="InvalidOperationException">The event can not be handled. See inner exception.</exception>
-        public abstract Task HandleAsync(TEvent @event, CancellationToken cancellationToken);
+        public abstract void Handle(TEvent @event);
 
-        async Task IEventHandler.HandleAsync(object notification, CancellationToken cancellationToken)
-            => await HandleAsync((TEvent)notification, cancellationToken).ConfigureAwait(false);
+        void IEventHandler.Handle(object notification) => Handle((TEvent)notification);
     }
 }

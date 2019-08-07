@@ -15,19 +15,13 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.AspNetCore.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace System.Configuration
+namespace System.Patterns
 {
-    public sealed class HttpContextProvider : IHttpContextProvider
+    public interface IAsyncQueryHandler<in TQuery, TResult> where TQuery : class, IQuery<TResult>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public HttpContextProvider(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-        }
-
-        Optional<object> IHttpContextProvider.GetHttpContext() => _httpContextAccessor.HttpContext;
+        Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
     }
 }

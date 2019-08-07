@@ -17,35 +17,40 @@
 
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Patterns
 {
     /// <summary>
-    /// This class allows the application author to add transaction support to all of the commands.
-    /// The command must be decorated with the <see cref="TransactionalAttribute"/>.
+    /// This class allows the application author to add transaction support to all of the queries.
+    /// The query must be decorated with the <see cref="TransactionalAttribute"/>.
     /// </summary>
-    /// <typeparam name="TCommand">Type of the command to apply transaction.</typeparam>
-    public sealed class TransactionCommandDecorator<TCommand> : ICommandHandler<TCommand>
-        where TCommand : class, ICommand
+    /// <typeparam name="TQuery">Type of the query to apply transaction.</typeparam>
+    /// <typeparam name="TResult">Type of the result.</typeparam>
+    public sealed class AsyncTransactionQueryDecorator<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>
     {
-        private readonly ICommandHandler<TCommand> _decoratee;
+        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
 
-        public TransactionCommandDecorator(ICommandHandler<TCommand> decoratee)
+        public AsyncTransactionQueryDecorator(IAsyncQueryHandler<TQuery, TResult> decoratee)
             => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
 
-        public void Handle(TCommand command)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
-            var transactionAttr = command
+            var transactionAttr = query
                   .GetType()
                   .GetCustomAttributes<TransactionalAttribute>(true)
                   .SingleOrDefault()
                   ?? throw new ArgumentException(
-                      $"The {typeof(TCommand).Name} is not decorated with {nameof(TransactionalAttribute)}.");
+                      $"The {typeof(TQuery).Name} is not decorated with {nameof(TransactionalAttribute)}.");
 
             using var scope = transactionAttr.TransactionScope;
-            _decoratee.Handle(command);
+            var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
 
             scope.Complete();
+
+            return result;
         }
     }
 }

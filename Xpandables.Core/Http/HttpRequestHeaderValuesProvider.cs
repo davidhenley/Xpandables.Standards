@@ -16,12 +16,10 @@
 ************************************************************************************************************/
 
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 
-namespace Xpandables.Core.Configuration
+namespace System.Http
 {
     public sealed class HttpRequestHeaderValuesProvider : Explicit<IHttpRequestHeaderValuesProvider>, IHttpRequestHeaderValuesProvider
     {

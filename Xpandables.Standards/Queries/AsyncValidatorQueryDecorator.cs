@@ -27,22 +27,22 @@ namespace System.Patterns
     /// </summary>
     /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class ValidatorQueryDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    public sealed class AsyncValidatorQueryDecorator<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>, IValidatableAttribute
     {
-        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
         private readonly ICompositeValidator<TQuery> _validator;
 
-        public ValidatorQueryDecorator(IQueryHandler<TQuery, TResult> decoratee, ICompositeValidator<TQuery> validator)
+        public AsyncValidatorQueryDecorator(IAsyncQueryHandler<TQuery, TResult> decoratee, ICompositeValidator<TQuery> validator)
         {
             _decoratee = decoratee;
             _validator = validator;
         }
 
-        public TResult Handle(TQuery query)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken)
         {
             _validator.Validate(query);
-            return _decoratee.Handle(query);
+            return await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
         }
     }
 }

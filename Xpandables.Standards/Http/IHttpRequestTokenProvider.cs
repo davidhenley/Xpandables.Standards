@@ -15,33 +15,25 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Xpandables.Core.Configuration
+namespace System.Http
 {
     /// <summary>
-    /// Provides method to configure services and the app's request pipeline.
+    /// Defines a method used to retrieve the ambient token string from the current http request header.
     /// </summary>
-    public interface ICustomStartup
+    public interface IHttpRequestTokenProvider
     {
         /// <summary>
-        /// Determines the execution order.
+        /// Returns the current token value from the current http request matching the "Authorization" key.
+        /// If not found, returns an empty optional.
         /// </summary>
-        int Order { get; }
+        Optional<string> GetRequestHttpToken();
 
         /// <summary>
-        /// Use this method to configure the HTTP request pipeline.
+        /// Returns the current token value from the current http request with the specified key.
+        /// If not found, returns an empty optional.
         /// </summary>
-        /// <param name="app">The application builder.</param>
-        /// <param name="env">The environmement hosting.</param>
-        void Configure(IApplicationBuilder app, IHostingEnvironment env);
-
-        /// <summary>
-        ///  Use this method to add services to the container.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        void ConfigureServices(IServiceCollection services);
+        /// <param name="key">The token key to find.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        Optional<string> GetRequestHttpToken(string key);
     }
 }

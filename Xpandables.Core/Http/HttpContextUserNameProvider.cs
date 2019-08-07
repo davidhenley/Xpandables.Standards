@@ -15,17 +15,24 @@
  *
 ************************************************************************************************************/
 
-namespace System.Configuration
+using Microsoft.AspNetCore.Http;
+
+namespace System.Http
 {
-    /// <summary>
-    /// Provides with a method that retrieves the http current user identity name.
-    /// </summary>
-    public interface IHttpContextUserNameProvider
+    public sealed class HttpContextUserNameProvider : IHttpContextUserNameProvider
     {
-        /// <summary>
-        /// Returns the user name from the current http context.
-        /// If not found, returns an empty optional.
-        /// </summary>
-        Optional<string> GetUserName();
+        private readonly IHttpContextProvider _httpContextProvider;
+
+        public HttpContextUserNameProvider(IHttpContextProvider httpContextProvider)
+        {
+            _httpContextProvider = httpContextProvider ?? throw new ArgumentNullException(nameof(httpContextProvider));
+        }
+
+        Optional<string> IHttpContextUserNameProvider.GetUserName()
+            => _httpContextProvider.GetHttpContext<HttpContext>()
+                .Map(httpContext => httpContext.User)
+                .Map(user => user.Identity)
+                .Map(identity => identity.Name);
+
     }
 }

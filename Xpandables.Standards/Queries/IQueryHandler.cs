@@ -15,13 +15,10 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace System.Patterns
 {
     /// <summary>
-    /// Defines a generic method that a class implements to asynchronously handle a type-specific query and
+    /// Defines a generic method that a class implements to handle a type-specific query and
     /// returns a type-specific result.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
@@ -34,15 +31,11 @@ namespace System.Patterns
         where TQuery : class, IQuery<TResult>
     {
         /// <summary>
-        /// Asynchronously handles the specified query and returns the expected result type.
+        /// Handles the specified query and returns the expected result type.
         /// </summary>
         /// <param name="query">The query to act on.</param>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <returns> A task that represents the asynchronous execution operation.
-        /// The task contains the result of the operation. </returns>
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
+        TResult Handle(TQuery query);
     }
 }

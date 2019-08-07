@@ -15,17 +15,24 @@
  *
 ************************************************************************************************************/
 
-namespace System.Configuration
+using Microsoft.AspNetCore.Http;
+
+namespace System.Http
 {
-    /// <summary>
-    /// Provides a method that returns the ambient http context action name.
-    /// </summary>
-    public interface IHttpRequestActionNameProvider
+    public sealed class HttpRequestActionNameProvider : IHttpRequestActionNameProvider
     {
-        /// <summary>
-        /// Gets the current http action path name.
-        /// If not found, returns an empty optional.
-        /// </summary>
-        Optional<string> GetActionName();
+        private readonly IHttpContextProvider _httpContextProvider;
+
+        public HttpRequestActionNameProvider(IHttpContextProvider httpContextProvider)
+        {
+            _httpContextProvider = httpContextProvider ?? throw new ArgumentNullException(nameof(httpContextProvider));
+        }
+
+        Optional<string> IHttpRequestActionNameProvider.GetActionName()
+            => _httpContextProvider.GetHttpContext<HttpContext>()
+                .Map(httpContext => httpContext.Request)
+                .Map(request => request.Path)
+                .Map(path => path.Value)
+                .Map(value => value.Substring(value.LastIndexOf('/') + 1));
     }
 }

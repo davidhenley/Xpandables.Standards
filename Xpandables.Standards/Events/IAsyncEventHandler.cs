@@ -15,6 +15,9 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System
 {
     /// <summary>
@@ -23,15 +26,16 @@ namespace System
     /// <remarks>
     /// Any operation that does not deliver or do what it promises to do should throw an exception.
     /// </remarks>
-    public interface IEventHandler
+    public interface IAsyncEventHandler
     {
         /// <summary>
         /// Defines the method that should be used when an event is handled.
         /// </summary>
         /// <param name="event">The notification instance that may be used in handling the notification.</param>
+        /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentNullException">The <paramref name="event"/> can not be null.</exception>
         /// <exception cref="InvalidOperationException">The event can not be handled. See inner exception.</exception>
-        void Handle(object @event);
+        Task HandleAsync(object @event, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -41,15 +45,16 @@ namespace System
     /// <remarks>
     /// Any operation that does not deliver or do what it promises to do should throw an exception.
     /// </remarks>
-    public interface IEventHandler<in TEvent> : IEventHandler
+    public interface IAsyncEventHandler<in TEvent> : IAsyncEventHandler
         where TEvent : class, IEvent
     {
         /// <summary>
         /// Defines the method that should be used when a specific type event is handled.
         /// </summary>
         /// <param name="event">The event instance that may be used in handling the notification.</param>
+        /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentNullException">The <paramref name="event"/> can not be null.</exception>
         /// <exception cref="InvalidOperationException">The event can not be handled. See inner exception.</exception>
-        void Handle(TEvent @event);
+        Task HandleAsync(TEvent @event, CancellationToken cancellationToken);
     }
 }

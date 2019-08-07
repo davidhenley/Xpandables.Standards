@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace Xpandables
+namespace System
 {
     /// <summary>
     /// Provides with a property to access instance on explicit interface implementation.

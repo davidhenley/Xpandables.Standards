@@ -15,36 +15,38 @@
  *
 ************************************************************************************************************/
 
+using System.Threading.Tasks;
+
 namespace System
 {
     /// <summary>
-    /// The implementation of <see cref="IEventRegister"/>.
+    /// The implementation of <see cref="IAsyncEventRegister"/>.
     /// This class must be used through a decorator and must be registered as follow : SimpleInjector sample
     /// <code>
     ///     Container.Register(PostEventRegister, LifeStyle.Scoped);
     ///     Container.Register(typeof(IPostEventRegister), ()=> Container.GetInstance(PostEventRegister));
     /// </code>
     /// </summary>
-    public sealed class EventRegister : IEventRegister
+    public sealed class AsyncEventRegister : IAsyncEventRegister
     {
         /// <summary>
         /// The event that will be post raised.
         /// </summary>
-        public event Action PostEvent = () => { };
+        public event Func<Task> PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
 
         /// <summary>
         /// The event that will be raised when exception occurred in order to rollback previous actions.
         /// </summary>
-        public event Action RollbackEvent = () => { };
+        public event Func<Task> RollbackEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
 
         /// <summary>
         /// Raises the <see cref="PostEvent"/> event.
         /// </summary>
-        public void OnPostEvent()
+        public async Task OnPostEventAsync()
         {
             try
             {
-                PostEvent();
+                await PostEvent().ConfigureAwait(false);
             }
             finally
             {
@@ -55,11 +57,11 @@ namespace System
         /// <summary>
         /// Raises the <see cref="RollbackEvent"/> event.
         /// </summary>
-        public void OnRollbackEvent()
+        public async Task OnRollbackEventAsync()
         {
             try
             {
-                RollbackEvent();
+                await RollbackEvent().ConfigureAwait(false);
             }
             finally
             {
@@ -72,8 +74,8 @@ namespace System
         /// </summary>
         private void Reset()
         {
-            PostEvent = () => { };
-            RollbackEvent = () => { };
+            PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
+            RollbackEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
         }
     }
 }

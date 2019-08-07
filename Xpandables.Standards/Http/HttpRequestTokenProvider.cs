@@ -17,7 +17,7 @@
 
 using Xpandables;
 
-namespace System.Configuration
+namespace System.Http
 {
     /// <summary>
     /// The default implementation for <see cref="IHttpRequestTokenProvider"/>.

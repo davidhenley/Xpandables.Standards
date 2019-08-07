@@ -15,27 +15,17 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.Extensions.Configuration;
-
-namespace System.Configuration
+namespace System.Http
 {
     /// <summary>
-    /// The default implementation of <see cref="IConfigurationAccessor"/>.
+    /// Provides with a method that retrieves the http current user identity name.
     /// </summary>
-    public sealed class ConfigurationAccessor : IConfigurationAccessor
+    public interface IHttpContextUserNameProvider
     {
-        private readonly IConfiguration _configuration;
-
         /// <summary>
-        /// Initializes the accessor with the configuration instance.
+        /// Returns the user name from the current http context.
+        /// If not found, returns an empty optional.
         /// </summary>
-        /// <param name="configuration">The configuration instance.</param>
-        public ConfigurationAccessor(IConfiguration configuration) => _configuration = configuration;
-
-        Optional<string> IConfigurationAccessor.GetConnectionString(string key) => _configuration.GetConnectionString(key);
-
-        Optional<T> IConfigurationAccessor.GetSection<T>(string key) => _configuration.GetSection(key).Get<T>();
-
-        Optional<T> IConfigurationAccessor.GetValue<T>(string key) => _configuration.GetValue<T>(key);
+        Optional<string> GetUserName();
     }
 }

@@ -15,13 +15,10 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace System.Patterns
 {
     /// <summary>
-    /// Defines a generic method that a class implements to asynchronously handle a type-specific command.
+    /// Defines a generic method that a class implements to handle a type-specific command.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to be handled.</typeparam>
@@ -32,13 +29,11 @@ namespace System.Patterns
         where TCommand : class, ICommand
     {
         /// <summary>
-        /// Asynchronously handles the specified command.
+        /// Handles the specified command.
         /// </summary>
         /// <param name="command">The argument to act on.</param>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="command"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task HandleAsync(TCommand command, CancellationToken cancellationToken = default);
+        void Handle(TCommand command);
     }
 }

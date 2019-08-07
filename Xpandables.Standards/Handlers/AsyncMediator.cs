@@ -15,72 +15,79 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System.Patterns
 {
     /// <summary>
-    /// The default implementation for <see cref="IMediator"/>.
-    /// Implements methods to execute the <see cref="IQueryHandler{TQuery, TResult}"/> and
-    /// <see cref="ICommandHandler{TCommand}"/> process dynamically.
+    /// The default implementation for <see cref="IAsyncMediator"/>.
+    /// Implements methods to execute the <see cref="IAsyncQueryHandler{TQuery, TResult}"/> and
+    /// <see cref="IAsyncCommandHandler{TCommand}"/> process dynamically.
     /// This class can not be inherited.
     /// </summary>
-    public sealed class Mediator : IMediator
+    public sealed class AsyncMediator : IAsyncMediator
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public Mediator(IServiceProvider serviceProvider)
+        public AsyncMediator(IServiceProvider serviceProvider)
             => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
-        public void HandleCommand<TCommand>(TCommand command)
+        public async Task HandleCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
             where TCommand : class, ICommand
         {
             try
             {
-                var handler = _serviceProvider.GetService<ICommandHandler<TCommand>>();
-                handler.Handle(command);
+                var handler = _serviceProvider.GetService<IAsyncCommandHandler<TCommand>>();
+                await handler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception) when (!(exception is ArgumentNullException)
                                             && !(exception is InvalidOperationException)
                                             && !(exception is OperationCanceledException))
             {
                 throw new InvalidOperationException(
-                    $"{nameof(HandleCommand)} operation failed. See inner exception",
+                    $"{nameof(HandleCommandAsync)} operation failed. See inner exception",
                     exception);
             }
         }
 
-        public TResult HandleQuery<TQuery, TResult>(TQuery query)
+        public async Task<TResult> HandleQueryAsync<TQuery, TResult>(
+            TQuery query,
+            CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
         {
             try
             {
-                var handler = _serviceProvider.GetService<IQueryHandler<TQuery, TResult>>();
-                return handler.Handle(query);
+                var handler = _serviceProvider.GetService<IAsyncQueryHandler<TQuery, TResult>>();
+                return await handler.HandleAsync(query, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception) when (!(exception is ArgumentNullException)
                                             && !(exception is InvalidOperationException)
                                             && !(exception is OperationCanceledException))
             {
                 throw new InvalidOperationException(
-                    $"{nameof(HandleQuery)} operation failed. See inner exception",
+                    $"{nameof(HandleQueryAsync)} operation failed. See inner exception",
                     exception);
             }
         }
 
-        public TResult HandleQueryResult<TResult>(IQuery<TResult> query)
+        public async Task<TResult> HandleQueryResultAsync<TResult>(
+           IQuery<TResult> query,
+           CancellationToken cancellationToken = default)
            where TResult : class
         {
             try
             {
-                var wrapperType = typeof(QueryHandlerWrapper<,>).MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
-                var wrapperHandler = _serviceProvider.GetService<IQueryHandlerWrapper<TResult>>(wrapperType);
-                return wrapperHandler.Handle(query);
+                var wrapperType = typeof(AsyncQueryHandlerWrapper<,>).MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
+                var wrapperHandler = _serviceProvider.GetService<IAsyncQueryHandlerWrapper<TResult>>(wrapperType);
+                return await wrapperHandler.HandleAsync(query, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception) when (!(exception is ArgumentNullException)
                                             && !(exception is InvalidOperationException)
                                             && !(exception is OperationCanceledException))
             {
                 throw new InvalidOperationException(
-                    $"{nameof(HandleQuery)} operation failed. See inner exception",
+                    $"{nameof(HandleQueryAsync)} operation failed. See inner exception",
                     exception);
             }
         }

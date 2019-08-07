@@ -15,12 +15,16 @@
  *
 ************************************************************************************************************/
 
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System
 {
     /// <summary>
-    /// Implementing the <see cref=" IEventDispatcher"/> interface.
+    /// Implementing the <see cref=" IAsyncEventDispatcher"/> interface.
     /// </summary>
-    public sealed class EventDispatcher : IEventDispatcher
+    public sealed class AsyncEventDispatcher : IAsyncEventDispatcher
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -28,26 +32,30 @@ namespace System
         /// Initializes the dispatcher with a service provider.
         /// </summary>
         /// <param name="serviceProvider">The service provider to be used.</param>
-        public EventDispatcher(IServiceProvider serviceProvider)
+        public AsyncEventDispatcher(IServiceProvider serviceProvider)
             => _serviceProvider = serviceProvider;
 
-        void IEventDispatcher.Dispatch<TEvent>(TEvent @event)
+        async Task IAsyncEventDispatcher.DispatchAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
         {
             if (@event is null) throw new ArgumentNullException(nameof(@event));
 
-            foreach (var handler in _serviceProvider.GetServices<IEventHandler<TEvent>>())
-                handler.Handle(@event);
+            var taskEvents = from handler in _serviceProvider.GetServices<IAsyncEventHandler<TEvent>>()
+                             select handler.HandleAsync(@event, cancellationToken);
+
+            await Task.WhenAll(taskEvents).ConfigureAwait(false);
         }
 
-        void IEventDispatcher.Dispatch(IEvent @event)
+        async Task IAsyncEventDispatcher.DispatchAsync(IEvent @event, CancellationToken cancellationToken)
         {
             if (@event is null) throw new ArgumentNullException(nameof(@event));
 
-            var typeHandler = typeof(IEventHandler<>).MakeGenericType(new Type[] { @event.GetType() });
-            var handlers = _serviceProvider.GetServices<IEventHandler>(typeHandler);
+            var typeHandler = typeof(IAsyncEventHandler<>).MakeGenericType(new Type[] { @event.GetType() });
+            var handlers = _serviceProvider.GetServices<IAsyncEventHandler>(typeHandler);
 
-            foreach (var handler in handlers)
-                handler.Handle(@event);
+            var taskEvents = from handler in handlers
+                             select handler.HandleAsync(@event, cancellationToken);
+
+            await Task.WhenAll(taskEvents).ConfigureAwait(false);
         }
     }
 }

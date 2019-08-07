@@ -15,25 +15,27 @@
  *
 ************************************************************************************************************/
 
-namespace System.Configuration
+using Microsoft.Extensions.Configuration;
+
+namespace System
 {
     /// <summary>
-    /// Defines a method used to retrieve the ambient token string from the current http request header.
+    /// The default implementation of <see cref="IConfigurationAccessor"/>.
     /// </summary>
-    public interface IHttpRequestTokenProvider
+    public sealed class ConfigurationAccessor : IConfigurationAccessor
     {
-        /// <summary>
-        /// Returns the current token value from the current http request matching the "Authorization" key.
-        /// If not found, returns an empty optional.
-        /// </summary>
-        Optional<string> GetRequestHttpToken();
+        private readonly IConfiguration _configuration;
 
         /// <summary>
-        /// Returns the current token value from the current http request with the specified key.
-        /// If not found, returns an empty optional.
+        /// Initializes the accessor with the configuration instance.
         /// </summary>
-        /// <param name="key">The token key to find.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
-        Optional<string> GetRequestHttpToken(string key);
+        /// <param name="configuration">The configuration instance.</param>
+        public ConfigurationAccessor(IConfiguration configuration) => _configuration = configuration;
+
+        Optional<string> IConfigurationAccessor.GetConnectionString(string key) => _configuration.GetConnectionString(key);
+
+        Optional<T> IConfigurationAccessor.GetSection<T>(string key) => _configuration.GetSection(key).Get<T>();
+
+        Optional<T> IConfigurationAccessor.GetValue<T>(string key) => _configuration.GetValue<T>(key);
     }
 }

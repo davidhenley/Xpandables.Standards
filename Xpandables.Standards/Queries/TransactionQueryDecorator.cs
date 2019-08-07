@@ -17,8 +17,6 @@
 
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace System.Patterns
 {
@@ -31,12 +29,12 @@ namespace System.Patterns
     public sealed class TransactionQueryDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
-        private readonly IQueryHandler<TQuery, TResult> _decoratedHandler;
+        private readonly IQueryHandler<TQuery, TResult> _decoratee;
 
-        public TransactionQueryDecorator(IQueryHandler<TQuery, TResult> decoratedHandler)
-            => _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+        public TransactionQueryDecorator(IQueryHandler<TQuery, TResult> decoratee)
+            => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public TResult Handle(TQuery query)
         {
             var transactionAttr = query
                   .GetType()
@@ -46,7 +44,7 @@ namespace System.Patterns
                       $"The {typeof(TQuery).Name} is not decorated with {nameof(TransactionalAttribute)}.");
 
             using var scope = transactionAttr.TransactionScope;
-            var result = await _decoratedHandler.HandleAsync(query, cancellationToken).ConfigureAwait(false);
+            var result = _decoratee.Handle(query);
 
             scope.Complete();
 

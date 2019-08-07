@@ -15,6 +15,9 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System.Patterns
 {
     /// <summary>
@@ -25,37 +28,47 @@ namespace System.Patterns
     /// <remarks>
     /// Any operation that does not deliver or do what it promises to do should throw an exception.
     /// </remarks>
-    public interface IMediator
+    public interface IAsyncMediator
     {
         /// <summary>
-        /// Handles the specified query and returns the expected result.
+        /// Asynchronously handles the specified query and returns the expected result.
         /// </summary>
         /// <typeparam name="TQuery">Type of the query.</typeparam>
         /// <typeparam name="TResult">Type of the result.</typeparam>
         /// <param name="query">The query to act on.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult HandleQuery<TQuery, TResult>(TQuery query)
+        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
+        /// <returns> A task that represents the asynchronous execution operation.
+        /// The task contains the result of the operation. </returns>
+        Task<TResult> HandleQueryAsync<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>;
 
         /// <summary>
-        /// Handles the specified query and returns the expected result.
+        /// Asynchronously handles the specified query and returns the expected result.
         /// </summary>
         /// <typeparam name="TResult">Type of the result.</typeparam>
         /// <param name="query">The query to act on.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult HandleQueryResult<TResult>(IQuery<TResult> query)
+        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
+        /// <returns> A task that represents the asynchronous execution operation.
+        /// The task contains the result of the operation. </returns>
+        Task<TResult> HandleQueryResultAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
             where TResult : class;
 
         /// <summary>
-        /// Handles the specified command.
+        /// Asynchronously handles the specified command.
         /// </summary>
         /// <typeparam name="TCommand">Type of the command.</typeparam>
         /// <param name="command">The command to act on.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="command"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void HandleCommand<TCommand>(TCommand command)
+        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
+        Task HandleCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
             where TCommand : class, ICommand;
     }
 }

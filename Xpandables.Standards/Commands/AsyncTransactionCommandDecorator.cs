@@ -17,6 +17,8 @@
 
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Patterns
 {
@@ -25,15 +27,15 @@ namespace System.Patterns
     /// The command must be decorated with the <see cref="TransactionalAttribute"/>.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to apply transaction.</typeparam>
-    public sealed class TransactionCommandDecorator<TCommand> : ICommandHandler<TCommand>
+    public sealed class AsyncTransactionCommandDecorator<TCommand> : IAsyncCommandHandler<TCommand>
         where TCommand : class, ICommand
     {
-        private readonly ICommandHandler<TCommand> _decoratee;
+        private readonly IAsyncCommandHandler<TCommand> _decoratee;
 
-        public TransactionCommandDecorator(ICommandHandler<TCommand> decoratee)
+        public AsyncTransactionCommandDecorator(IAsyncCommandHandler<TCommand> decoratee)
             => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
 
-        public void Handle(TCommand command)
+        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
             var transactionAttr = command
                   .GetType()
@@ -43,7 +45,7 @@ namespace System.Patterns
                       $"The {typeof(TCommand).Name} is not decorated with {nameof(TransactionalAttribute)}.");
 
             using var scope = transactionAttr.TransactionScope;
-            _decoratee.Handle(command);
+            await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
 
             scope.Complete();
         }

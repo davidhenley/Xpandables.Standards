@@ -15,21 +15,18 @@
  *
 ************************************************************************************************************/
 
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace System
 {
-    /// <summary>
-    /// Defines an event that will be raised after another one or exception and executed in the asynchronous control flows.
-    /// </summary>
-    public interface IEventRegister
+    public static class StartupExtensions
     {
-        /// <summary>
-        /// The event that will be post raised.
-        /// </summary>
-        event Action PostEvent;
-
-        /// <summary>
-        /// The event that will be raised on exception.
-        /// </summary>
-        event Action RollbackEvent;
+        public static IServiceCollection ConfigureMediatorServices(this IServiceCollection services)
+        {
+            return services;
+        }
     }
 }

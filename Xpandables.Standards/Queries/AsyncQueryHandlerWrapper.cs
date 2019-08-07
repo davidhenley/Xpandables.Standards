@@ -21,20 +21,21 @@ using System.Threading.Tasks;
 namespace System.Patterns
 {
     /// <summary>
-    /// This interface allows application authors to avoid use of C# dynamics with query pattern.
+    /// Implementation for <see cref="IQueryHandlerWrapper{TResult}"/>.
     /// </summary>
-    /// <typeparam name="TResult">Type of the result.</typeparam>
+    /// <typeparam name="TQuery">Type of query.</typeparam>
+    /// <typeparam name="TResult">Type of result.</typeparam>
     /// <remarks>
     /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
     /// </remarks>
-    public interface IQueryHandlerWrapper<TResult>
+    public sealed class AsyncQueryHandlerWrapper<TQuery, TResult> : IAsyncQueryHandlerWrapper<TResult>
+        where TQuery : class, IQuery<TResult>
     {
-        /// <summary>
-        /// Handles the specified query and returns the expected result type.
-        /// </summary>
-        /// <param name="query">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(IQuery<TResult> query);
+        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
+        public AsyncQueryHandlerWrapper(IAsyncQueryHandler<TQuery, TResult> decoratee)
+            => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+
+        public async Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
+            => await _decoratee.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);
     }
 }

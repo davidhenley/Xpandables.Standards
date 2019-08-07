@@ -21,21 +21,20 @@ using System.Threading.Tasks;
 namespace System.Patterns
 {
     /// <summary>
-    /// This class allows the application author to add post/rollback event support to query.
-    /// <para>This decorator will call the <see cref="AsyncEventRegister"/> before and after the query execution.</para>
+    /// This class allows the application author to add post/rollback event support to command.
+    /// <para>This decorator will call the <see cref="AsyncEventRegister"/> before and after the command execution.</para>
     /// </summary>
-    /// <typeparam name="TQuery">Type of the query to apply transaction.</typeparam>
-    /// <typeparam name="TResult">Type of the result.</typeparam>
-    public sealed class EventRegisterQueryDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    /// <typeparam name="TCommand">Type of the command.</typeparam>
+    public sealed class AsyncEventRegisterCommandDecorator<TCommand> : IAsyncCommandHandler<TCommand>
+        where TCommand : class, ICommand
     {
-        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        private readonly IAsyncCommandHandler<TCommand> _decoratee;
         private readonly ICorrelationContext _correlationContext;
-        private readonly EventRegister _eventRegister;
+        private readonly AsyncEventRegister _eventRegister;
 
-        public EventRegisterQueryDecorator(
-            EventRegister eventRegister,
-            IQueryHandler<TQuery, TResult> decoratee,
+        public AsyncEventRegisterCommandDecorator(
+            AsyncEventRegister eventRegister,
+            IAsyncCommandHandler<TCommand> decoratee,
             ICorrelationContext correlationContext)
         {
             _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
@@ -43,18 +42,17 @@ namespace System.Patterns
             _correlationContext = correlationContext ?? throw new ArgumentNullException(nameof(correlationContext));
         }
 
-        public TResult Handle(TQuery query)
+        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
             try
             {
-                var result = _decoratee.Handle(query);
-                _eventRegister.OnPostEvent();
-                return result;
+                await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
+                await _eventRegister.OnPostEventAsync().ConfigureAwait(false);
             }
             catch (Exception exception)
             {
                 _correlationContext.SetOrUpdateValue("Exception", exception);
-                _eventRegister.OnRollbackEvent();
+                await _eventRegister.OnRollbackEventAsync().ConfigureAwait(false);
                 throw;
             }
         }

@@ -15,24 +15,13 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.AspNetCore.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace System.Configuration
+namespace System.Patterns
 {
-    public sealed class HttpContextUserNameProvider : IHttpContextUserNameProvider
+    public interface IAsyncQueryHandlerWrapper<TResult>
     {
-        private readonly IHttpContextProvider _httpContextProvider;
-
-        public HttpContextUserNameProvider(IHttpContextProvider httpContextProvider)
-        {
-            _httpContextProvider = httpContextProvider ?? throw new ArgumentNullException(nameof(httpContextProvider));
-        }
-
-        Optional<string> IHttpContextUserNameProvider.GetUserName()
-            => _httpContextProvider.GetHttpContext<HttpContext>()
-                .Map(httpContext => httpContext.User)
-                .Map(user => user.Identity)
-                .Map(identity => identity.Name);
-
+        Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default);
     }
 }

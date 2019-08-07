@@ -15,41 +15,28 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System
 {
     /// <summary>
-    /// Allows an application author to define an event to be handled.
+    /// This class is a helper that provides a default implementation for most of the methods of <see cref="IAsyncEventHandler{TEvent}"/>.
+    /// This is an <see langword="abstract"/> class.
     /// </summary>
-    /// <remarks>
-    /// Any operation that does not deliver or do what it promises to do should throw an exception.
-    /// </remarks>
-    public interface IEventHandler
-    {
-        /// <summary>
-        /// Defines the method that should be used when an event is handled.
-        /// </summary>
-        /// <param name="event">The notification instance that may be used in handling the notification.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="event"/> can not be null.</exception>
-        /// <exception cref="InvalidOperationException">The event can not be handled. See inner exception.</exception>
-        void Handle(object @event);
-    }
-
-    /// <summary>
-    /// Allows an application author to define a specific type <typeparamref name="TEvent"/> to be handled.
-    /// </summary>
-    /// <typeparam name="TEvent">The event type to be handled.</typeparam>
-    /// <remarks>
-    /// Any operation that does not deliver or do what it promises to do should throw an exception.
-    /// </remarks>
-    public interface IEventHandler<in TEvent> : IEventHandler
+    public abstract class AsyncEventHandlerBase<TEvent> : IAsyncEventHandler<TEvent>
         where TEvent : class, IEvent
     {
         /// <summary>
-        /// Defines the method that should be used when a specific type event is handled.
+        /// When overridden, this method will be used when a specific type event is handled asynchronously.
         /// </summary>
         /// <param name="event">The event instance that may be used in handling the notification.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="event"/> can not be null.</exception>
         /// <exception cref="InvalidOperationException">The event can not be handled. See inner exception.</exception>
-        void Handle(TEvent @event);
+        public abstract Task HandleAsync(TEvent @event, CancellationToken cancellationToken);
+
+        async Task IAsyncEventHandler.HandleAsync(object notification, CancellationToken cancellationToken)
+            => await HandleAsync((TEvent)notification, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -16,32 +16,33 @@
 ************************************************************************************************************/
 
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Patterns
 {
     /// <summary>
     /// This class allows the application author to add persistence support to all of the query handlers.
-    /// <para>This decorator uses the <see cref="IDataContext.Persist()"/> after a query execution.</para>
+    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a query execution.</para>
     /// </summary>
     /// <typeparam name="TQuery">Type of the query to apply transaction.</typeparam>
     /// <typeparam name="TResult">Type of the result.</typeparam>
-    public sealed class PersistenceQueryDecorator<TQuery, TResult> : Disposable, IQueryHandler<TQuery, TResult>
+    public sealed class AsyncPersistenceQueryDecorator<TQuery, TResult> : Disposable, IAsyncQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
         private readonly IDataContext _dataContext;
-        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
 
-        public PersistenceQueryDecorator(IDataContext dataContext, IQueryHandler<TQuery, TResult> decoratee)
+        public AsyncPersistenceQueryDecorator(IDataContext dataContext, IAsyncQueryHandler<TQuery, TResult> decoratedHandler)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _decoratee = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
         }
 
-        public TResult Handle(TQuery query)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
-            var result = _decoratee.Handle(query);
-            _dataContext.Persist();
-
+            var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
+            await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
             return result;
         }
     }

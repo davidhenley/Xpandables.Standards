@@ -29,21 +29,20 @@ namespace System.Patterns
     public sealed class ValidatorCommandDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand
     {
-        private readonly ICommandHandler<TCommand> _decoratedHandler;
+        private readonly ICommandHandler<TCommand> _decoratee;
         private readonly ICompositeValidator<TCommand> _validator;
 
         public ValidatorCommandDecorator(
-            ICommandHandler<TCommand> decoratedhandler, ICompositeValidator<TCommand> validator)
+            ICommandHandler<TCommand> decoratee, ICompositeValidator<TCommand> validator)
         {
-            _decoratedHandler = decoratedhandler ?? throw new ArgumentNullException(nameof(decoratedhandler));
+            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
-        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
+        public void Handle(TCommand command)
         {
             _validator.Validate(command);
-
-            await _decoratedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
+            _decoratee.Handle(command);
         }
     }
 }

@@ -15,6 +15,9 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System.Patterns
 {
     /// <summary>
@@ -24,22 +27,22 @@ namespace System.Patterns
     /// </summary>
     /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class VisitorQueryDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    public sealed class AsyncVisitorQueryDecorator<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
          where TQuery : class, IQuery<TResult>, IVisitable
     {
         private readonly ICompositeVisitor<TQuery> _visitor;
-        private readonly IQueryHandler<TQuery, TResult> decoratee;
+        private readonly IAsyncQueryHandler<TQuery, TResult> decoratee;
 
-        public VisitorQueryDecorator(IQueryHandler<TQuery, TResult> decoratee, ICompositeVisitor<TQuery> visitor)
+        public AsyncVisitorQueryDecorator(IAsyncQueryHandler<TQuery, TResult> decoratee, ICompositeVisitor<TQuery> visitor)
         {
             this.decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _visitor = visitor ?? throw new ArgumentNullException(nameof(visitor));
         }
 
-        public TResult Handle(TQuery query)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             query.Accept(_visitor);
-            return decoratee.Handle(query);
+            return await decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
         }
     }
 }

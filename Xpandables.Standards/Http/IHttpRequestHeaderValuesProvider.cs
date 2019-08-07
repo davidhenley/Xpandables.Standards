@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Configuration
+namespace System.Http
 {
     /// <summary>
     /// Provides with methods to retrieve an http request header value matching a key.

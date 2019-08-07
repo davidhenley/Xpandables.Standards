@@ -21,20 +21,22 @@ using System.Threading.Tasks;
 namespace System.Patterns
 {
     /// <summary>
-    /// This interface allows application authors to avoid use of C# dynamics with query pattern.
+    /// Defines a generic method that a class implements to handle a type-specific command.
+    /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    /// <typeparam name="TResult">Type of the result.</typeparam>
+    /// <typeparam name="TCommand">Type of the command to be handled.</typeparam>
     /// <remarks>
-    /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
+    /// Any operation that does not deliver or do what it promises to do should throw an exception.
     /// </remarks>
-    public interface IQueryHandlerWrapper<TResult>
+    public interface IAsyncCommandHandler<in TCommand> where TCommand : class, ICommand
     {
         /// <summary>
-        /// Handles the specified query and returns the expected result type.
+        /// Handles the specified command.
         /// </summary>
-        /// <param name="query">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
+        /// <param name="command">The argument to act on.</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="ArgumentNullException">The <paramref name="command"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(IQuery<TResult> query);
+        Task HandleAsync(TCommand command, CancellationToken cancellationToken = default);
     }
 }

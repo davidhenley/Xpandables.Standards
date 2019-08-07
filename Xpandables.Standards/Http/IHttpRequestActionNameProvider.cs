@@ -15,26 +15,17 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace System.Patterns
+namespace System.Http
 {
     /// <summary>
-    /// This interface allows application authors to avoid use of C# dynamics with query pattern.
+    /// Provides a method that returns the ambient http context action name.
     /// </summary>
-    /// <typeparam name="TResult">Type of the result.</typeparam>
-    /// <remarks>
-    /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
-    /// </remarks>
-    public interface IQueryHandlerWrapper<TResult>
+    public interface IHttpRequestActionNameProvider
     {
         /// <summary>
-        /// Handles the specified query and returns the expected result type.
+        /// Gets the current http action path name.
+        /// If not found, returns an empty optional.
         /// </summary>
-        /// <param name="query">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(IQuery<TResult> query);
+        Optional<string> GetActionName();
     }
 }

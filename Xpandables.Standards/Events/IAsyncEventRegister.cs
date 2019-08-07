@@ -15,26 +15,23 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Patterns
+namespace System
 {
     /// <summary>
-    /// This interface allows application authors to avoid use of C# dynamics with query pattern.
+    /// Defines an event that will be raised after another one or exception and executed in the asynchronous control flows.
     /// </summary>
-    /// <typeparam name="TResult">Type of the result.</typeparam>
-    /// <remarks>
-    /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
-    /// </remarks>
-    public interface IQueryHandlerWrapper<TResult>
+    public interface IAsyncEventRegister
     {
         /// <summary>
-        /// Handles the specified query and returns the expected result type.
+        /// The event that will be post raised.
         /// </summary>
-        /// <param name="query">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(IQuery<TResult> query);
+        event Func<Task> PostEvent;
+
+        /// <summary>
+        /// The event that will be raised on exception.
+        /// </summary>
+        event Func<Task> RollbackEvent;
     }
 }

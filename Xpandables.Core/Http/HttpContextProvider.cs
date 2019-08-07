@@ -17,22 +17,17 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace System.Configuration
+namespace System.Http
 {
-    public sealed class HttpRequestActionNameProvider : IHttpRequestActionNameProvider
+    public sealed class HttpContextProvider : IHttpContextProvider
     {
-        private readonly IHttpContextProvider _httpContextProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HttpRequestActionNameProvider(IHttpContextProvider httpContextProvider)
+        public HttpContextProvider(IHttpContextAccessor httpContextAccessor)
         {
-            _httpContextProvider = httpContextProvider ?? throw new ArgumentNullException(nameof(httpContextProvider));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        Optional<string> IHttpRequestActionNameProvider.GetActionName()
-            => _httpContextProvider.GetHttpContext<HttpContext>()
-                .Map(httpContext => httpContext.Request)
-                .Map(request => request.Path)
-                .Map(path => path.Value)
-                .Map(value => value.Substring(value.LastIndexOf('/') + 1));
+        Optional<object> IHttpContextProvider.GetHttpContext() => _httpContextAccessor.HttpContext;
     }
 }

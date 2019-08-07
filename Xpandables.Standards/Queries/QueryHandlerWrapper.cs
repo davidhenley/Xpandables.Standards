@@ -15,9 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace System.Patterns
 {
     /// <summary>
@@ -31,13 +28,10 @@ namespace System.Patterns
     public sealed class QueryHandlerWrapper<TQuery, TResult> : IQueryHandlerWrapper<TResult>
         where TQuery : class, IQuery<TResult>
     {
-        private readonly IQueryHandler<TQuery, TResult> _handler;
-        public QueryHandlerWrapper(IQueryHandler<TQuery, TResult> handler)
-            => _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        public QueryHandlerWrapper(IQueryHandler<TQuery, TResult> decoratee)
+            => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
 
-        public async Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
-        {
-            return await _handler.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);
-        }
+        public TResult Handle(IQuery<TResult> query) => _decoratee.Handle((TQuery)query);
     }
 }

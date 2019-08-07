@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace System.Configuration
+namespace System
 {
     /// <summary>
     /// Allows an application author to access the configuration file.

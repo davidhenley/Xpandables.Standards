@@ -15,32 +15,33 @@
  *
 ************************************************************************************************************/
 
-namespace System.Configuration
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace System.Http
 {
     /// <summary>
-    /// Resolves the HttpContextAccessor that provides the current HttpContext instance.
+    /// Provides method to configure services and the app's request pipeline.
     /// </summary>
-    public interface IHttpContextProvider
+    public interface ICustomStartup
     {
         /// <summary>
-        /// Returns the current http context instance.
-        /// If not found, returns an empty optional.
+        /// Determines the execution order.
         /// </summary>
-        Optional<object> GetHttpContext();
-    }
+        int Order { get; }
 
-    /// <summary>
-    /// Extension methods for <see cref="IHttpContextProvider"/>.
-    /// </summary>
-    public static class HttpContextProviderHelpers
-    {
         /// <summary>
-        /// Returns the current http context instance and converts it to the specified type.
-        /// If not found, returns and empty optional.
+        /// Use this method to configure the HTTP request pipeline.
         /// </summary>
-        /// <typeparam name="T">Type of http context to be retrieved.</typeparam>
-        public static Optional<T> GetHttpContext<T>(this IHttpContextProvider httpContextProvider)
-            where T : class
-            => httpContextProvider?.GetHttpContext().OfTypeOptional<T>();
+        /// <param name="app">The application builder.</param>
+        /// <param name="env">The environmement hosting.</param>
+        void Configure(IApplicationBuilder app, IHostingEnvironment env);
+
+        /// <summary>
+        ///  Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        void ConfigureServices(IServiceCollection services);
     }
 }

@@ -15,30 +15,34 @@
  *
 ************************************************************************************************************/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System.Patterns
 {
     /// <summary>
-    /// This class allows the application author to add visitor support to a command.
-    /// <para>This decorator uses the <see cref="CompositeVisitor{TArgument}"/>.</para>
-    /// <para>The command must implement the <see cref="IVisitable"/> interface.</para>
+    /// This class allows the application author to add validation support before a command is handled.
+    /// <para>This decorator uses the <see cref="CompositeValidator{TArgument}"/>.</para>
+    /// <para>The query must implement the <see cref="IValidatableAttribute"/> interface.</para>
     /// </summary>
     /// <typeparam name="TCommand">Type of the command.</typeparam>
-    public sealed class VisitorCommandDecorator<TCommand> : ICommandHandler<TCommand>
-         where TCommand : class, ICommand, IVisitable
+    public sealed class AsyncValidatorCommandDecorator<TCommand> : IAsyncCommandHandler<TCommand>
+        where TCommand : class, ICommand
     {
-        private readonly ICompositeVisitor<TCommand> _visitor;
-        private readonly ICommandHandler<TCommand> _decoratee;
+        private readonly IAsyncCommandHandler<TCommand> _decoratee;
+        private readonly ICompositeValidator<TCommand> _validator;
 
-        public VisitorCommandDecorator(ICommandHandler<TCommand> decoratee, ICompositeVisitor<TCommand> visitor)
+        public AsyncValidatorCommandDecorator(
+            IAsyncCommandHandler<TCommand> decoratee, ICompositeValidator<TCommand> validator)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _visitor = visitor ?? throw new ArgumentNullException(nameof(visitor));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
-        public void Handle(TCommand command)
+        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
         {
-            command.Accept(_visitor);
-            _decoratee.Handle(command);
+            _validator.Validate(command);
+            await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
         }
     }
 }

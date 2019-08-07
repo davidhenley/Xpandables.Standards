@@ -15,21 +15,32 @@
  *
 ************************************************************************************************************/
 
-namespace System
+namespace System.Http
 {
     /// <summary>
-    /// Defines an event that will be raised after another one or exception and executed in the asynchronous control flows.
+    /// Resolves the HttpContextAccessor that provides the current HttpContext instance.
     /// </summary>
-    public interface IEventRegister
+    public interface IHttpContextProvider
     {
         /// <summary>
-        /// The event that will be post raised.
+        /// Returns the current http context instance.
+        /// If not found, returns an empty optional.
         /// </summary>
-        event Action PostEvent;
+        Optional<object> GetHttpContext();
+    }
 
+    /// <summary>
+    /// Extension methods for <see cref="IHttpContextProvider"/>.
+    /// </summary>
+    public static class HttpContextProviderHelpers
+    {
         /// <summary>
-        /// The event that will be raised on exception.
+        /// Returns the current http context instance and converts it to the specified type.
+        /// If not found, returns and empty optional.
         /// </summary>
-        event Action RollbackEvent;
+        /// <typeparam name="T">Type of http context to be retrieved.</typeparam>
+        public static Optional<T> GetHttpContext<T>(this IHttpContextProvider httpContextProvider)
+            where T : class
+            => httpContextProvider?.GetHttpContext().OfTypeOptional<T>();
     }
 }

@@ -16,30 +16,32 @@
 ************************************************************************************************************/
 
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Patterns
 {
     /// <summary>
     /// This class allows the application author to add persistence support to command.
-    /// <para>This decorator uses the <see cref="IDataContext.Persist()"/> after a command execution.</para>
+    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a command execution.</para>
     /// </summary>
     /// <typeparam name="TCommand">Type of command.</typeparam>
-    public sealed class PersistenceCommandDecorator<TCommand> : ICommandHandler<TCommand>
+    public sealed class AsyncPersistenceCommandDecorator<TCommand> : IAsyncCommandHandler<TCommand>
         where TCommand : class, ICommand
     {
         private readonly IDataContext _dataContext;
-        private readonly ICommandHandler<TCommand> _decoratee;
+        private readonly IAsyncCommandHandler<TCommand> _decoratedHandler;
 
-        public PersistenceCommandDecorator(IDataContext dataContext, ICommandHandler<TCommand> decoratee)
+        public AsyncPersistenceCommandDecorator(IDataContext dataContext, IAsyncCommandHandler<TCommand> decoratedHandler)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
         }
 
-        public void Handle(TCommand command)
+        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
-            _decoratee.Handle(command);
-            _dataContext.Persist();
+            await _decoratedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
+            await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }
