@@ -15,6 +15,8 @@
  *
 ************************************************************************************************************/
 
+using System.Globalization;
+
 namespace System
 {
     /// <summary>
@@ -32,9 +34,13 @@ namespace System
         /// If error, returns an empty optional.
         /// </summary>
         /// <param name="source">A string containing a date and time to convert.</param>
+        /// <param name="provider">An object that supplies culture-specific format information about string.</param>
+        /// <param name="styles"> A bitwise combination of enumeration values that indicates the permitted format
+        /// of string. A typical value to specify is System.Globalization.DateTimeStyles.None.</param>
+        /// <param name="formats">An array of allowable formats of strings.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        Optional<DateTime> StringToDateTime(string source);
+        Optional<DateTime> StringToDateTime(string source, IFormatProvider provider, DateTimeStyles styles, params string[] formats);
 
         /// <summary>
         /// Converts the value of the current System.DateTime object to its equivalent string

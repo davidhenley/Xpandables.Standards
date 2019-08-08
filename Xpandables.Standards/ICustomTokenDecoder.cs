@@ -18,28 +18,18 @@
 namespace System
 {
     /// <summary>
-    ///  Defines the methods that build a token from an object source and read that object source from the token.
+    ///  Defines a method to decode a token from a string.
     /// </summary>
-    public interface ICustomTokenEngine
+    public interface ICustomTokenDecoder
     {
         /// <summary>
-        /// Builds and returns a string token using the specified data source.
+        /// Decodes the specified token and returns the value as the specific type.
         /// </summary>
-        /// <typeparam name="T">Type of token source.</typeparam>
-        /// <param name="source">data source to be used to build token string.</param>
-        /// <returns>An instance of string token if OK or an empty string.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        string BuildToken<T>(T source) where T : class;
-
-        /// <summary>
-        /// Reads the specified token and returns the data source instance from which the token was built.
-        /// </summary>
-        /// <typeparam name="T">Type of token.</typeparam>
+        /// <typeparam name="T">Type of value expected.</typeparam>
         /// <param name="token">A instance of token to act on.</param>
         /// <returns>A data query used from the string token.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="token"/> is null or empty.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        T ReadToken<T>(string token) where T : class;
+        T Decode<T>(string token) where T : class;
     }
 }
