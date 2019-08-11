@@ -97,6 +97,38 @@ namespace System
         }
 
         /// <summary>
+        /// Returns the attribute of the <typeparamref name="T"/> type from the type.
+        /// </summary>
+        /// <typeparam name="T">Type of attribute.</typeparam>
+        /// <param name="source">enumeration instance to act on.</param>
+        /// <param name="inherit"><see langword="true"/> to inspect the ancestors of element;
+        /// otherwise, <see langword="false"/>.</param>
+        /// <returns>The description string. If not found, returns the enumeration as string.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static T GetAttribute<T>(this Type source, bool inherit = true)
+            where T : Attribute
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.GetCustomAttribute<T>(inherit);
+        }
+
+        /// <summary>
+        /// Returns the attribute of the <typeparamref name="T"/> type from the type.
+        /// </summary>
+        /// <typeparam name="T">Type of attribute.</typeparam>
+        /// <param name="source">enumeration instance to act on.</param>
+        /// <param name="inherit"><see langword="true"/> to inspect the ancestors of element;
+        /// otherwise, <see langword="false"/>.</param>
+        /// <returns>The description string. If not found, returns the enumeration as string.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static T GetAttribute<T>(this PropertyInfo source, bool inherit = true)
+            where T : Attribute
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.GetCustomAttribute<T>(inherit);
+        }
+
+        /// <summary>
         /// Returns the description string attribute of the current <see cref="Enum"/> value type.
         /// if not found, returns the value as string.
         /// </summary>

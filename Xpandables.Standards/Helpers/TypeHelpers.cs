@@ -126,7 +126,9 @@ namespace System
         /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
         /// <exception cref="TargetInvocationException">A static initializer is invoked and throws an exception.</exception>
         public static bool IsEnumerable(this Type type)
-            => type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            => !type.IsPrimitive
+                && type != typeof(string)
+                && type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
         /// <summary>
         /// Returns the name of the type without the generic arity '`'.
