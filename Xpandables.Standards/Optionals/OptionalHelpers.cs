@@ -15,34 +15,84 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System
 {
     /// <summary>
-    /// Functionality for optional pattern base.
+    /// Functionalities for optional pattern methods.
     /// </summary>
     public static partial class Optional
     {
-        /// <summary>
-        /// Converts the current source to optional.
-        /// The result instance will contains a value only if the source is not null.
-        /// </summary>
-        /// <typeparam name="T">Type of value.</typeparam>
-        /// <param name="source">An instance of value.</param>
-        /// <returns>An optional instance.</returns>
-        public static Optional<T> ToOptional<T>(this T source)
-            => EqualityComparer<T>.Default.Equals(source, default) ? Optional<T>.Empty() : Optional<T>.Some(source);
+        public static async Task MapAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<T, CancellationToken, Task<U>> some,
+            Func<T, CancellationToken, Task<U>> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .MapAsync(some, empty, cancellationToken).ConfigureAwait(false);
 
-        /// <summary>
-        /// Converts the current source to an asynchronous optional.
-        /// The result instance will contains a value only if the source is not null.
-        /// </summary>
-        /// <typeparam name="T">Type of value.</typeparam>
-        /// <param name="source">An instance of value.</param>
-        /// <returns>An optional instance.</returns>
-        public static async Task<Optional<T>> ToOptionalAsync<T>(this T source)
-            => await Task.FromResult(source).ConfigureAwait(false);
-    }
+        public static async Task MapAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<T, CancellationToken, Task> some,
+            Func<T, CancellationToken, Task> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .MapAsync(some, empty, cancellationToken).ConfigureAwait(false);
+
+        public static async Task<Optional<(Task<Optional<T>> First, Task<Optional<U>> Second)>> AndAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<Optional<T>, CancellationToken, Task<Optional<U>>> second,
+            CancellationToken cancellationToken)
+              => await (await optional.ConfigureAwait(false))
+                .AndAsync(second, cancellationToken).ConfigureAwait(false);
+
+        public static async Task<Optional<U>> MapOptionalAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<T, CancellationToken, Task<Optional<U>>> some,
+             Func<T, CancellationToken, Task<Optional<U>>> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .MapOptionalAsync(some, empty, cancellationToken).ConfigureAwait(false);
+
+        public static async Task<Optional<U>> WhenAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Predicate<T> predicate,
+            Func<T, CancellationToken, Task<U>> some,
+            Func<T, CancellationToken, Task<U>> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .WhenAsync(predicate, some, empty, cancellationToken).ConfigureAwait(false);
+
+        public static async Task WhenAsync<T>(
+            this Task<Optional<T>> optional,
+            Predicate<T> predicate,
+            Func<T, CancellationToken, Task> some,
+            Func<T, CancellationToken, Task> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .WhenAsync(predicate, some, empty, cancellationToken).ConfigureAwait(false);
+
+        public static async Task<Optional<T>> ReduceAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<CancellationToken, Task<T>> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .ReduceAsync(empty, cancellationToken).ConfigureAwait(false);
+
+        public static async Task<Optional<T>> ReduceOptionalAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<CancellationToken, Task<Optional<T>>> empty,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .ReduceOptionalAsync(empty, cancellationToken).ConfigureAwait(false);
+
+        public static async Task ReduceAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<CancellationToken, Task> action,
+            CancellationToken cancellationToken)
+            => await (await optional.ConfigureAwait(false))
+                .ReduceAsync(action, cancellationToken).ConfigureAwait(false);
+   }
 }

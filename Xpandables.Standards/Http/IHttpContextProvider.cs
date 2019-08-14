@@ -41,6 +41,6 @@ namespace System.Http
         /// <typeparam name="T">Type of http context to be retrieved.</typeparam>
         public static Optional<T> GetHttpContext<T>(this IHttpContextProvider httpContextProvider)
             where T : class
-            => httpContextProvider?.GetHttpContext().OfTypeOptional<T>();
+            => httpContextProvider?.GetHttpContext().CastOptional<T>();
     }
 }

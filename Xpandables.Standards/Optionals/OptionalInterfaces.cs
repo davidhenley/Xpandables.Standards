@@ -20,7 +20,6 @@ using System.Linq;
 
 namespace System
 {
-#pragma warning disable CS1591 // Commentaire XML manquant pour le type ou le membre visible publiquement
     public partial class Optional<T>
         : IEquatable<Optional<T>>, IEquatable<T>, IComparable<Optional<T>>, IComparable<T>, IFormattable
     {
@@ -44,7 +43,7 @@ namespace System
         }
 
         /// <summary>
-        /// Compares two instances of the <see cref="IOptional"/>.
+        /// Compares two instances of the <see cref="Optional{T}"/>.
         /// Two options are equal if both are of the same type, the same case
         /// and the underlying values are equal.
         /// </summary>
@@ -54,7 +53,7 @@ namespace System
             && EqualityComparer<T>.Default.Equals(this.Single(), other.Single()));
 
         /// <summary>
-        /// Compares <see cref="IOptional"/> with the value of type <typeparamref name="T"/>.
+        /// Compares <see cref="Optional{T}"/> with the value of type <typeparamref name="T"/>.
         /// Option is equal to the value of the underlying type if it's Some case
         /// and encapsulated value is equal to <paramref name="other"/> value.
         /// </summary>
@@ -62,7 +61,7 @@ namespace System
         public bool Equals(T other) => this.Any() && EqualityComparer<T>.Default.Equals(this.Single(), other);
 
         /// <summary>
-        /// Compares the <see cref="IOptional"/> with other object.
+        /// Compares the <see cref="Optional{T}"/> with other object.
         /// Option is only equal to other option given the conditions described in <see cref="Optional{T}.Equals(Optional{T})"/>.
         /// </summary>
         /// <param name="obj">Object to compare with</param>
@@ -75,7 +74,9 @@ namespace System
         {
             var hash = 17;
             if (this.Any())
+#nullable disable
                 return this.Single().GetHashCode() ^ 31;
+#nullable enable
             return hash ^ 29;
         }
 

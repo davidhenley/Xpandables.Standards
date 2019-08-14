@@ -125,12 +125,12 @@ namespace System
 
 
         public static Optional<TValue> TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
-            => dictionary.TryGetValue(key, out var value) ? Optional<TValue>.Some(value) : Optional<TValue>.Empty();
+            => dictionary.TryGetValue(key, out var value) ? Optional<TValue>.Some(value) : Optional<TValue>.Empty;
 
         public static Optional<T> TryGetElementAt<T>(this IEnumerable<T> source, int index)
             => source.ElementAtOrDefault(index);
 
         public static Optional<IEnumerable<TValue>> TryGetValues<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key)
-            => lookup.Contains(key) ? Optional<IEnumerable<TValue>>.Some(lookup[key]) : Optional<IEnumerable<TValue>>.Empty();
+            => lookup.Contains(key) ? Optional<IEnumerable<TValue>>.Some(lookup[key]) : Optional<IEnumerable<TValue>>.Empty;
     }
 }

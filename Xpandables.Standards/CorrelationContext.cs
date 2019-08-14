@@ -51,7 +51,7 @@ namespace System
 
         IReadOnlyDictionary<string, object> ICorrelationContext.Collection => _items.Value;
 
-        Optional<T> ICorrelationContext.GetValue<T>(string key) => Instance[key].OfType<T>();
+        Optional<T> ICorrelationContext.GetValue<T>(string key) => Instance[key].Cast<T>();
 
         void ICorrelationContext.SetOrUpdateValue<T>(string key, T value) => Instance[key] = value;
     }

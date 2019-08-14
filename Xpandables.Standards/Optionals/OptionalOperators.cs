@@ -23,7 +23,6 @@ namespace System
 {
     public partial class Optional<T>
     {
-#pragma warning disable CS1591 // Commentaire XML manquant pour le type ou le membre visible publiquement
         public static bool operator ==(in Optional<T> a, in Optional<T> b) => a.Equals(b);
 
         public static bool operator !=(in Optional<T> a, in Optional<T> b) => !a.Equals(b);
@@ -41,10 +40,12 @@ namespace System
         public static implicit operator Optional<T>(Optional<Optional<T>> doubleOptional)
             => doubleOptional.Any() && doubleOptional.Single().Any()
                     ? doubleOptional.Single()
-                    : Empty();
+                    : Empty;
 
+#nullable disable
         public static implicit operator Optional<T>(T value)
-            => !EqualityComparer<T>.Default.Equals(value, default) ? Some(value) : Empty();
+            => !EqualityComparer<T>.Default.Equals(value, default) ? Some(value) : Empty;
+#nullable enable
 
         public static implicit operator Task<Optional<T>>(Optional<T> optional) => Task.FromResult(optional);
 
@@ -67,6 +68,5 @@ namespace System
         {
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
-#pragma warning restore CS1591 // Commentaire XML manquant pour le type ou le membre visible publiquement
     }
 }

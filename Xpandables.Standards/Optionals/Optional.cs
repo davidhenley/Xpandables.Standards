@@ -33,7 +33,7 @@ namespace System
         /// Provides with an optional without value.
         /// </summary>
         /// <returns>An empty optional.</returns>
-        public static Optional<T> Empty() => new Optional<T>(Array.Empty<T>());
+        public static Optional<T> Empty => new Optional<T>(Array.Empty<T>());
 
         /// <summary>
         /// Provides with an optional that contains a value.
@@ -57,5 +57,4 @@ namespace System
 
         private Optional(T[] values) => _values = values ?? throw new ArgumentNullException(nameof(values));
     }
-
 }
