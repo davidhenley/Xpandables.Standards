@@ -26,58 +26,44 @@ namespace System
         /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
-        /// <param name="empty">The empty map.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<U>> MapAsync<U>(
-            Func<T, CancellationToken, Task<U>> some,
-            Func<T, CancellationToken, Task<U>> empty,
+        public async Task<Optional<TResult>> MapAsync<TResult>(
+            Func<T, CancellationToken, Task<TResult>> some,
             CancellationToken cancellationToken)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
 
             return this.Any()
                 ? await some(this.Single(), cancellationToken).ConfigureAwait(false)
-                : await empty(this.SingleOrDefault(), cancellationToken).ConfigureAwait(false);
+                : default;
         }
 
         /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
         /// <param name="some">The function to transform the element.</param>
-        /// <param name="empty">The empty map.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task MapAsync(
-            Func<T, CancellationToken, Task> some,
-            Func<T, CancellationToken, Task> empty,
-            CancellationToken cancellationToken)
+        public async Task MapAsync(Func<T, CancellationToken, Task> some, CancellationToken cancellationToken)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
-
-            if (this.Any())
-                await some(this.Single(), cancellationToken).ConfigureAwait(false);
-            else
-                await empty(this.SingleOrDefault(), cancellationToken).ConfigureAwait(false);
+            if (this.Any()) await some(this.Single(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Creates a pair optional pair with the second instance.
         /// </summary>
-        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <typeparam name="TResult">The type of the second instance</typeparam>
         /// <param name="second">The instance to be added.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
-        public async Task<Optional<(Task<Optional<T>> First, Task<Optional<U>> Second)>> AndAsync<U>(
-            Func<Optional<T>, CancellationToken, Task<Optional<U>>> second,
+        public async Task<Optional<(Task<Optional<T>> First, Task<Optional<TResult>> Second)>> AndAsync<TResult>(
+            Func<Optional<T>, CancellationToken, Task<Optional<TResult>>> second,
             CancellationToken cancellationToken)
         {
             if (second is null) throw new ArgumentNullException(nameof(second));
@@ -88,24 +74,20 @@ namespace System
         /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
-        /// <typeparam name="U">The expected type of result.</typeparam>
+        /// <typeparam name="TResult">The expected type of result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
-        /// <param name="empty">The empty map.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<U>> MapOptionalAsync<U>(
-            Func<T, CancellationToken, Task<Optional<U>>> some,
-            Func<T, CancellationToken, Task<Optional<U>>> empty,
+        public async Task<Optional<TResult>> MapOptionalAsync<TResult>(
+            Func<T, CancellationToken, Task<Optional<TResult>>> some,
             CancellationToken cancellationToken)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
 
             return this.Any()
                 ? await some(this.Single(), cancellationToken).ConfigureAwait(false)
-                : await empty(this.SingleOrDefault(), cancellationToken).ConfigureAwait(false);
+                : OptionalHelpers.Empty<TResult>();
         }
 
         /// <summary>
@@ -113,53 +95,44 @@ namespace System
         /// </summary>
         /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
-        /// <param name="empty">The empty map.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<U>> WhenAsync<U>(
+        public async Task<Optional<TResult>> WhenAsync<TResult>(
             Predicate<T> predicate,
-            Func<T, CancellationToken, Task<U>> some,
-            Func<T, CancellationToken, Task<U>> empty,
-            CancellationToken cancellationToken)
-        {
-            if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
-
-            if (this.Any() && predicate(this.Single()))
-                return await some(this.Single(), cancellationToken).ConfigureAwait(false);
-
-            return await empty(this.SingleOrDefault(), cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Creates a new element that is the result of applying the given function to the element when predicate is true.
-        /// </summary>
-        /// <param name="some">The function to transform the element.</param>
-        /// <param name="predicate">The predicate to be used.</param>
-        /// <param name="empty">The empty map.</param>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <returns>An optional instance.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task WhenAsync(
-            Predicate<T> predicate,
-            Func<T, CancellationToken, Task> some,
-            Func<T, CancellationToken, Task> empty,
+            Func<T, CancellationToken, Task<TResult>> some,
             CancellationToken cancellationToken)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
+
+            if (this.Any() && predicate(this.Single()))
+                return await some(this.Single(), cancellationToken).ConfigureAwait(false);
+
+            return OptionalHelpers.Empty<TResult>();
+        }
+
+        /// <summary>
+        /// Creates a new element that is the result of applying the given function to the element when predicate is true.
+        /// </summary>
+        /// <param name="some">The function to transform the element.</param>
+        /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
+        /// <returns>An optional instance.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
+        public async Task WhenAsync(
+            Predicate<T> predicate,
+            Func<T, CancellationToken, Task> some,
+            CancellationToken cancellationToken)
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
             if (this.Any() && predicate(this.Single()))
                 await some(this.Single(), cancellationToken).ConfigureAwait(false);
-            else
-                await empty(this.SingleOrDefault(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

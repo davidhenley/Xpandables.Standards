@@ -12,10 +12,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIconUrl>https://github.com/Francescolis/Xpandables/blob/master/Xpandables.png?raw=true</PackageIconUrl>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.0.0</FileVersion>
-    <PackageVersion>2.0.0-preview1</PackageVersion>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
+    <FileVersion>3.0.0</FileVersion>
+    <PackageVersion>3.0.0-preview1</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IMediator, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Database, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
@@ -47,6 +47,85 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Commands\**" />
+    <Compile Remove="Database\**" />
+    <Compile Remove="Enumerations\**" />
+    <Compile Remove="Events\**" />
+    <Compile Remove="Handlers\**" />
+    <Compile Remove="Helpers\**" />
+    <Compile Remove="Http\**" />
+    <Compile Remove="Interception\**" />
+    <Compile Remove="QrCode\**" />
+    <Compile Remove="Queries\**" />
+    <Compile Remove="Validation\**" />
+    <Compile Remove="Visitors\**" />
+    <EmbeddedResource Remove="Commands\**" />
+    <EmbeddedResource Remove="Database\**" />
+    <EmbeddedResource Remove="Enumerations\**" />
+    <EmbeddedResource Remove="Events\**" />
+    <EmbeddedResource Remove="Handlers\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <EmbeddedResource Remove="Http\**" />
+    <EmbeddedResource Remove="Interception\**" />
+    <EmbeddedResource Remove="QrCode\**" />
+    <EmbeddedResource Remove="Queries\**" />
+    <EmbeddedResource Remove="Validation\**" />
+    <EmbeddedResource Remove="Visitors\**" />
+    <None Remove="Commands\**" />
+    <None Remove="Database\**" />
+    <None Remove="Enumerations\**" />
+    <None Remove="Events\**" />
+    <None Remove="Handlers\**" />
+    <None Remove="Helpers\**" />
+    <None Remove="Http\**" />
+    <None Remove="Interception\**" />
+    <None Remove="QrCode\**" />
+    <None Remove="Queries\**" />
+    <None Remove="Validation\**" />
+    <None Remove="Visitors\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ConfigurationAccessor.cs" />
+    <Compile Remove="CorrelationContext.cs" />
+    <Compile Remove="Disposable.cs" />
+    <Compile Remove="Entity.cs" />
+    <Compile Remove="Explicit.cs" />
+    <Compile Remove="IAddable.cs" />
+    <Compile Remove="ICanHandle.cs" />
+    <Compile Remove="IConfigurationAccessor.cs" />
+    <Compile Remove="ICorrelationContext.cs" />
+    <Compile Remove="ICustomDateTimeProvider.cs" />
+    <Compile Remove="ICustomTokenDecoder.cs" />
+    <Compile Remove="ICustomTokenEncoder.cs" />
+    <Compile Remove="IFluent.cs" />
+    <Compile Remove="IMailSender.cs" />
+    <Compile Remove="Interval.cs" />
+    <Compile Remove="IStringEncryptor.cs" />
+    <Compile Remove="IStringGenerator.cs" />
+    <Compile Remove="ITag.cs" />
+    <Compile Remove="NotifyPropertyChanged.cs" />
+    <Compile Remove="NotifyPropertyChangedDependOnAttribute.cs" />
+    <Compile Remove="Paged.cs" />
+    <Compile Remove="Paging.cs" />
+    <Compile Remove="RequiredEmailOrPhoneAttribute.cs" />
+    <Compile Remove="RequiredNestedAttribute.cs" />
+    <Compile Remove="SignedValues.cs" />
+    <Compile Remove="Singleton.cs" />
+    <Compile Remove="StringEncryptor.cs" />
+    <Compile Remove="StringEscapeValidationAttribute.cs" />
+    <Compile Remove="StringGenerator.cs" />
+    <Compile Remove="TransactionalAttribute.cs" />
+    <Compile Remove="ValueEncrypted.cs" />
+    <Compile Remove="ValueObject.cs" />
+    <Compile Remove="Values.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />

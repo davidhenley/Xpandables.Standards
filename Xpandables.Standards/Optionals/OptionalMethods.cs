@@ -24,58 +24,47 @@ namespace System
         /// <summary>
         /// Casts the element of optional to the specied type.
         /// </summary>
-        /// <typeparam name="U">The type to cast the elements of source to.</typeparam>
-        public Optional<U> CastOptional<U>() => Cast<U>();
+        /// <typeparam name="TResult">The type to cast the elements of source to.</typeparam>
+        public Optional<TResult> CastOptional<TResult>() => Cast<TResult>();
 
         /// <summary>
         /// Casts the element of optional to the specied type.
         /// </summary>
-        /// <typeparam name="U">The type to cast the elements of source to.</typeparam>
-        public U Cast<U>() => this.Any() && this.Single() is U target ? target : default;
+        /// <typeparam name="TResult">The type to cast the elements of source to.</typeparam>
+        public TResult Cast<TResult>() => this.Any() && this.Single() is TResult result ? result : default;
 
         /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
-        /// <param name="empty">The empty map.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<U> Map<U>(Func<T, U> some, Func<T, U> empty)
+        public Optional<TResult> Map<TResult>(Func<T, TResult> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
-
-            return this.Any() ? some(this.Single()) : empty(this.SingleOrDefault());
+            return this.Any() ? some(this.Single()) : default;
         }
 
         /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
         /// <param name="some">The function to transform the element.</param>
-        /// <param name="empty">The empty map.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public void Map(Action<T> some, Action<T> empty)
+        public void Map(Action<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
-
-            if (this.Any())
-                some(this.Single());
-            else
-                empty(this.SingleOrDefault());
+            if (this.Any()) some(this.Single());
         }
 
         /// <summary>
         /// Creates a pair optional pair with the second instance.
         /// </summary>
-        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <typeparam name="TResult">The type of the second instance</typeparam>
         /// <param name="second">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
-        public Optional<(Optional<T> First, Optional<U> Second)> And<U>(Func<Optional<T>, Optional<U>> second)
+        public Optional<(Optional<T> First, Optional<TResult> Second)> And<TResult>(Func<Optional<T>, Optional<TResult>> second)
         {
             if (second is null) throw new ArgumentNullException(nameof(second));
             return (this, second(this));
@@ -84,18 +73,14 @@ namespace System
         /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
-        /// <typeparam name="U">The expected type of result.</typeparam>
+        /// <typeparam name="TResult">The expected type of result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
-        /// <param name="empty">The empty map.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<U> MapOptional<U>(Func<T, Optional<U>> some, Func<T, Optional<U>> empty)
+        public Optional<TResult> MapOptional<TResult>(Func<T, Optional<TResult>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
-
-            return this.Any() ? some(this.Single()) : empty(this.SingleOrDefault());
+            return this.Any() ? some(this.Single()) : OptionalHelpers.Empty<TResult>();
         }
 
         /// <summary>
@@ -103,20 +88,18 @@ namespace System
         /// </summary>
         /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
-        /// <param name="empty">The empty map.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<U> When<U>(Predicate<T> predicate, Func<T, U> some, Func<T, U> empty)
+        public Optional<TResult> When<TResult>(Predicate<T> predicate, Func<T, TResult> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
             if (this.Any() && predicate(this.Single()))
                 return some(this.Single());
 
-            return empty(this.SingleOrDefault());
+            return OptionalHelpers.Empty<TResult>();
         }
 
         /// <summary>
@@ -124,21 +107,15 @@ namespace System
         /// </summary>
         /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
-        /// <param name="empty">The empty map.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public void When(Predicate<T> predicate, Action<T> some, Action<T> empty)
+        public void When(Predicate<T> predicate, Action<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            if (empty is null) throw new ArgumentNullException(nameof(empty));
 
-            if (this.Any() && predicate(this.Single()))
-                some(this.Single());
-            else
-                empty(this.SingleOrDefault());
+            if (this.Any() && predicate(this.Single())) some(this.Single());
         }
 
         /// <summary>

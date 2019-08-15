@@ -17,22 +17,15 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace System
 {
     /// <summary>
     /// Functionality for optional pattern for Enumerable.
     /// </summary>
-    public static partial class Optional
+    public static partial class OptionalHelpers
     {
         public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> source)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            return source.FirstOrDefault();
-        }
-
-        public static Optional<T> FirstOrEmpty<T>(this IQueryable<T> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             return source.FirstOrDefault();
@@ -41,25 +34,7 @@ namespace System
         public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate)
             => source.FirstOrDefault(predicate);
 
-        public static Optional<T> FirstOrEmpty<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-
-            return source.FirstOrDefault(predicate);
-        }
-
-        public static IEnumerable<U> SelectOptional<T, U>(this IEnumerable<T> source, Func<T, Optional<U>> mapper)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            if (mapper is null) throw new ArgumentNullException(nameof(mapper));
-
-            return from item in source
-                   from result in mapper(item)
-                   select result;
-        }
-
-        public static IQueryable<U> SelectOptional<T, U>(this IQueryable<T> source, Func<T, Optional<U>> mapper)
+        public static IEnumerable<TResult> SelectOptional<T, TResult>(this IEnumerable<T> source, Func<T, Optional<TResult>> mapper)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (mapper is null) throw new ArgumentNullException(nameof(mapper));
@@ -70,15 +45,6 @@ namespace System
         }
 
         public static IEnumerable<T> SelectOptional<T>(this IEnumerable<Optional<T>> source)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-
-            return from item in source
-                   from result in item
-                   select result;
-        }
-
-        public static IQueryable<T> SelectOptional<T>(this IQueryable<Optional<T>> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
@@ -98,39 +64,26 @@ namespace System
                    select result;
         }
 
-        public static IQueryable<T> SelectOptional<T>(this IQueryable<Optional<T>> source, Func<Optional<T>, bool> predicate)
+        public static Optional<TValue> GetValue<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (key is null) throw new ArgumentNullException(nameof(key));
+            if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
-            return from item in source
-                   where predicate(item)
-                   from result in item
-                   select result;
+            return dictionary.TryGetValue(key, out var value) ? Some(value) : Empty<TValue>();
         }
 
-        //public static IAsyncEnumerable<T> SelectOptionalAsync<T>(this IEnumerable<IOptional<T>> source)
-        //    => source.SelectOptionalAsync(item => item.hasValue);
+        public static Optional<T> GetElementAt<T>(this IEnumerable<T> source, int index)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.ElementAtOrDefault(index);
+        }
 
-        //public static IAsyncEnumerable<T> SelectOptionalAsync<T>(this IQueryable<IOptional<T>> source)
-        //    => source.SelectOptionalAsync(item => item.hasValue);
+        public static Optional<IEnumerable<TValue>> GetValues<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key)
+        {
+            if (key is null) throw new ArgumentNullException(nameof(key));
+            if (lookup is null) throw new ArgumentNullException(nameof(lookup));
 
-        //public static IAsyncEnumerable<T> SelectOptionalAsync<T>(
-        //    this IEnumerable<IOptional<T>> source, Func<IOptional<T>, bool> predicate)
-        //    => source.SelectOptional(predicate).ToAsyncEnumerable();
-
-        //public static IAsyncEnumerable<T> SelectOptionalAsync<T>(
-        //    this IQueryable<IOptional<T>> source, Expression<Func<IOptional<T>, bool>> predicate)
-        //    => source.SelectOptional(predicate).ToAsyncEnumerable();
-
-
-        public static Optional<TValue> TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
-            => dictionary.TryGetValue(key, out var value) ? Optional<TValue>.Some(value) : Optional<TValue>.Empty;
-
-        public static Optional<T> TryGetElementAt<T>(this IEnumerable<T> source, int index)
-            => source.ElementAtOrDefault(index);
-
-        public static Optional<IEnumerable<TValue>> TryGetValues<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key)
-            => lookup.Contains(key) ? Optional<IEnumerable<TValue>>.Some(lookup[key]) : Optional<IEnumerable<TValue>>.Empty;
+            return lookup.Contains(key) ? Some(lookup[key]) : Empty<IEnumerable<TValue>>();
+        }
     }
 }
