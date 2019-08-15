@@ -40,6 +40,17 @@ namespace System
         }
 
         /// <summary>
+        /// Provides with deconstruction for <see cref="SignedValues{T}"/>.
+        /// </summary>
+        /// <param name="positive">The output positive value.</param>
+        /// <param name="negative">The output negative value.</param>
+        public void Deconstruct(out T positive, out T negative)
+        {
+            positive = Positive;
+            negative = Negative;
+        }
+
+        /// <summary>
         /// Contains the positive value.
         /// </summary>
         public T Positive { get; }
