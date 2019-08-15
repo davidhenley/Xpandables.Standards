@@ -23,7 +23,7 @@ using System.Linq;
 namespace System
 {
     /// <summary>
-    /// Provides a type converter to convert <see cref="Enumeration"/> objects to and from various other representations.
+    /// Provides a type converter to convert <see cref="EnumerationType"/> objects to and from various other representations.
     /// </summary>
     public class EnumerationTypeConverter : EnumConverter
     {
@@ -31,11 +31,13 @@ namespace System
         /// <param name="type">A <see cref="Type"></see> that represents the type of enumeration to associate with this enumeration converter.</param>
         public EnumerationTypeConverter(Type type) : base(type)
         {
-            if (!type.IsSubclassOf(typeof(Enumeration)))
-                throw new ArgumentException("Enumeration derived class expected !");
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
+            if (!type.IsSubclassOf(typeof(EnumerationType)))
+                throw new ArgumentException(ErrorMessageResources.EnumerationTypeDerivedClassExpected, nameof(type));
 
             Values = new StandardValuesCollection(
-                            (Enumeration.GetAll(type).Cast<Enumeration>())
+                            (EnumerationType.GetAll(type).Cast<EnumerationType>())
                             .Select(s => s.DisplayName)
                             .ToList());
         }
@@ -46,7 +48,8 @@ namespace System
         /// <returns>true if this converter can perform the conversion; otherwise, false.</returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType.IsSubclassOf(typeof(Enumeration)))
+            if (sourceType is null) throw new ArgumentNullException(nameof(sourceType));
+            if (sourceType == typeof(string) || sourceType.IsSubclassOf(typeof(EnumerationType)))
                 return true;
 
             return base.CanConvertFrom(context, sourceType);
@@ -58,9 +61,10 @@ namespace System
         /// <returns>true if this converter can perform the conversion; otherwise, false.</returns>
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
+            if (destinationType is null) throw new ArgumentNullException(nameof(destinationType));
             if (destinationType == typeof(InstanceDescriptor)
                 || destinationType == EnumType
-                || destinationType.IsSubclassOf(typeof(Enumeration)))
+                || destinationType.IsSubclassOf(typeof(EnumerationType)))
             {
                 return true;
             }
@@ -78,10 +82,10 @@ namespace System
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if (value is string valueString)
-                return Enumeration.FromDisplayName(EnumType, valueString);
+                return EnumerationType.FromDisplayName(EnumType, valueString);
 
-            if (value?.GetType().IsSubclassOf(typeof(Enumeration)) == true)
-                return (Enumeration)value;
+            if (value?.GetType().IsSubclassOf(typeof(EnumerationType)) == true)
+                return (EnumerationType)value;
 
             return base.ConvertFrom(context, culture, value);
         }
@@ -97,11 +101,11 @@ namespace System
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (value?.GetType().IsSubclassOf(typeof(Enumeration)) == true && destinationType == typeof(string))
-                return ((Enumeration)value).DisplayName;
+            if (value?.GetType().IsSubclassOf(typeof(EnumerationType)) == true && destinationType == typeof(string))
+                return ((EnumerationType)value).DisplayName;
 
             return value is string valueString && destinationType == typeof(string)
-                ? Enumeration.FromDisplayName(EnumType, valueString).OfCastTo<Enumeration>().DisplayName
+                ? EnumerationType.FromDisplayName(EnumType, valueString).ToOptional().Cast<EnumerationType>().DisplayName
                 : base.ConvertTo(context, culture, value, destinationType);
         }
     }

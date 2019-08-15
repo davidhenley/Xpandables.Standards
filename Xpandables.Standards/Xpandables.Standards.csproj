@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Remove="Commands\**" />
     <Compile Remove="Database\**" />
-    <Compile Remove="Enumerations\**" />
     <Compile Remove="Events\**" />
     <Compile Remove="Handlers\**" />
     <Compile Remove="Helpers\**" />
@@ -61,7 +60,6 @@
     <Compile Remove="Visitors\**" />
     <EmbeddedResource Remove="Commands\**" />
     <EmbeddedResource Remove="Database\**" />
-    <EmbeddedResource Remove="Enumerations\**" />
     <EmbeddedResource Remove="Events\**" />
     <EmbeddedResource Remove="Handlers\**" />
     <EmbeddedResource Remove="Helpers\**" />
@@ -73,7 +71,6 @@
     <EmbeddedResource Remove="Visitors\**" />
     <None Remove="Commands\**" />
     <None Remove="Database\**" />
-    <None Remove="Enumerations\**" />
     <None Remove="Events\**" />
     <None Remove="Handlers\**" />
     <None Remove="Helpers\**" />
@@ -131,6 +128,22 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
     <PackageReference Include="System.Reflection.DispatchProxy" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\ErrorMessageResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorMessageResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\ErrorMessageResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessageResources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>System</CustomToolNamespace>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

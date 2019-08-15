@@ -27,15 +27,15 @@ namespace System
     /// This is an <see langword="abstract"/> and serializable class.
     /// </summary>
     [Serializable]
-    public abstract class Enumeration : IEqualityComparer<Enumeration>, IEquatable<Enumeration>, IComparable<Enumeration>
+    public abstract class EnumerationType : IEqualityComparer<EnumerationType>, IEquatable<EnumerationType>, IComparable<EnumerationType>
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="Enumeration"/> with the specified value and display name.
+        /// Initializes a new instance of <see cref="EnumerationType"/> with the specified value and display name.
         /// </summary>
         /// <param name="displayName">The enumeration display name.</param>
         /// <param name="value">The enumeration value.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="displayName"/> is null.</exception>
-        protected Enumeration(string displayName, int value)
+        protected EnumerationType(string displayName, int value)
         {
             Value = value;
             DisplayName = displayName ?? throw new ArgumentNullException(nameof(displayName));
@@ -58,28 +58,29 @@ namespace System
         /// <typeparam name="TEnumeration">Type of derived class enumeration.</typeparam>
         /// <returns>List of enumerations.</returns>
         public static IEnumerable<TEnumeration> GetAll<TEnumeration>()
-            where TEnumeration : Enumeration
+            where TEnumeration : EnumerationType
             => from info in typeof(TEnumeration)
                     .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-               where info.PropertyType.IsSubclassOf(typeof(Enumeration)) && info.GetGetMethod() != null
+               where info.PropertyType.IsSubclassOf(typeof(EnumerationType)) && info.GetGetMethod() != null
                select info.GetValue(null) as TEnumeration;
 
         /// <summary>
         /// Gets the list of all enumeration found in the instance of the specified type.
-        /// The type must derived from <see cref="Enumeration"/>.
+        /// The type must derived from <see cref="EnumerationType"/>.
         /// </summary>
         /// <param name="enumerationType">Type of enumeration.</param>
         /// <returns>List of enumerations.</returns>
-        /// <exception cref="ArgumentException">The <paramref name="enumerationType"/> must derive from <see cref="Enumeration"/>.
+        /// <exception cref="ArgumentException">The <paramref name="enumerationType"/> must derive from <see cref="EnumerationType"/>.
         /// </exception>
         public static IEnumerable<object> GetAll(Type enumerationType)
         {
             _ = enumerationType ?? throw new ArgumentNullException(nameof(enumerationType));
-            if (!enumerationType.IsSubclassOf(typeof(Enumeration))) throw new ArgumentException(nameof(enumerationType));
+            if (!enumerationType.IsSubclassOf(typeof(EnumerationType)))
+                throw new ArgumentException($"The type is not a subclass of {typeof(EnumerationType)}", nameof(enumerationType));
 
             return from info in enumerationType
                     .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-                   where info.PropertyType.IsSubclassOf(typeof(Enumeration)) && info.GetGetMethod() != null
+                   where info.PropertyType.IsSubclassOf(typeof(EnumerationType)) && info.GetGetMethod() != null
                    select info.GetValue(null);
         }
 
@@ -91,7 +92,7 @@ namespace System
         /// <returns>An instance of <typeparamref name="TEnumeration"/> type or default value.</returns>
         /// <exception cref="InvalidOperationException">The <paramref name="displayName"/> does not exist.</exception>
         public static TEnumeration FromDisplayName<TEnumeration>(string displayName)
-            where TEnumeration : Enumeration
+            where TEnumeration : EnumerationType
         {
             if (displayName is null) throw new ArgumentNullException(nameof(displayName));
             Func<TEnumeration, bool> predicateFind = new Func<TEnumeration, bool>(PredicateExecute);
@@ -114,11 +115,11 @@ namespace System
             if (enumerationType is null) throw new ArgumentNullException(nameof(enumerationType));
             if (displayName is null) throw new ArgumentNullException(nameof(displayName));
 
-            Func<Enumeration, bool> predicateFind = new Func<Enumeration, bool>(PredicateExecute);
+            Func<EnumerationType, bool> predicateFind = new Func<EnumerationType, bool>(PredicateExecute);
 
-            return GetAll(enumerationType).OfType<Enumeration>().FirstOrDefault(predicateFind);
+            return GetAll(enumerationType).OfType<EnumerationType>().FirstOrDefault(predicateFind);
 
-            bool PredicateExecute(Enumeration enumeration)
+            bool PredicateExecute(EnumerationType enumeration)
                 => enumeration.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -130,7 +131,7 @@ namespace System
         /// <returns>An instance of <typeparamref name="TEnumeration"/> type or default value.</returns>
         /// <exception cref="InvalidOperationException">The <paramref name="value"/> does not exist.</exception>
         public static TEnumeration FromValue<TEnumeration>(int value)
-            where TEnumeration : Enumeration
+            where TEnumeration : EnumerationType
         {
             Func<TEnumeration, bool> predicateFind = new Func<TEnumeration, bool>(PredicateExecute);
 
@@ -149,23 +150,28 @@ namespace System
         public static object FromValue(Type enumerationType, int value)
         {
             if (enumerationType is null) throw new ArgumentNullException(nameof(enumerationType));
-            Func<Enumeration, bool> predicateFind = new Func<Enumeration, bool>(PredicateExecute);
+            Func<EnumerationType, bool> predicateFind = new Func<EnumerationType, bool>(PredicateExecute);
 
-            return GetAll(enumerationType).OfType<Enumeration>().FirstOrDefault(predicateFind);
+            return GetAll(enumerationType).OfType<EnumerationType>().FirstOrDefault(predicateFind);
 
-            bool PredicateExecute(Enumeration enumeration) => enumeration.Value.Equals(value);
+            bool PredicateExecute(EnumerationType enumeration) => enumeration.Value.Equals(value);
         }
 
         /// <summary>
         /// Returns the absolute difference of both enumerations.
         /// </summary>
-        /// <param name="firstValue">The first instance to act on.</param>
-        /// <param name="secondValue">The second instance to act on.</param>
+        /// <param name="first">The first instance to act on.</param>
+        /// <param name="second">The second instance to act on.</param>
         /// <returns>An integer that represents an absolute comparison value.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="firstValue"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="secondValue"/> is null.</exception>
-        public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
-            => Math.Abs(firstValue.Value - secondValue.Value);
+        /// <exception cref="ArgumentNullException">The <paramref name="first"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
+        public static int AbsoluteDifference(EnumerationType first, EnumerationType second)
+        {
+            if (first is null) throw new ArgumentNullException(nameof(first));
+            if (second is null) throw new ArgumentNullException(nameof(second));
+
+            return Math.Abs(first.Value - second.Value);
+        }
 
         /// <summary>
         /// Returns the description string attribute of the current enumeration.
@@ -173,25 +179,28 @@ namespace System
         /// </summary>
         /// <returns>The description string. If not found, returns the enumeration as string.</returns>
         public string GetDescriptionAttributeValue()
-            => this.GetAttribute<DescriptionAttribute>()
+            => GetType().GetCustomAttribute<DescriptionAttribute>()
                 .ToOptional()
                 .Map(attr => attr.Description)
                 .Reduce(() => DisplayName);
 
         /// <summary>
-        /// Returns the comparison value of both <see cref="Enumeration"/> objects.
+        /// Returns the comparison value of both <see cref="EnumerationType"/> objects.
         /// </summary>
         /// <param name="other">The other object for comparison.</param>
         /// <returns>An integer value.</returns>
-        public virtual int CompareTo(Enumeration other)
-            => Value.CompareTo(other.Value) & string.Compare(DisplayName, other.DisplayName, StringComparison.Ordinal);
+        public virtual int CompareTo(EnumerationType other)
+        {
+            if (other is null) throw new ArgumentNullException(nameof(other));
+            return Value.CompareTo(other.Value) & string.Compare(DisplayName, other.DisplayName, StringComparison.Ordinal);
+        }
 
         /// <summary>
-        /// Returns the comparison value of both <see cref="Enumeration"/> objects.
+        /// Returns the comparison value of both <see cref="EnumerationType"/> objects.
         /// </summary>
         /// <param name="other">The other object for comparison..</param>
         /// <returns>A boolean value.</returns>
-        public bool Equals(Enumeration other)
+        public bool Equals(EnumerationType other)
         {
             if (other is null)
             {
@@ -208,15 +217,15 @@ namespace System
         /// </summary>
         /// <returns>hash-code.</returns>
         public override int GetHashCode()
-            => Value.GetHashCode() + DisplayName.GetHashCode();
+            => Value.GetHashCode() + DisplayName.GetHashCode(StringComparison.InvariantCulture);
 
         /// <summary>
-        /// Returns the comparison value of both <see cref="Enumeration"/> objects.
+        /// Returns the comparison value of both <see cref="EnumerationType"/> objects.
         /// </summary>
         /// <param name="obj">The other object for comparison.</param>
         /// <returns>A boolean value.</returns>
         public override bool Equals(object obj)
-            => Equals((Enumeration)obj);
+            => Equals((EnumerationType)obj);
 
         /// <summary>
         /// Returns the <see cref="string"/> value matching the <see cref="DisplayName"/>.
@@ -227,31 +236,28 @@ namespace System
         /// Implicit returns the <see cref="string"/> value of the display name.
         /// </summary>
         /// <param name="enumeration">current instance.</param>
-        public static implicit operator string(Enumeration enumeration)
-            => enumeration.DisplayName;
+        public static implicit operator string(EnumerationType enumeration) => enumeration?.DisplayName ?? string.Empty;
 
+#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         /// <summary>
         /// Implicit returns the <see cref="int"/> value.
         /// </summary>
         /// <param name="enumeration">current instance.</param>
-        public static implicit operator int(Enumeration enumeration)
-            => enumeration?.Value ?? (default);
+        public static implicit operator int(EnumerationType enumeration) => enumeration?.Value ?? default;
+#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
 
         /// <inheritdoc />
         /// <summary>Determines whether the specified objects are equal.</summary>
         /// <param name="x">The first object of type T to compare.</param>
         /// <param name="y">The second object of type T to compare.</param>
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
-        public bool Equals(Enumeration x, Enumeration y) => x?.Equals(y) ?? false;
+        public bool Equals(EnumerationType x, EnumerationType y) => x?.Equals(y) ?? false;
 
         /// <inheritdoc />
         /// <summary>Returns a hash code for the specified object.</summary>
-        /// <param name="obj">The <see cref="T:System.Object"></see> for which a hash code is to be returned.</param>
+        /// <param name="obj">The object for which a hash code is to be returned.</param>
         /// <returns>A hash code for the specified object.</returns>
-        /// <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj">obj</paramref> is a reference type and <paramref name="obj">obj</paramref> is null.</exception>
-        // ReSharper disable once ConstantConditionalAccessQualifier
-        // ReSharper disable once ConstantNullCoalescingCondition
-        public int GetHashCode(Enumeration obj) => obj?.GetHashCode() ?? 0;
+        public int GetHashCode(EnumerationType obj) => obj?.GetHashCode() ?? 0;
 
         /// <summary>
         /// Compares equality.
@@ -259,7 +265,7 @@ namespace System
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator ==(Enumeration left, Enumeration right) => left?.Equals(right) ?? right is null;
+        public static bool operator ==(EnumerationType left, EnumerationType right) => left?.Equals(right) ?? right is null;
 
         /// <summary>
         ///Compares difference.
@@ -267,7 +273,7 @@ namespace System
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator !=(Enumeration left, Enumeration right) => !(left == right);
+        public static bool operator !=(EnumerationType left, EnumerationType right) => !(left == right);
 
         /// <summary>
         /// Compares lower than.
@@ -275,7 +281,7 @@ namespace System
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator <(Enumeration left, Enumeration right)
+        public static bool operator <(EnumerationType left, EnumerationType right)
             => left is null ? !(right is null) : left.CompareTo(right) < 0;
 
         /// <summary>
@@ -284,7 +290,7 @@ namespace System
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator <=(Enumeration left, Enumeration right) => left is null || left.CompareTo(right) <= 0;
+        public static bool operator <=(EnumerationType left, EnumerationType right) => left is null || left.CompareTo(right) <= 0;
 
         /// <summary>
         /// Compares greater than.
@@ -292,7 +298,7 @@ namespace System
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator >(Enumeration left, Enumeration right) => !(left is null) && left.CompareTo(right) > 0;
+        public static bool operator >(EnumerationType left, EnumerationType right) => !(left is null) && left.CompareTo(right) > 0;
 
         /// <summary>
         /// Compares greater or equal to.
@@ -300,7 +306,7 @@ namespace System
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator >=(Enumeration left, Enumeration right)
+        public static bool operator >=(EnumerationType left, EnumerationType right)
             => left is null ? right is null : left.CompareTo(right) >= 0;
     }
 }
