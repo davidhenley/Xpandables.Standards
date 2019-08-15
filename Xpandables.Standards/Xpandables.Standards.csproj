@@ -26,6 +26,7 @@
     <RootNamespace>Xpandables</RootNamespace>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <NeutralLanguage>en-GB</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -85,7 +86,6 @@
   <ItemGroup>
     <Compile Remove="ConfigurationAccessor.cs" />
     <Compile Remove="CorrelationContext.cs" />
-    <Compile Remove="Disposable.cs" />
     <Compile Remove="Entity.cs" />
     <Compile Remove="Explicit.cs" />
     <Compile Remove="IAddable.cs" />
