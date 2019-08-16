@@ -118,6 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EnumerationTypeDerivedClassExpected" xml:space="preserve">
-    <value>EnumerationType derived class expected !</value>
+    <value>EnumerationType derived class expected.</value>
+  </data>
+  <data name="PropertyChangedCircularDependency" xml:space="preserve">
+    <value>Circular dependency found.</value>
+  </data>
+  <data name="PropertyChangedCircularDependencyItself" xml:space="preserve">
+    <value>Property '{0}' of '{0}' can not depends on itself.</value>
+  </data>
+  <data name="PropertyChangedCircularDependencyMore" xml:space="preserve">
+    <value>The '{0}' owns a dependency on '{1}' which one depends on '{2}'.</value>
+  </data>
+  <data name="PropertyChangedDuplicateDependency" xml:space="preserve">
+    <value>Duplicate dependency found.</value>
+  </data>
+  <data name="PropertyChangedDuplicateDependencyMore" xml:space="preserve">
+    <value>The '{0}' has already a dependency on '{1}'.</value>
+  </data>
+  <data name="PropertyChangedMemberExpressionExpected" xml:space="preserve">
+    <value>A member expression is expected.</value>
+  </data>
+  <data name="PropertyChangedParameterExpressionExpected" xml:space="preserve">
+    <value>A constant expression is expected.</value>
+  </data>
+  <data name="RequiredNestedAttributeTypeMissmatched" xml:space="preserve">
+    <value>Can not validate primitive types or string.</value>
+  </data>
+  <data name="StringHelperFormattingFailed" xml:space="preserve">
+    <value>Formatting string failed. See inner exception.</value>
   </data>
 </root>

@@ -8,8 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System
-{
+namespace System {
+    using System;
+    
+    
     /// <summary>
     ///   Une classe de ressource fortement typée destinée, entre autres, à la consultation des chaînes localisées.
     /// </summary>
@@ -59,11 +61,92 @@ namespace System
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à EnumerationType derived class expected !.
+        ///   Recherche une chaîne localisée semblable à EnumerationType derived class expected..
         /// </summary>
         public static string EnumerationTypeDerivedClassExpected {
             get {
                 return ResourceManager.GetString("EnumerationTypeDerivedClassExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Circular dependency found..
+        /// </summary>
+        public static string PropertyChangedCircularDependency {
+            get {
+                return ResourceManager.GetString("PropertyChangedCircularDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Property &apos;{0}&apos; of &apos;{0}&apos; can not depends on itself..
+        /// </summary>
+        public static string PropertyChangedCircularDependencyItself {
+            get {
+                return ResourceManager.GetString("PropertyChangedCircularDependencyItself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The &apos;{0}&apos; owns a dependency on &apos;{1}&apos; which one depends on &apos;{2}&apos;..
+        /// </summary>
+        public static string PropertyChangedCircularDependencyMore {
+            get {
+                return ResourceManager.GetString("PropertyChangedCircularDependencyMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Duplicate dependency found..
+        /// </summary>
+        public static string PropertyChangedDuplicateDependency {
+            get {
+                return ResourceManager.GetString("PropertyChangedDuplicateDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The &apos;{0}&apos; has already a dependency on &apos;{1}&apos;..
+        /// </summary>
+        public static string PropertyChangedDuplicateDependencyMore {
+            get {
+                return ResourceManager.GetString("PropertyChangedDuplicateDependencyMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A member expression is expected..
+        /// </summary>
+        public static string PropertyChangedMemberExpressionExpected {
+            get {
+                return ResourceManager.GetString("PropertyChangedMemberExpressionExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A constant expression is expected..
+        /// </summary>
+        public static string PropertyChangedParameterExpressionExpected {
+            get {
+                return ResourceManager.GetString("PropertyChangedParameterExpressionExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Can not validate primitive types or string..
+        /// </summary>
+        public static string RequiredNestedAttributeTypeMissmatched {
+            get {
+                return ResourceManager.GetString("RequiredNestedAttributeTypeMissmatched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Formatting string failed. See inner exception..
+        /// </summary>
+        public static string StringHelperFormattingFailed {
+            get {
+                return ResourceManager.GetString("StringHelperFormattingFailed", resourceCulture);
             }
         }
     }
