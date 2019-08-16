@@ -18,36 +18,33 @@
 namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
-    /// Defines a method contract used to validate an argument.
+    /// Defines a method contract used to validate an argument using composition.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    public interface IValidator
+    public interface ICustomCompositeValidator
     {
         /// <summary>
-        /// Applies validation process and throws the <see cref="ValidationException"/> if necessary.
+        /// Applies all validators to the argument and throws the <see cref="ValidationException"/> if necessary.
         /// </summary>
         /// <param name="argument">The target argument to be validated.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
         void Validate(object argument);
-
-        /// <summary>
-        /// Determines the order for the underlying object.
-        /// </summary>
-        int Order { get; }
     }
 
     /// <summary>
-    /// Defines a method contract used to validate a type-specific argument.
+    /// Defines a method contract used to validate a type-specific argument using composition.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
-    public interface IValidator<in TArgument> : IValidator
+    public interface ICustomCompositeValidator<in TArgument> : ICustomCompositeValidator
         where TArgument : class
     {
         /// <summary>
-        /// Applies validation the argument and throws the <see cref="ValidationException"/> if necessary.
+        /// Applies all validators to the argument and throws the <see cref="ValidationException"/> if necessary.
         /// </summary>
         /// <param name="argument">The target argument to be validated.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
         void Validate(TArgument argument);
     }
