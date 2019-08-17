@@ -20,16 +20,23 @@ namespace System.ComponentModel.DataAnnotations
     /// <summary>
     /// Defines a method contract used to validate an argument.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
+    /// <para>Contains default implementation.</para>
     /// </summary>
     public interface ICustomValidator
     {
         /// <summary>
         /// Applies validation process and throws the <see cref="ValidationException"/> if necessary.
+        /// <para>The default implementation use <see cref="Validator.ValidateObject(object, ValidationContext, bool)"/>.</para>
         /// </summary>
         /// <param name="argument">The target argument to be validated.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
-        void Validate(object argument);
+        void Validate(object argument)
+               => Validator
+                .ValidateObject(
+                    argument,
+                    new ValidationContext(argument, null, null),
+                    true);
 
         /// <summary>
         /// Determines the order for the underlying object.
@@ -51,6 +58,6 @@ namespace System.ComponentModel.DataAnnotations
         /// <param name="argument">The target argument to be validated.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
-        void Validate(TArgument argument);
+        void Validate(TArgument argument) => ((ICustomValidator)this).Validate(argument);
     }
 }

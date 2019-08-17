@@ -15,9 +15,7 @@
  *
 ************************************************************************************************************/
 
-using System.Transactions;
-
-namespace System
+namespace System.Transactions
 {
     /// <summary>
     /// Specifies that the decorated command/query will be applied transaction behavior.

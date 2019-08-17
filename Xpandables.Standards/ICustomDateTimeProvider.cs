@@ -21,13 +21,15 @@ namespace System
 {
     /// <summary>
     /// Allows an application author to provide runtime date time according to the context.
+    /// <para>Contains default implementation.</para>
     /// </summary>
     public interface ICustomDateTimeProvider
     {
         /// <summary>
-        /// Contains the ambient date time.
+        /// Returns the ambient date time.
+        /// The default behavior returns <see cref="DateTime.UtcNow"/>.
         /// </summary>
-        DateTime Now { get; }
+        DateTime GetDateTime() => DateTime.UtcNow;
 
         /// <summary>
         /// Converts string date time to <see cref="DateTime"/> type.
@@ -40,7 +42,28 @@ namespace System
         /// <param name="formats">An array of allowable formats of strings.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        Optional<DateTime> StringToDateTime(string source, IFormatProvider provider, DateTimeStyles styles, params string[] formats);
+        /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
+        Optional<DateTime> StringToDateTime(
+            string source,
+            IFormatProvider provider,
+            DateTimeStyles styles,
+            params string[] formats)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (provider is null) throw new ArgumentNullException(nameof(provider));
+
+            try
+            {
+                if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
+                    return dateTime;
+            }
+            catch (Exception exception) when (exception is ArgumentException)
+            {
+                Diagnostics.Debug.WriteLine(exception);
+            }
+
+            return OptionalHelpers.Empty<DateTime>();
+        }
 
         /// <summary>
         /// Converts the value of the current System.DateTime object to its equivalent string
@@ -48,11 +71,26 @@ namespace System
         /// </summary>
         /// <param name="dateTime">The date time to be converted.</param>
         /// <param name="format">A standard or custom date and time format string.</param>
-        /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+        /// <param name="provider">An object that supplies culture-specific formatting information.</param>
         /// <returns>An optional string representation of value of the current System.DateTime object as specified
         /// by format and provider.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
-        Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider formatProvider);
+        /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
+        Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
+        {
+            if (format is null) throw new ArgumentNullException(nameof(format));
+            if (provider is null) throw new ArgumentNullException(nameof(provider));
+
+            try
+            {
+                return dateTime.ToString(format, provider);
+            }
+            catch (Exception exception) when (exception is FormatException || exception is ArgumentOutOfRangeException)
+            {
+                Diagnostics.Debug.WriteLine(exception);
+            }
+
+            return OptionalHelpers.Empty<string>();
+        }
     }
 }

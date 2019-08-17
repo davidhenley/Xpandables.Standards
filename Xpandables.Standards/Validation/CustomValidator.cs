@@ -30,20 +30,6 @@ namespace System.ComponentModel.DataAnnotations
         /// The default value is zero.
         /// </summary>
         public virtual int Order => 0;
-
-        /// <summary>
-        /// When overridden in derived class, this method will validate the specified argument.
-        /// Applies the default implementation validation using service provider for validation context.
-        /// </summary>
-        /// <param name="argument">The target argument to be validated.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
-        /// <exception cref="ValidationException">Any validation exception.</exception>
-        public virtual void Validate(object argument)
-            => Validator
-                .ValidateObject(
-                    argument,
-                    new ValidationContext(argument, null, null),
-                    true);
     }
 
     /// <summary>
@@ -55,14 +41,5 @@ namespace System.ComponentModel.DataAnnotations
     [Serializable]
     public class CustomValidator<TArgument> : CustomValidator, ICustomValidator<TArgument>
         where TArgument : class
-    {
-        /// <summary>
-        /// When overridden in derived class, this method will validate the specified argument.
-        /// Applies the default implementation validation using service provider for validation context.
-        /// </summary>
-        /// <param name="argument">The target argument to be validated.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
-        /// <exception cref="ValidationException">Any validation exception.</exception>
-        public virtual void Validate(TArgument argument) => base.Validate(argument);
-    }
+    { }
 }

@@ -15,21 +15,12 @@
  *
 ************************************************************************************************************/
 
-namespace System
+namespace System.Transactions
 {
     /// <summary>
-    ///  Defines a method to decode a token from a string.
+    /// The default implementation of <see cref="ISupportTransactionAttributeAccessor"/>.
     /// </summary>
-    public interface ICustomTokenDecoder
+    public class SupportTransactionAttributeAccessor : ISupportTransactionAttributeAccessor
     {
-        /// <summary>
-        /// Decodes the specified token and returns the value as the specific type.
-        /// </summary>
-        /// <typeparam name="T">Type of value expected.</typeparam>
-        /// <param name="token">A instance of token to act on.</param>
-        /// <returns>A data query used from the string token.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="token"/> is null or empty.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        T Decode<T>(string token) where T : class;
     }
 }

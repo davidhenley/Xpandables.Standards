@@ -24,11 +24,13 @@ namespace System.ComponentModel.DataAnnotations
     public sealed class NullCustomValidator<TArgument> : CustomValidator<TArgument>
         where TArgument : class
     {
+#pragma warning disable CA1801 // Supprimer le paramètre inutilisé
+#pragma warning disable IDE0060 // Supprimer le paramètre inutilisé
         /// <summary>
         /// Default implementation.
         /// </summary>
         /// <param name="argument"></param>
-        public override void Validate(TArgument argument)
+        public void Validate(TArgument argument)
         {
             // Class intentionally left empty.
         }

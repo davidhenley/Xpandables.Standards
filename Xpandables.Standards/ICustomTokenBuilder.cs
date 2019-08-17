@@ -15,22 +15,20 @@
  *
 ************************************************************************************************************/
 
-using System.Reflection;
-
-namespace System.Configuration
+namespace System
 {
     /// <summary>
-    /// The default implementation of <see cref="ISupportTransactionAttributeAccessor"/>.
+    ///  Defines a method that build a token from an object source.
     /// </summary>
-    public sealed class SupportTransactionAttributeAccessor : ISupportTransactionAttributeAccessor
+    public interface ICustomTokenBuilder
     {
-        public Optional<SupportTransactionAttribute> GetTransactionAttribute<T>() where T : class
-            => GetTransactionAttribute(typeof(T));
-
-        public Optional<SupportTransactionAttribute> GetTransactionAttribute(Type type)
-        {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            return type.GetCustomAttribute<SupportTransactionAttribute>();
-        }
+        /// <summary>
+        /// Encodes the source and returns a string token.
+        /// </summary>
+        /// <typeparam name="T">Type of source.</typeparam>
+        /// <param name="source">data source to be used to build token string.</param>
+        /// <returns>An instance of string token if OK or an empty string.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        ExecutionResult<string> Build<T>(T source) where T : class;
     }
 }
