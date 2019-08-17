@@ -21,7 +21,6 @@ namespace System.Design.Query
 {
     /// <summary>
     /// This class allows the application author to add post/rollback event support to query.
-    /// <para>This decorator will call the <see cref="TaskEventRegister"/> before and after the query execution.</para>
     /// </summary>
     /// <typeparam name="TQuery">Type of the query to apply transaction.</typeparam>
     /// <typeparam name="TResult">Type of the result.</typeparam>

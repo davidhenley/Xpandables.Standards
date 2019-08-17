@@ -19,35 +19,32 @@ using System.Design.TaskEvent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Query
+namespace System.Design.Command
 {
     /// <summary>
-    /// This class allows the application author to add post/rollback event support to query.
-    /// <para>This decorator will call the <see cref="AsyncTaskEventRegister"/> before and after the query execution.</para>
+    /// This class allows the application author to add post/rollback event support to command.
     /// </summary>
-    /// <typeparam name="TQuery">Type of the query.</typeparam>
-    /// <typeparam name="TResult">Type of the result.</typeparam>
-    public sealed class AsyncQueryHandlerTaskEventRegister<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    /// <typeparam name="TCommand">Type of the command.</typeparam>
+    public sealed class AsyncCommandHandlerTaskEventRegister<TCommand> : IAsyncCommandHandler<TCommand>
+        where TCommand : class, ICommand
     {
-        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
+        private readonly IAsyncCommandHandler<TCommand> _decoratee;
         private readonly AsyncTaskEventRegister _eventRegister;
 
-        public AsyncQueryHandlerTaskEventRegister(
+        public AsyncCommandHandlerTaskEventRegister(
             AsyncTaskEventRegister eventRegister,
-            IAsyncQueryHandler<TQuery, TResult> decoratee)
+            IAsyncCommandHandler<TCommand> decoratee)
         {
             _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
         }
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
             try
             {
-                var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
+                await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
                 await _eventRegister.OnPostEventAsync().ConfigureAwait(false);
-                return result;
             }
             catch
             {
