@@ -17,35 +17,26 @@
 
 using System.Reflection;
 
-namespace System.Transactions
+namespace System
 {
     /// <summary>
-    /// Allows an application author to access the <see cref="SupportTransactionAttribute"/> from a specific type.
+    /// Allows an application author to access the <see cref="Attribute"/> from a specific type.
     /// <para>Contains default implementation.</para>
     /// </summary>
-    public interface ISupportTransactionAttributeAccessor
+    public interface IAttributeAccessor
     {
         /// <summary>
-        /// Returns the found <see cref="SupportTransactionAttribute"/> from the type.
-        /// Otherwise returns an empty optional.
-        /// </summary>
-        /// <typeparam name="T">The type of the target object to act on.</typeparam>
-        /// <returns>An optional instance that may be contains the found attribute.</returns>
-        Optional<SupportTransactionAttribute> GetTransactionAttribute<T>()
-            where T : class
-             => GetTransactionAttribute(typeof(T));
-
-        /// <summary>
-        /// Returns the found <see cref="SupportTransactionAttribute"/> from the type.
+        /// Returns the found attribute of type <typeparamref name="TAttribute"/> from the type.
         /// Otherwise returns an empty optional.
         /// </summary>
         /// <param name="type">The type to act on.</param>
         /// <returns>An optional instance that may be contains the found attribute.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        Optional<SupportTransactionAttribute> GetTransactionAttribute(Type type)
+        Optional<TAttribute> GetAttribute<TAttribute>(Type type)
+            where TAttribute : Attribute
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
-            return type.GetCustomAttribute<SupportTransactionAttribute>();
+            return type.GetCustomAttribute<TAttribute>();
         }
     }
 }

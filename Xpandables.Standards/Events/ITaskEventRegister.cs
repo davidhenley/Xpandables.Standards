@@ -15,12 +15,21 @@
  *
 ************************************************************************************************************/
 
-namespace System.Transactions
+namespace System.Design.TaskEvent
 {
     /// <summary>
-    /// The default implementation of <see cref="ISupportTransactionAttributeAccessor"/>.
+    /// Defines an event that will be raised after another one or exception and executed in a control flows.
     /// </summary>
-    public class SupportTransactionAttributeAccessor : ISupportTransactionAttributeAccessor
+    public interface ITaskEventRegister
     {
+        /// <summary>
+        /// The event that will be post raised.
+        /// </summary>
+        event Action PostEvent;
+
+        /// <summary>
+        /// The event that will be raised on exception.
+        /// </summary>
+        event Action RollbackEvent;
     }
 }

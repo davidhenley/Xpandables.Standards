@@ -42,6 +42,25 @@ namespace System.Transactions
             TimeOut = timeOut;
         }
 
+        /// <summary>
+        /// Returns the <see cref=" TransactionScope"/> matching the attribute.
+        /// </summary>
+        /// <returns></returns>
+        public TransactionScope GetTransactionScope()
+            => new TransactionScope(
+                TransactionScopeOption,
+                TimeOut.GetValueOrDefault(0) > 0
+                    ? new TransactionOptions
+                    {
+                        IsolationLevel = IsolationLevel,
+                        Timeout = TimeSpan.FromSeconds(TimeOut.GetValueOrDefault())
+                    }
+                    : new TransactionOptions
+                    {
+                        IsolationLevel = IsolationLevel
+                    },
+                TransactionScopeAsyncFlowOption);
+
         public TransactionScopeOption TransactionScopeOption { get; }
         public TransactionScopeAsyncFlowOption TransactionScopeAsyncFlowOption { get; }
         public IsolationLevel IsolationLevel { get; }
