@@ -34,7 +34,7 @@ namespace System
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
-        Optional<string> Encrypt(string value, string key)
+        ExecutionResult<string> Encrypt(string value, string key)
         {
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
@@ -44,12 +44,12 @@ namespace System
                 using var cryptoManaged = new SHA512Managed();
                 var data = Text.Encoding.UTF8.GetBytes(value);
                 var hash = cryptoManaged.ComputeHash(data);
-                return BitConverter.ToString(hash).Replace("-", string.Empty, StringComparison.InvariantCulture);
+                var result = BitConverter.ToString(hash).Replace("-", string.Empty, StringComparison.InvariantCulture);
+                return new ExecutionResult<string>(result);
             }
             catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
             {
-                Diagnostics.Debug.WriteLine(exception);
-                return OptionalHelpers.Empty<string>();
+                return new ExecutionResult<string>(exception);
             }
         }
     }

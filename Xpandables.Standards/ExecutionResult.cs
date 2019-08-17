@@ -28,10 +28,25 @@ namespace System
     public sealed class ExecutionResult<TResult> : Optional<TResult>
 #pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
     {
+        /// <summary>
+        /// Creates a successful execution result.
+        /// </summary>
+        /// <param name="result">The result to be used.</param>
         public ExecutionResult(TResult result)
             : base(new[] { result })
             => Exception = OptionalHelpers.Empty<Exception>();
 
+        /// <summary>
+        /// Creates an empty execution result.
+        /// </summary>
+        public ExecutionResult()
+            : base(Array.Empty<TResult>())
+            => Exception = OptionalHelpers.Empty<Exception>();
+
+        /// <summary>
+        /// Creates an exception execution result.
+        /// </summary>
+        /// <param name="exception"></param>
         public ExecutionResult(Exception exception)
             : base(Array.Empty<TResult>())
             => Exception = exception ?? throw new ArgumentNullException(nameof(exception));
@@ -47,13 +62,13 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<TResult> WhenException(Func<TResult> some)
+        public ExecutionResult<TResult> WhenException(Func<ExecutionResult<TResult>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (Exception.Any())
                 return some();
 
-            return OptionalHelpers.Empty<TResult>();
+            return this;
         }
 
         /// <summary>
@@ -62,13 +77,13 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional of <typeparamref name="TResult"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<TResult> WhenException(Func<Exception, TResult> some)
+        public ExecutionResult<TResult> WhenException(Func<Exception, ExecutionResult<TResult>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (Exception.Any())
                 return some(Exception.Single());
 
-            return OptionalHelpers.Empty<TResult>();
+            return this;
         }
 
         /// <summary>
