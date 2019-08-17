@@ -23,19 +23,19 @@ namespace System.Design.Query
     /// <summary>
     /// Implementation for <see cref="IAsyncQueryHandlerWrapper{TResult}"/>.
     /// </summary>
-    /// <typeparam name="TQuery">Type of query.</typeparam>
+    /// <typeparam name="TCriteria">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
     /// <remarks>
     /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
     /// </remarks>
-    public sealed class AsyncQueryHandlerWrapper<TQuery, TResult> : IAsyncQueryHandlerWrapper<TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class AsyncQueryHandlerWrapper<TCriteria, TResult> : IAsyncQueryHandlerWrapper<TResult>
+        where TCriteria : class, IQuery<TResult>
     {
-        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
-        public AsyncQueryHandlerWrapper(IAsyncQueryHandler<TQuery, TResult> decoratee)
+        private readonly IAsyncQueryHandler<TCriteria, TResult> _decoratee;
+        public AsyncQueryHandlerWrapper(IAsyncQueryHandler<TCriteria, TResult> decoratee)
             => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
 
-        public async Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
-            => await _decoratee.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);
+        public async Task<TResult> HandleAsync(IQuery<TResult> criteria, CancellationToken cancellationToken = default)
+            => await _decoratee.HandleAsync((TCriteria)criteria, cancellationToken).ConfigureAwait(false);
     }
 }

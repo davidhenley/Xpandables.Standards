@@ -22,27 +22,27 @@ namespace System.Design.Query
     /// <summary>
     /// This class allows the application author to add post/rollback event support to query.
     /// </summary>
-    /// <typeparam name="TQuery">Type of the query to apply transaction.</typeparam>
+    /// <typeparam name="TCriteria">Type of the query to apply transaction.</typeparam>
     /// <typeparam name="TResult">Type of the result.</typeparam>
-    public sealed class QueryHandlerTaskEventRegister<TQuery, TResult> : IQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class QueryHandlerTaskEventRegister<TCriteria, TResult> : IQueryHandler<TCriteria, TResult>
+        where TCriteria : class, IQuery<TResult>
     {
-        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        private readonly IQueryHandler<TCriteria, TResult> _decoratee;
         private readonly TaskEventRegister _eventRegister;
 
         public QueryHandlerTaskEventRegister(
             TaskEventRegister eventRegister,
-            IQueryHandler<TQuery, TResult> decoratee)
+            IQueryHandler<TCriteria, TResult> decoratee)
         {
             _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
         }
 
-        public TResult Handle(TQuery query)
+        public TResult Handle(TCriteria criteria)
         {
             try
             {
-                var result = _decoratee.Handle(query);
+                var result = _decoratee.Handle(criteria);
                 _eventRegister.OnPostEvent();
                 return result;
             }

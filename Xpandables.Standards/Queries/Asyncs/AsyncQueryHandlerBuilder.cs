@@ -21,28 +21,28 @@ using System.Threading.Tasks;
 namespace System.Design.Query
 {
     /// <summary>
-    /// A helper class used to implement the <see cref="IAsyncQueryHandler{TQuery, TResult}"/> interface.
+    /// A helper class used to implement the <see cref="IAsyncQueryHandler{TCriteria, TResult}"/> interface.
     /// </summary>
-    /// <typeparam name="TQuery">Type of argument to act on.</typeparam>
+    /// <typeparam name="TCriteria">Type of argument to act on.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class AsyncQueryHandlerBuilder<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class AsyncQueryHandlerBuilder<TCriteria, TResult> : IAsyncQueryHandler<TCriteria, TResult>
+        where TCriteria : class, IQuery<TResult>
     {
         private readonly Func<IQuery<TResult>, CancellationToken, Task<TResult>> _handler;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="AsyncQueryHandlerBuilder{TQuery, TResult}"/> with the delegate to be used
-        /// as <see cref="IAsyncQueryHandler{TQuery, TResult}.HandleAsync(TQuery, CancellationToken)"/> implementation.
+        /// Initializes a new instance of <see cref="AsyncQueryHandlerBuilder{TCriteria, TResult}"/> with the delegate to be used
+        /// as <see cref="IAsyncQueryHandler{TCriteria, TResult}.HandleAsync(TCriteria, CancellationToken)"/> implementation.
         /// </summary>
         /// <param name="handler">The delegate to be used when the handler will be invoked.
         /// <para>The delegate should match all the behaviors expected in
-        /// the <see cref="IAsyncQueryHandler{TQuery, TResult}.HandleAsync(TQuery, CancellationToken)"/>
+        /// the <see cref="IAsyncQueryHandler{TCriteria, TResult}.HandleAsync(TCriteria, CancellationToken)"/>
         /// method such as thrown exceptions.</para></param>
         /// <exception cref="ArgumentNullException">The <paramref name="handler"/> is null.</exception>
         public AsyncQueryHandlerBuilder(Func<IQuery<TResult>, CancellationToken, Task<TResult>> handler)
             => _handler = handler ?? throw new ArgumentNullException(nameof(handler));
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
-            => await _handler(query, cancellationToken).ConfigureAwait(false);
+        public async Task<TResult> HandleAsync(TCriteria criteria, CancellationToken cancellationToken = default)
+            => await _handler(criteria, cancellationToken).ConfigureAwait(false);
     }
 }

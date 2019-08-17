@@ -29,9 +29,9 @@ namespace System.Design.Query
         /// <summary>
         /// Handles the specified query and returns the expected result type.
         /// </summary>
-        /// <param name="query">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
+        /// <param name="criteria">The query to act on.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="criteria"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(IQuery<TResult> query);
+        TResult Handle(IQuery<TResult> criteria);
     }
 }

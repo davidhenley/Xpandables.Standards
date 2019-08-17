@@ -24,26 +24,26 @@ namespace System.Design.Query
     /// <summary>
     /// This class allows the application author to add validation support before a query is handled.
     /// </summary>
-    /// <typeparam name="TQuery">Type of query.</typeparam>
+    /// <typeparam name="TCriteria">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class AsyncrQueryHandlerValidator<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class AsyncrQueryHandlerValidator<TCriteria, TResult> : IAsyncQueryHandler<TCriteria, TResult>
+        where TCriteria : class, IQuery<TResult>
     {
-        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
-        private readonly ICustomCompositeValidator<TQuery> _validator;
+        private readonly IAsyncQueryHandler<TCriteria, TResult> _decoratee;
+        private readonly ICustomCompositeValidator<TCriteria> _validator;
 
         public AsyncrQueryHandlerValidator(
-            IAsyncQueryHandler<TQuery, TResult> decoratee,
-            ICustomCompositeValidator<TQuery> validator)
+            IAsyncQueryHandler<TCriteria, TResult> decoratee,
+            ICustomCompositeValidator<TCriteria> validator)
         {
             _decoratee = decoratee;
             _validator = validator;
         }
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(TCriteria criteria, CancellationToken cancellationToken = default)
         {
-            _validator.Validate(query);
-            return await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
+            _validator.Validate(criteria);
+            return await _decoratee.HandleAsync(criteria, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -25,18 +25,18 @@ namespace System.Design.Query
     /// returns a type-specific result.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    /// <typeparam name="TQuery">Type of the query that will be used as argument.</typeparam>
+    /// <typeparam name="TCriteria">Type of the query that will be used as argument.</typeparam>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    public interface IAsyncQueryHandler<in TQuery, TResult> where TQuery : class, IQuery<TResult>
+    public interface IAsyncQueryHandler<in TCriteria, TResult> where TCriteria : class, IQuery<TResult>
     {
         /// <summary>
         /// Asunchronously handles the specified query and returns the expected result type.
         /// </summary>
-        /// <param name="query">The query to act on.</param>
+        /// <param name="criteria">The query to act on.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="criteria"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
+        Task<TResult> HandleAsync(TCriteria criteria, CancellationToken cancellationToken = default);
     }
 }
