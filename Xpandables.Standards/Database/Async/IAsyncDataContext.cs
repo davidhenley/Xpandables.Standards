@@ -24,23 +24,8 @@ using System.Threading.Tasks;
 
 namespace System.Design.Database
 {
-    /// <summary>
-    /// Allows an application author to asynchronously manage domain objects.
-    /// It contains all the methods that describe the domain objects manager.
-    /// <para>When argument is null, an <see cref="ArgumentNullException"/> will be thrown.</para>
-    /// <para>When execution failed, an <see cref="InvalidOperationException"/> will be thrown.</para>
-    /// When a value is not found, an optional empty value of the expected type will be returned.
-    /// The implementation must be thread-safe when working in a multi-threaded environment.
-    /// </summary>
-    public interface IAsyncDataContext
+    public partial interface IDataContext
     {
-        /// <summary>
-        /// Provides with a query-able instance for <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of entity.</typeparam>
-        /// <returns>An <see cref="IQueryable{T}"/>.</returns>
-        IQueryable<T> SetOf<T>() where T : Entity;
-
         /// <summary>
         /// Finds a domain object matching the primary key values specified and returns its value.
         /// If not found, returns an optional empty type value.
