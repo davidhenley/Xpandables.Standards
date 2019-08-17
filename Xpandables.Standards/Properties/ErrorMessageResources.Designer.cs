@@ -61,6 +61,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} operation failed. See inner exception..
+        /// </summary>
+        public static string CommandQueryHandlerFailed {
+            get {
+                return ResourceManager.GetString("CommandQueryHandlerFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à EnumerationType derived class expected..
         /// </summary>
         public static string EnumerationTypeDerivedClassExpected {
