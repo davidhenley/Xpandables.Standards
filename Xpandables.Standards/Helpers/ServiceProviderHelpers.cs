@@ -58,50 +58,50 @@ namespace System
 
         /// <summary>
         /// Gets the services object of the specified type.
-        /// If not found, returns an <see cref="Enumerable.Empty{T}"/> optional.
+        /// If not found, returns an <see cref="Enumerable.Empty{T}"/>.
         /// </summary>
         /// <param name="serviceProvider">The current service provider to use.</param>
         /// <param name="serviceType">An object that specifies the type of service object to get.</param>
         /// <returns>An instance of optional with found services otherwise empty.</returns>
-        public static Optional<IEnumerable<object>> GetServices(this IServiceProvider serviceProvider, Type serviceType)
+        public static IEnumerable<object> GetServices(this IServiceProvider serviceProvider, Type serviceType)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
             if (serviceProvider
                 .GetService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
                 is IEnumerable<object> services)
-                return services.ToOptional();
+                return services;
 
-            return Enumerable.Empty<object>().ToOptional();
+            return Enumerable.Empty<object>();
         }
 
         /// <summary>
         /// Gets the services object of the specified type.
-        /// If not found, returns an <see cref="Enumerable.Empty{T}"/> optional.
+        /// If not found, returns an <see cref="Enumerable.Empty{TService}"/>.
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="serviceProvider">The current service provider to use.</param>
         /// <returns>An instance of optional with found services otherwise empty.</returns>
-        public static Optional<IEnumerable<TService>> GetServices<TService>(this IServiceProvider serviceProvider)
+        public static IEnumerable<TService> GetServices<TService>(this IServiceProvider serviceProvider)
             where TService : class
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
             if (serviceProvider.GetService(typeof(IEnumerable<TService>)) is IEnumerable<TService> services)
-                return services.ToOptional();
+                return services;
 
-            return Enumerable.Empty<TService>().ToOptional();
+            return Enumerable.Empty<TService>(); ;
         }
 
         /// <summary>
         /// Gets the services object of the specified type.
-        /// If not found, returns an <see cref="Enumerable.Empty{T}"/> optional.
+        /// If not found, returns an <see cref="Enumerable.Empty{TService}"/>.
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="serviceProvider">The current service provider to use.</param>
         /// <param name="serviceType">An object that specifies the type of service object to get.</param>
         /// <returns>An instance of optional with found services otherwise empty.</returns>
-        public static Optional<IEnumerable<TService>> GetServices<TService>(
+        public static IEnumerable<TService> GetServices<TService>(
             this IServiceProvider serviceProvider, Type serviceType)
             where TService : class
         {
@@ -110,9 +110,9 @@ namespace System
             if (serviceProvider
                 .GetService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
                 is IEnumerable<TService> services)
-                return services.ToOptional();
+                return services;
 
-            return Enumerable.Empty<TService>().ToOptional();
+            return Enumerable.Empty<TService>();
         }
     }
 }

@@ -15,15 +15,25 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.AspNetCore.Routing;
-
-namespace Xpandables.Core.ConstraintExtensions
+namespace System.Http
 {
     /// <summary>
-    /// Provides with the string constraint map.
+    /// Defines a method used to retrieve the ambient token string from the current http request header.
     /// </summary>
-    public sealed class StringConstraintMap : IOutboundParameterTransformer
+    public interface IHttpRequestTokenAccessor
     {
-        public string TransformOutbound(object value) => value as string;
+        /// <summary>
+        /// Returns the current token value from the current http request matching the "Authorization" key.
+        /// If not found, returns an empty optional.
+        /// </summary>
+        Optional<string> GetRequestHttpToken();
+
+        /// <summary>
+        /// Returns the current token value from the current http request with the specified key.
+        /// If not found, returns an empty optional.
+        /// </summary>
+        /// <param name="key">The token key to find.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        Optional<string> GetRequestHttpToken(string key);
     }
 }

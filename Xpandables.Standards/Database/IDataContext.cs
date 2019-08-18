@@ -75,6 +75,18 @@ namespace System.Design.Database
             where T : Entity;
 
         /// <summary>
+        /// Returns the last domain object matching the expression selector.
+        /// If not found, returns an optional empty type value.
+        /// </summary>
+        /// <typeparam name="T">Domain object type.</typeparam>
+        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
+        /// <param name="selector">Describes the expression used to select the domain object.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
+        Optional<TResult> GetLast<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
+            where T : Entity;
+
+        /// <summary>
         /// Adds a domain objects to the data storage.
         /// </summary>
         /// <typeparam name="T">Domain object type.</typeparam>

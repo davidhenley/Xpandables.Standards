@@ -31,6 +31,12 @@ namespace System
             return source.FirstOrDefault();
         }
 
+        public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.LastOrDefault();
+        }
+
         public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate)
             => source.FirstOrDefault(predicate);
 

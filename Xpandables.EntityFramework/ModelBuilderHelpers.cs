@@ -21,11 +21,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq;
 using System.Reflection;
 
-namespace System.Data
+namespace System.Design.Database
 {
 #pragma warning disable HAA0401 // Possible allocation of reference type enumerator
     /// <summary>
-    /// Extends the <see cref="ModelBuilder"/> class to apply conversion to <see cref="Enumeration"/> types.
+    /// Extends the <see cref="ModelBuilder"/> class to apply conversion to <see cref="EnumerationType"/> types.
     /// </summary>
     /// <remarks>From https://github.com/aspnet/EntityFrameworkCore/issues/10784</remarks>
     public static class ModelBuilderHelpers
@@ -39,12 +39,14 @@ namespace System.Data
         /// <returns>The model builder with converter application.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="this"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="valueConverter"/> is null.</exception>
-        public static ModelBuilder UseEnumerationValueConverterForType<T>(this ModelBuilder @this, ValueConverter<T, string> valueConverter)
-            where T : Enumeration
+        public static ModelBuilder UseEnumerationValueConverterForType<T>(
+            this ModelBuilder @this,
+            ValueConverter<T, string> valueConverter)
+            where T : EnumerationType
             => @this.UseEnumerationValueConverterForType(typeof(T), valueConverter);
 
         /// <summary>
-        /// Specifies the converter to be used for the property type (<see cref="Enumeration"/>).
+        /// Specifies the converter to be used for the property type (<see cref="EnumerationType"/>).
         /// </summary>
         /// <param name="this">The current model builder instance.</param>
         /// <param name="type">The target type to act on.</param>
@@ -53,7 +55,10 @@ namespace System.Data
         /// <exception cref="ArgumentNullException">The <paramref name="this"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="valueConverter"/> is null.</exception>
-        public static ModelBuilder UseEnumerationValueConverterForType(this ModelBuilder @this, Type type, ValueConverter valueConverter)
+        public static ModelBuilder UseEnumerationValueConverterForType(
+            this ModelBuilder @this,
+            Type type,
+            ValueConverter valueConverter)
         {
             var isTypeEnumerationFunc = new Func<IMutableEntityType, bool>(IsTypeEnumeration);
             var isPropertyTypeFunc = new Func<PropertyInfo, bool>(IsPropertyType);
@@ -64,7 +69,8 @@ namespace System.Data
 
             return @this;
 
-            static bool IsTypeEnumeration(IMutableEntityType entityType) => !entityType.ClrType.IsSubclassOf(typeof(Enumeration));
+            static bool IsTypeEnumeration(IMutableEntityType entityType)
+                => !entityType.ClrType.IsSubclassOf(typeof(EnumerationType));
             bool IsPropertyType(PropertyInfo propertyInfo) => propertyInfo.PropertyType == type;
         }
     }

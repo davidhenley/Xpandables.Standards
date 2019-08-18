@@ -15,33 +15,29 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace System.Http
 {
     /// <summary>
-    /// Provides method to configure services and the app's request pipeline.
+    /// Provides with methods to retrieve an http request header value matching a key.
     /// </summary>
-    public interface ICustomStartup
+    public interface IHttpRequestHeaderValuesAccessor
     {
         /// <summary>
-        /// Determines the execution order.
+        /// Gets the http header value from the current http request matching the specified key.
+        /// If not found, returns an empty optional.
         /// </summary>
-        int Order { get; }
+        /// <param name="key">The key of the value to match.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        Optional<string> GetRequestHeaderValue(string key);
 
         /// <summary>
-        /// Use this method to configure the HTTP request pipeline.
+        /// Gets all http header values from the current http request matching the specified key.
+        /// If not found, returns an empty enumerable.
         /// </summary>
-        /// <param name="app">The application builder.</param>
-        /// <param name="env">The environmement hosting.</param>
-        void Configure(IApplicationBuilder app, IHostingEnvironment env);
-
-        /// <summary>
-        ///  Use this method to add services to the container.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        void ConfigureServices(IServiceCollection services);
+        /// <param name="key">The key of the value to match.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        IEnumerable<string> GetRequestHeaderValues(string key);
     }
 }

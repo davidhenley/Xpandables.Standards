@@ -43,8 +43,7 @@ namespace System.Design.TaskEvent
             if (taskEvent is null) throw new ArgumentNullException(nameof(taskEvent));
 
             var taskEvents = _serviceProvider.GetServices<IAsyncTaskEventHandler<TTaskEvent>>()
-                .Map(handlers => handlers.Select(handler => handler.HandleAsync(taskEvent, cancellationToken)))
-                .Cast<IEnumerable<Task>>();
+                .Select(handler => handler.HandleAsync(taskEvent, cancellationToken));
 
             await Task.WhenAll(taskEvents).ConfigureAwait(false);
         }
@@ -58,8 +57,7 @@ namespace System.Design.TaskEvent
             var typeHandler = typeof(IAsyncTaskEventHandler<>).MakeGenericType(new Type[] { taskEvent.GetType() });
 
             var taskEvents = _serviceProvider.GetServices<IAsyncTaskEventHandler>(typeHandler)
-                .Map(handlers => handlers.Select(handler => handler.HandleAsync(taskEvent, cancellationToken)))
-                .Cast<IEnumerable<Task>>();
+                .Select(handler => handler.HandleAsync(taskEvent, cancellationToken));
 
             await Task.WhenAll(taskEvents).ConfigureAwait(false);
         }

@@ -42,6 +42,18 @@ namespace System.Design.Database
             where T : Entity;
 
         /// <summary>
+        /// Returns all domain objects matching the expression selector.
+        /// If not found, returns an empty enumerable.
+        /// </summary>
+        /// <typeparam name="T">Domain object type.</typeparam>
+        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
+        /// <param name="selector">Describes the expression used to select the domain object.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
+        IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
+            where T : Entity;
+
+        /// <summary>
         /// Returns the first domain object matching the expression selector.
         /// If not found, returns an optional empty type value.
         /// </summary>
@@ -54,7 +66,23 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous get operation.
         /// The task result contains the matching anonymous value.</returns>
-        Task<Optional<TResult>> GetAsync<T, TResult>(
+        Task<Optional<TResult>> GetFirstAsync<T, TResult>(
+            Func<IQueryable<T>, IQueryable<TResult>> selector,
+            CancellationToken cancellationToken = default)
+            where T : Entity;
+
+        /// <summary>
+        /// Returns the last domain object matching the expression selector.
+        /// If not found, returns an optional empty type value.
+        /// </summary>
+        /// <typeparam name="T">Domain object type.</typeparam>
+        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
+        /// <param name="selector">Describes the expression used to select the domain object.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
+        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
+        Task<Optional<TResult>> GetLastAsync<T, TResult>(
             Func<IQueryable<T>, IQueryable<TResult>> selector,
             CancellationToken cancellationToken = default)
             where T : Entity;

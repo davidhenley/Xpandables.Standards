@@ -35,8 +35,8 @@ namespace System.Design.TaskEvent
         {
             if (taskEvent is null) throw new ArgumentNullException(nameof(taskEvent));
 
-            _serviceProvider.GetServices<ITaskEventHandler<TEvent>>()
-                .ForEach((ITaskEventHandler<TEvent> handler) => handler.Handle(taskEvent));
+            foreach (var handler in _serviceProvider.GetServices<ITaskEventHandler<TEvent>>())
+                handler.Handle(taskEvent);
         }
 
         void ITaskEventDispatcher.Dispatch(ITaskEvent taskEvent)
@@ -44,8 +44,8 @@ namespace System.Design.TaskEvent
             if (taskEvent is null) throw new ArgumentNullException(nameof(taskEvent));
 
             var typeHandler = typeof(ITaskEventHandler<>).MakeGenericType(new Type[] { taskEvent.GetType() });
-            _serviceProvider.GetServices<ITaskEventHandler>(typeHandler)
-                .ForEach((ITaskEventHandler handler) => handler.Handle(taskEvent));
+            foreach (var handler in _serviceProvider.GetServices<ITaskEventHandler>(typeHandler))
+                handler.Handle(taskEvent);
         }
     }
 }
