@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Platforms>x64</Platforms>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <Authors>Francis-Black EWANE</Authors>
+    <Product>Xpandables.Core @ 2019</Product>
+    <Description>Contains Core implementations for Xpandables.Standards.</Description>
+    <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
+    <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
+    <PackageIconUrl>https://github.com/Francescolis/Xpandables/blob/master/Xpandables.png?raw=true</PackageIconUrl>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
+    <FileVersion>3.0.0</FileVersion>
+    <PackageVersion>3.0.0-preview1</PackageVersion>
+    <PackageId>Xpandables.Core</PackageId>
+    <PackageTags>Database, Http, EntityFramework</PackageTags>
+    <PackageOutputPath>..\Packages\</PackageOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageReleaseNotes>Conversion to Net Core 3.0</PackageReleaseNotes>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AssemblyName>Xpandables.Core</AssemblyName>
+    <RootNamespace>Xpandables.Core</RootNamespace>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+</Project>
