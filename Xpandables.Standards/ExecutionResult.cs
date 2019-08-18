@@ -34,14 +34,14 @@ namespace System
         /// <param name="result">The result to be used.</param>
         public ExecutionResult(TResult result)
             : base(new[] { result })
-            => Exception = OptionalHelpers.Empty<Exception>();
+            => Exception = Optional<Exception>.Empty;
 
         /// <summary>
         /// Creates an empty execution result.
         /// </summary>
         public ExecutionResult()
             : base(Array.Empty<TResult>())
-            => Exception = OptionalHelpers.Empty<Exception>();
+            => Exception = Optional<Exception>.Empty;
 
         /// <summary>
         /// Creates an exception execution result.

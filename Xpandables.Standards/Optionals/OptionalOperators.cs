@@ -45,7 +45,7 @@ namespace System
         public static implicit operator Optional<T>(Optional<Optional<T>> doubleOptional)
             => doubleOptional.Any() && doubleOptional.Single().Any()
                     ? doubleOptional.Single()
-                    : OptionalHelpers.Empty<T>();
+                    : Empty;
 
         public static implicit operator Optional<T>(T value) => value.ToOptional();
 

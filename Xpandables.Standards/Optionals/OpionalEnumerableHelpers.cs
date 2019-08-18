@@ -69,7 +69,9 @@ namespace System
             if (key is null) throw new ArgumentNullException(nameof(key));
             if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
-            return dictionary.TryGetValue(key, out var value) ? Some(value) : Empty<TValue>();
+            return dictionary.TryGetValue(key, out var value)
+                ? Optional<TValue>.Some(value)
+                : Optional<TValue>.Empty;
         }
 
         public static Optional<T> GetElementAt<T>(this IEnumerable<T> source, int index)
@@ -83,7 +85,9 @@ namespace System
             if (key is null) throw new ArgumentNullException(nameof(key));
             if (lookup is null) throw new ArgumentNullException(nameof(lookup));
 
-            return lookup.Contains(key) ? Some(lookup[key]) : Empty<IEnumerable<TValue>>();
+            return lookup.Contains(key)
+                ? Optional<IEnumerable<TValue>>.Some(lookup[key])
+                : Optional<IEnumerable<TValue>>.Empty;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace System
         public Optional<TResult> MapOptional<TResult>(Func<T, Optional<TResult>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            return this.Any() ? some(this.Single()) : OptionalHelpers.Empty<TResult>();
+            return this.Any() ? some(this.Single()) : Optional<TResult>.Empty;
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace System
             if (this.Any() && predicate(this.Single()))
                 return some(this.Single());
 
-            return OptionalHelpers.Empty<TResult>();
+            return Optional<TResult>.Empty;
         }
 
         /// <summary>

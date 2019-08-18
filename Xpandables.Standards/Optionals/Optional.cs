@@ -33,6 +33,28 @@ namespace System
     {
         private readonly T[] _values;
 
+#pragma warning disable CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
+        /// <summary>
+        /// Provides with an optional without value.
+        /// </summary>
+        /// <returns>An empty optional.</returns>
+        public static Optional<T> Empty => new Optional<T>(Array.Empty<T>());
+
+        /// <summary>
+        /// Provides with an optional that contains a value.
+        /// </summary>
+        /// <param name="value">The value to be used for optional.</param>
+        /// <returns>An optional with a value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
+        public static Optional<T> Some(T value)
+        {
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
+
+            return new Optional<T>(new T[] { value });
+        }
+#pragma warning restore CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
+
         /// <summary>
         /// Returns an enumerator that iterates through the values.
         /// </summary>
@@ -45,6 +67,6 @@ namespace System
         /// <returns>An System.Collections.IEnumerator for the System.Array.</returns>
         IEnumerator IEnumerable.GetEnumerator() => _values.GetEnumerator();
 
-        internal Optional(T[] values) => _values = values ?? throw new ArgumentNullException(nameof(values));
+        protected Optional(T[] values) => _values = values ?? throw new ArgumentNullException(nameof(values));
     }
 }

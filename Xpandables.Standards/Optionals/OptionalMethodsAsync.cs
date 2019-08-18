@@ -87,7 +87,7 @@ namespace System
 
             return this.Any()
                 ? await some(this.Single(), cancellationToken).ConfigureAwait(false)
-                : OptionalHelpers.Empty<TResult>();
+                : Optional<TResult>.Empty;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace System
             if (this.Any() && predicate(this.Single()))
                 return await some(this.Single(), cancellationToken).ConfigureAwait(false);
 
-            return OptionalHelpers.Empty<TResult>();
+            return Optional<TResult>.Empty;
         }
 
         /// <summary>

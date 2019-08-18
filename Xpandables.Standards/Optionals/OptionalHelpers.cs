@@ -29,21 +29,6 @@ namespace System
     public static partial class OptionalHelpers
     {
         /// <summary>
-        /// Provides with an optional without value.
-        /// </summary>
-        /// <typeparam name="TValue">The Type of the value.</typeparam>
-        /// <returns>An empty optional.</returns>
-        public static Optional<TValue> Empty<TValue>() => new Optional<TValue>(Array.Empty<TValue>());
-
-        /// <summary>
-        /// Provides with an optional that contains a value.
-        /// </summary>
-        /// <typeparam name="TValue">The Type of the value.</typeparam>
-        /// <param name="value">The value to be used for optional.</param>
-        /// <returns>An optional with a value.</returns>
-        public static Optional<TValue> Some<TValue>(TValue value) => new Optional<TValue>(new TValue[] { value });
-
-        /// <summary>
         /// Converts the specified value to an optional instance.
         /// </summary>
         /// <typeparam name="TValue">The Type of the value.</typeparam>
@@ -52,9 +37,9 @@ namespace System
         public static Optional<TValue> ToOptional<TValue>(this TValue value)
         {
             if (value is null)
-                return Empty<TValue>();
+                return Optional<TValue>.Empty;
 
-            return Some(value);
+            return Optional<TValue>.Some(value);
         }
 
         /// <summary>
@@ -66,9 +51,9 @@ namespace System
         public static Optional<TResult> ToOptional<TResult>(this object source)
         {
             if (source is TResult result)
-                return Some(result);
+                return Optional<TResult>.Some(result);
 
-            return Empty<TResult>();
+            return Optional<TResult>.Empty;
         }
 
         public static async Task MapAsync<TValue, TResult>(
