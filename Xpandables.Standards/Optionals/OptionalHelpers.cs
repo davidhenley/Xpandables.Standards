@@ -15,7 +15,9 @@
  *
 ************************************************************************************************************/
 
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,6 +55,20 @@ namespace System
                 return Empty<TValue>();
 
             return Some(value);
+        }
+
+        /// <summary>
+        /// Converts the specified object to an optional instance.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the expected result.</typeparam>
+        /// <param name="source">The object to be converted.</param>
+        /// <returns>An optional instance.</returns>
+        public static Optional<TResult> ToOptional<TResult>(this object source)
+        {
+            if (source is TResult result)
+                return Some(result);
+
+            return Empty<TResult>();
         }
 
         public static async Task MapAsync<TValue, TResult>(
@@ -164,6 +180,59 @@ namespace System
 
             await (await optional.ConfigureAwait(false))
                 .ReduceAsync(action, cancellationToken).ConfigureAwait(false);
+        }
+
+        public static void ForEach<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)
+           where TSource : IEnumerable<TElement>
+        {
+            if (optional is null) throw new ArgumentNullException(nameof(optional));
+            if (some is null) throw new ArgumentNullException(nameof(some));
+
+            if (optional.Any())
+                optional.Single()
+                    .ToList()
+                    .ForEach(some);
+        }
+
+        public static Optional<TSource> ForEach<TSource, TElement>(
+            this Optional<TSource> optional,
+            Func<TElement, TElement> some)
+            where TSource : IEnumerable<TElement>
+        {
+            if (optional is null) throw new ArgumentNullException(nameof(optional));
+            if (some is null) throw new ArgumentNullException(nameof(some));
+
+            if (optional.Any())
+            {
+                var result = new List<TElement>();
+                foreach (var element in optional.Single())
+                    result.Add(some(element));
+
+                return result.ToOptional<TSource>();
+            }
+
+            return optional;
+        }
+
+        public static Optional<TResult> ForEach<TSource, TResult, TSourceElement, TResultElement>(
+            this Optional<TSource> optional,
+            Func<TSourceElement, TResultElement> some)
+            where TSource : IEnumerable<TSourceElement>
+            where TResult : IEnumerable<TResultElement>
+        {
+            if (optional is null) throw new ArgumentNullException(nameof(optional));
+            if (some is null) throw new ArgumentNullException(nameof(some));
+
+            if (optional.Any())
+            {
+                var result = new List<TResultElement>();
+                foreach (var element in optional.Single())
+                    result.Add(some(element));
+
+                return result.ToOptional<TResult>();
+            }
+
+            return Enumerable.Empty<TResultElement>().ToOptional<TResult>();
         }
     }
 }

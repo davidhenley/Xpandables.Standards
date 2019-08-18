@@ -34,8 +34,9 @@ namespace System.Design.Mediator
         /// <typeparam name="TResult">Type of the result.</typeparam>
         /// <param name="query">The query to act on.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
+        /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult HandleQuery<TQuery, TResult>(TQuery query)
+        TResult HandleQueryResult<TQuery, TResult>(TQuery query)
             where TQuery : class, IQuery<TResult>;
 
         /// <summary>
@@ -44,9 +45,9 @@ namespace System.Design.Mediator
         /// <typeparam name="TResult">Type of the result.</typeparam>
         /// <param name="query">The query to act on.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
+        /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult HandleQueryResult<TResult>(IQuery<TResult> query)
-            where TResult : class;
+        TResult HandleResult<TResult>(IQuery<TResult> query);
 
         /// <summary>
         /// Handles the specified command.
@@ -54,6 +55,7 @@ namespace System.Design.Mediator
         /// <typeparam name="TCommand">Type of the command.</typeparam>
         /// <param name="command">The command to act on.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="command"/> is null.</exception>
+        /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         void HandleCommand<TCommand>(TCommand command)
             where TCommand : class, ICommand;

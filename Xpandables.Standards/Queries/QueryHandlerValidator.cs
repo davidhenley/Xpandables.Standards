@@ -22,26 +22,26 @@ namespace System.Design.Query
     /// <summary>
     /// This class allows the application author to add validation support before a query is handled.
     /// </summary>
-    /// <typeparam name="TCriteria">Type of query.</typeparam>
+    /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class QueryHandlerValidator<TCriteria, TResult> : IQueryHandler<TCriteria, TResult>
-        where TCriteria : class, IQuery<TResult>
+    public sealed class QueryHandlerValidator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>
     {
-        private readonly IQueryHandler<TCriteria, TResult> _decoratee;
-        private readonly ICustomCompositeValidator<TCriteria> _validator;
+        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        private readonly ICustomCompositeValidator<TQuery> _validator;
 
         public QueryHandlerValidator(
-            IQueryHandler<TCriteria, TResult> decoratee,
-            ICustomCompositeValidator<TCriteria> validator)
+            IQueryHandler<TQuery, TResult> decoratee,
+            ICustomCompositeValidator<TQuery> validator)
         {
             _decoratee = decoratee;
             _validator = validator;
         }
 
-        public TResult Handle(TCriteria criteria)
+        public TResult Handle(TQuery query)
         {
-            _validator.Validate(criteria);
-            return _decoratee.Handle(criteria);
+            _validator.Validate(query);
+            return _decoratee.Handle(query);
         }
     }
 }

@@ -22,17 +22,17 @@ namespace System.Design.Query
     /// returns a type-specific result.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    /// <typeparam name="TCriteria">Type of the criteria that will be used as argument.</typeparam>
+    /// <typeparam name="TQuery">Type of the query that will be used as argument.</typeparam>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    public interface IQueryHandler<in TCriteria, TResult>
-        where TCriteria : class, IQuery<TResult>
+    public interface IQueryHandler<in TQuery, TResult>
+        where TQuery : class, IQuery<TResult>
     {
         /// <summary>
         /// Handles the specified query and returns the expected result type.
         /// </summary>
-        /// <param name="criteria">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="criteria"/> is null.</exception>
+        /// <param name="query">The query to act on.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(TCriteria criteria);
+        TResult Handle(TQuery query);
     }
 }

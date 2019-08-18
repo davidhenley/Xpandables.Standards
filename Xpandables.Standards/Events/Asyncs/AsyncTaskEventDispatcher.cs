@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,8 +42,9 @@ namespace System.Design.TaskEvent
         {
             if (taskEvent is null) throw new ArgumentNullException(nameof(taskEvent));
 
-            var taskEvents = from handler in _serviceProvider.GetServices<IAsyncTaskEventHandler<TTaskEvent>>()
-                             select handler.HandleAsync(taskEvent, cancellationToken);
+            var taskEvents = _serviceProvider.GetServices<IAsyncTaskEventHandler<TTaskEvent>>()
+                .Map(handlers => handlers.Select(handler => handler.HandleAsync(taskEvent, cancellationToken)))
+                .Cast<IEnumerable<Task>>();
 
             await Task.WhenAll(taskEvents).ConfigureAwait(false);
         }
@@ -54,10 +56,10 @@ namespace System.Design.TaskEvent
             if (taskEvent is null) throw new ArgumentNullException(nameof(taskEvent));
 
             var typeHandler = typeof(IAsyncTaskEventHandler<>).MakeGenericType(new Type[] { taskEvent.GetType() });
-            var handlers = _serviceProvider.GetServices<IAsyncTaskEventHandler>(typeHandler);
 
-            var taskEvents = from handler in handlers
-                             select handler.HandleAsync(taskEvent, cancellationToken);
+            var taskEvents = _serviceProvider.GetServices<IAsyncTaskEventHandler>(typeHandler)
+                .Map(handlers => handlers.Select(handler => handler.HandleAsync(taskEvent, cancellationToken)))
+                .Cast<IEnumerable<Task>>();
 
             await Task.WhenAll(taskEvents).ConfigureAwait(false);
         }

@@ -18,27 +18,27 @@
 namespace System.Design.Query
 {
     /// <summary>
-    /// A helper class used to implement the <see cref="IQueryHandler{TCriteria, TResult}"/> interface.
+    /// A helper class used to implement the <see cref="IQueryHandler{TQuery, TResult}"/> interface.
     /// </summary>
-    /// <typeparam name="TCriteria">Type of argument to act on.</typeparam>
+    /// <typeparam name="TQuery">Type of argument to act on.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class QueryHandlerBuilder<TCriteria, TResult> : IQueryHandler<TCriteria, TResult>
-        where TCriteria : class, IQuery<TResult>
+    public sealed class QueryHandlerBuilder<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>
     {
         private readonly Func<IQuery<TResult>, TResult> _handler;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="QueryHandlerBuilder{TCriteria, TResult}"/> with the delegate to be used
-        /// as <see cref="IQueryHandler{TCriteria, TResult}.Handle(TCriteria)"/> implementation.
+        /// Initializes a new instance of <see cref="QueryHandlerBuilder{TQuery, TResult}"/> with the delegate to be used
+        /// as <see cref="IQueryHandler{TQuery, TResult}.Handle(TQuery)"/> implementation.
         /// </summary>
         /// <param name="handler">The delegate to be used when the handler will be invoked.
         /// <para>The delegate should match all the behaviors expected in
-        /// the <see cref="IQueryHandler{TCriteria, TResult}.Handle(TCriteria)"/>
+        /// the <see cref="IQueryHandler{TQuery, TResult}.Handle(TQuery)"/>
         /// method such as thrown exceptions.</para></param>
         /// <exception cref="ArgumentNullException">The <paramref name="handler"/> is null.</exception>
         public QueryHandlerBuilder(Func<IQuery<TResult>, TResult> handler)
             => _handler = handler ?? throw new ArgumentNullException(nameof(handler));
 
-        public TResult Handle(TCriteria criteria) => _handler(criteria);
+        public TResult Handle(TQuery query) => _handler(query);
     }
 }

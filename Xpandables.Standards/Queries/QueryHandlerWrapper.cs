@@ -20,18 +20,18 @@ namespace System.Design.Query
     /// <summary>
     /// Implementation for <see cref="IQueryHandlerWrapper{TResult}"/>.
     /// </summary>
-    /// <typeparam name="TCriteria">Type of query.</typeparam>
+    /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
     /// <remarks>
     /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
     /// </remarks>
-    public sealed class QueryHandlerWrapper<TCriteria, TResult> : IQueryHandlerWrapper<TResult>
-        where TCriteria : class, IQuery<TResult>
+    public sealed class QueryHandlerWrapper<TQuery, TResult> : IQueryHandlerWrapper<TResult>
+        where TQuery : class, IQuery<TResult>
     {
-        private readonly IQueryHandler<TCriteria, TResult> _decoratee;
-        public QueryHandlerWrapper(IQueryHandler<TCriteria, TResult> decoratee)
+        private readonly IQueryHandler<TQuery, TResult> _decoratee;
+        public QueryHandlerWrapper(IQueryHandler<TQuery, TResult> decoratee)
             => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
 
-        public TResult Handle(IQuery<TResult> criteria) => _decoratee.Handle((TCriteria)criteria);
+        public TResult Handle(IQuery<TResult> query) => _decoratee.Handle((TQuery)query);
     }
 }

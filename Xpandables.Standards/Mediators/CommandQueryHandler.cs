@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.ComponentModel.DataAnnotations;
 using System.Design.Command;
 using System.Design.Query;
 
@@ -38,12 +39,18 @@ namespace System.Design.Mediator
         {
             try
             {
-                var handler = _serviceProvider.GetService<ICommandHandler<TCommand>>();
-                handler.Handle(command);
+                if (command is null) throw new ArgumentNullException(nameof(command));
+
+                _serviceProvider.GetService<ICommandHandler<TCommand>>()
+                   .Reduce(() => throw new NotImplementedException(
+                       ErrorMessageResources.CommandQueryHandlerMissingImplementation
+                        .StringFormat(nameof(TCommand))))
+                   .Map(handler => handler.Handle(command));
             }
-            catch (Exception exception) when (!(exception is ArgumentNullException)
-                                            && !(exception is InvalidOperationException)
-                                            && !(exception is OperationCanceledException))
+            catch (Exception exception) when (!(exception is ArgumentException)
+                                            && !(exception is ValidationException)
+                                            && !(exception is NotImplementedException)
+                                            && !(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException(
                     ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(HandleCommand)),
@@ -51,39 +58,52 @@ namespace System.Design.Mediator
             }
         }
 
-        public TResult HandleQuery<TQuery, TResult>(TQuery query)
+        public TResult HandleQueryResult<TQuery, TResult>(TQuery query)
             where TQuery : class, IQuery<TResult>
         {
             try
             {
-                var handler = _serviceProvider.GetService<IQueryHandler<TQuery, TResult>>();
-                return handler.Handle(query);
+                if (query is null) throw new ArgumentNullException(nameof(query));
+
+                return _serviceProvider.GetService<IQueryHandler<TQuery, TResult>>()
+                    .Reduce(() => throw new NotImplementedException(
+                        ErrorMessageResources.CommandQueryHandlerMissingImplementation
+                            .StringFormat(nameof(TQuery))))
+                    .Map(handler => handler.Handle(query));
             }
-            catch (Exception exception) when (!(exception is ArgumentNullException)
-                                            && !(exception is InvalidOperationException)
-                                            && !(exception is OperationCanceledException))
+            catch (Exception exception) when (!(exception is ArgumentException)
+                                            && !(exception is ValidationException)
+                                            && !(exception is NotImplementedException)
+                                            && !(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException(
-                    $"{nameof(HandleQuery)} operation failed. See inner exception",
+                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(HandleCommand)),
                     exception);
             }
         }
 
-        public TResult HandleQueryResult<TResult>(IQuery<TResult> query)
-           where TResult : class
+        public TResult HandleResult<TResult>(IQuery<TResult> query)
         {
             try
             {
-                var wrapperType = typeof(QueryHandlerWrapper<,>).MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
-                var wrapperHandler = _serviceProvider.GetService<IQueryHandlerWrapper<TResult>>(wrapperType);
-                return wrapperHandler.Handle(query);
+                if (query is null) throw new ArgumentNullException(nameof(query));
+
+                var wrapperType = typeof(QueryHandlerWrapper<,>)
+                    .MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
+
+                return _serviceProvider.GetService<IQueryHandlerWrapper<TResult>>(wrapperType)
+                    .Reduce(() => throw new NotImplementedException(
+                        ErrorMessageResources.CommandQueryHandlerMissingImplementation
+                            .StringFormat(query.GetType().Name)))
+                    .Map(handler => handler.Handle(query));
             }
-            catch (Exception exception) when (!(exception is ArgumentNullException)
-                                            && !(exception is InvalidOperationException)
-                                            && !(exception is OperationCanceledException))
+            catch (Exception exception) when (!(exception is ArgumentException)
+                                            && !(exception is ValidationException)
+                                            && !(exception is NotImplementedException)
+                                            && !(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException(
-                    $"{nameof(HandleQuery)} operation failed. See inner exception",
+                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(HandleCommand)),
                     exception);
             }
         }

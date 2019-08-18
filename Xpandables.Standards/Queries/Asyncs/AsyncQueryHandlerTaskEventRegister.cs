@@ -25,27 +25,27 @@ namespace System.Design.Query
     /// This class allows the application author to add post/rollback event support to query.
     /// <para>This decorator will call the <see cref="AsyncTaskEventRegister"/> before and after the query execution.</para>
     /// </summary>
-    /// <typeparam name="TCriteria">Type of the query.</typeparam>
+    /// <typeparam name="TQuery">Type of the query.</typeparam>
     /// <typeparam name="TResult">Type of the result.</typeparam>
-    public sealed class AsyncQueryHandlerTaskEventRegister<TCriteria, TResult> : IAsyncQueryHandler<TCriteria, TResult>
-        where TCriteria : class, IQuery<TResult>
+    public sealed class AsyncQueryHandlerTaskEventRegister<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>
     {
-        private readonly IAsyncQueryHandler<TCriteria, TResult> _decoratee;
+        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
         private readonly AsyncTaskEventRegister _eventRegister;
 
         public AsyncQueryHandlerTaskEventRegister(
             AsyncTaskEventRegister eventRegister,
-            IAsyncQueryHandler<TCriteria, TResult> decoratee)
+            IAsyncQueryHandler<TQuery, TResult> decoratee)
         {
             _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
         }
 
-        public async Task<TResult> HandleAsync(TCriteria criteria, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             try
             {
-                var result = await _decoratee.HandleAsync(criteria, cancellationToken).ConfigureAwait(false);
+                var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
                 await _eventRegister.OnPostEventAsync().ConfigureAwait(false);
                 return result;
             }

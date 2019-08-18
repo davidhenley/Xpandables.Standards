@@ -32,11 +32,11 @@ namespace System.Design.Query
         /// <summary>
         /// Handles the specified query and returns the expected result type.
         /// </summary>
-        /// <param name="criteria">The query to act on.</param>
+        /// <param name="query">The query to act on.</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="criteria"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        Task<TResult> HandleAsync(IQuery<TResult> criteria, CancellationToken cancellationToken = default);
+        Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default);
     }
 }
