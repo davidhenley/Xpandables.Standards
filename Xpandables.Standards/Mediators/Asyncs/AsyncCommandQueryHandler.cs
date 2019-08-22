@@ -98,7 +98,7 @@ namespace System.Design.Mediator
             {
                 if (query is null) throw new ArgumentNullException(nameof(query));
 
-                var wrapperType = typeof(QueryHandlerWrapper<,>)
+                var wrapperType = typeof(AsyncQueryHandlerWrapper<,>)
                     .MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
 
                 return await _serviceProvider.GetService<IAsyncQueryHandlerWrapper<TResult>>(wrapperType)

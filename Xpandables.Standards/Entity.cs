@@ -18,7 +18,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace System
@@ -31,6 +30,7 @@ namespace System
     [DebuggerDisplay("{Id}")]
     public abstract class Entity
     {
+        [NonSerialized]
         private string _id = string.Empty;
 
         /// <summary>
