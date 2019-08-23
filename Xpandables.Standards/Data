@@ -1,0 +1,1393 @@
+using System;
+using System.Data.Common;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Allows an application author to return a data provider factory from provider type.
+    /// </summary>
+    public interface IDataProviderFactoryProvider
+    {
+        /// <summary>
+        /// Returns an instance of the data provider factory matching the specified type.
+        /// </summary>
+        /// <param name="providerType">The provider type to find factory.</param>
+        /// <returns>An instance of <see cref="DbProviderFactory"/> if found, otherwise an empty optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="providerType"/> is null.</exception>
+        Optional<DbProviderFactory> GetProviderFactory(DataProviderType providerType);
+    }
+}
+
+using System;
+using System.Data.Common;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides with a method to build command parameters.
+    /// </summary>
+    public interface IDataParameterBuilder
+    {
+        /// <summary>
+        /// Builds parameters for the specified command.
+        /// </summary>
+        /// <param name="command">The command to act on.</param>
+        /// <param name="parameters">The collection of parameters to be added.</param>
+        /// <returns>A command that contains the parameters.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="command"/> is null.</exception>
+        /// <exception cref="ArgumentException">The <paramref name="parameters"/> is a mix of 
+        /// DbParameters and values.</exception>
+        DbCommand Build(DbCommand command, params object[] parameters);
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides wit a method to map a data table to an entities.
+    /// </summary>
+    public interface IDataMapper
+    {
+        /// <summary>
+        /// Maps the data table to the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of expected result..</typeparam>
+        /// <param name="source">The data table to act on.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
+        /// <param name="options">Defines the execution options.</param>
+        /// <returns>An enumerable that contains the result of mapping.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        ExecutionResult<IEnumerable<T>> MapFrom<T>(
+            DataTable source,
+            CancellationToken cancellationToken,
+            DataMapperOptions options = DataMapperOptions.Normal)
+            where T : class, new();
+    }
+
+    /// <summary>
+    /// Determines the algorithm to be applied.
+    /// </summary>
+    public enum DataMapperOptions
+    {
+        /// <summary>
+        /// A normal for each...
+        /// </summary>
+        Normal,
+
+        /// <summary>
+        /// Use of partitioner with parallel execution.
+        /// </summary>
+        SpeedUp,
+
+        /// <summary>
+        /// Use of parallel.
+        /// </summary>
+        Expensive
+    }
+}
+
+using System;
+using System.Linq;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides with a list of data providers.
+    /// You can derive from this class in order to extend type.
+    /// </summary>
+    public class DataProviderType : Enumeration
+    {
+        /// <summary>
+        /// Construct a new data provider type with an index and the invariant name.
+        /// </summary>
+        /// <param name="index">The index for the date provider.</param>
+        /// <param name="assemblyName">The invariant assembly name to be used.</param>
+        /// <param name="providerFactoryTypeName">The provider factory type name.</param>
+        /// <exception cref="ArgumentException">The <paramref name="assemblyName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="providerFactoryTypeName"/> is null.</exception>
+        protected DataProviderType(int index, string assemblyName, string providerFactoryTypeName)
+            : base(assemblyName, index)
+        {
+            DisplayName = assemblyName;
+            ProviderFactoryTypeName = providerFactoryTypeName ?? throw new ArgumentNullException(nameof(providerFactoryTypeName));
+        }
+
+        /// <summary>
+        /// Gets the invariant (assembly) name that can be used programmatically to refer to the data provider.
+        /// </summary>
+        public new string DisplayName { get; }
+
+        /// <summary>
+        /// Gets the provider factory type name.
+        /// </summary>
+        public string ProviderFactoryTypeName { get; }
+
+        /// <summary>
+        /// Determines whether or not the provider type refers to an instance factory.
+        /// </summary>
+        public bool IsInstance => DisplayName.Contains("Instance", StringComparison.InvariantCultureIgnoreCase);
+
+        /// <summary>
+        /// Provides data access for Microsoft SQL Server.
+        /// </summary>
+        public static DataProviderType MSSQL => new DataProviderType(
+            0, "System.Data.SqlClient", "System.Data.SqlClient.SqlClientFactory");
+
+        /// <summary>
+        /// For Oracle data sources version 8.1.7 and later.
+        /// </summary>
+        public static DataProviderType ORACLE => new DataProviderType(
+            1, "System.Data.OracleClient", "Oracle.DataAccess.Client.OracleClientFactory");
+
+#if NET48
+        /// <summary>
+        /// For data sources exposed by using OLE DB.
+        /// </summary>
+        public static DataProviderType OLEDB => new DataProviderType(2, "System.Data.OleDb", "System.Data.OleDb");
+#endif
+
+        /// <summary>
+        /// For data sources exposed by using ODBC.
+        /// </summary>
+        public static DataProviderType ODBC => new DataProviderType(3, "System.Data.Odbc", "System.Data.Odbc");
+
+        /// <summary>
+        /// Provides data access for Entity Data Model (EDM) applications.
+        /// </summary>
+        public static DataProviderType ENTITY => new DataProviderType(4, "System.Data.EntityClient", "System.Data.Entity");
+
+#if NET48
+        /// <summary>
+        /// Provides data access for Microsoft SQL Lite.
+        /// </summary>
+        public static DataProviderType SQLITE => new DataProviderType(
+            5, "System.Data.SQLite", "System.Data.SQLite.SQLiteFactory");
+#else
+        /// <summary>
+        ///  Provides data access for Microsoft SQL Lite.
+        /// </summary>
+        public static DataProviderType SQLITE => new DataProviderType(
+            5, "Microsoft.Data.Sqlite", "Microsoft.Data.Sqlite.SqliteFactory");
+#endif
+        /// <summary>
+        /// Provides data access for MySQL.
+        /// </summary>
+        public static DataProviderType MYSQL => new DataProviderType(
+            6, "MySql.Data", "MySql.Data.MySqlClient.MySqlClientFactory");
+
+        /// <summary>
+        /// Provides data access for PostgreSQL.
+        /// </summary>
+        public static DataProviderType NPGSQL => new DataProviderType(7, "Npgsql", "Npgsql.NpgsqlFactory");
+    }
+}
+using System;
+using System.Data.Common;
+using System.Reflection;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// The default implementation to return data provider factory from provider type.
+    /// </summary>
+    public sealed class DataProviderFactoryProvider : IDataProviderFactoryProvider
+    {
+        public Optional<DbProviderFactory> GetProviderFactory(DataProviderType providerType)
+        {
+            if (providerType is null) throw new ArgumentNullException(nameof(providerType));
+
+            return GetproviderFactoryInstance()
+                .Map(result => result as DbProviderFactory);
+
+            Optional<object> GetproviderFactoryInstance()
+                => Type.GetType(providerType.ProviderFactoryTypeName, false, true)
+                        .ToOptional()
+                        .Map(type => TypeInvokeMember(type, "Instance"))
+                        .Reduce(() => AssemblyLoadFromString(providerType.DisplayName) as Assembly)
+                        .Map(obj => obj as Assembly)
+                        .MapOptional(ass => ass.GetExportedTypes()
+                            .FirstOrEmpty(t => t.FullName == providerType.ProviderFactoryTypeName))
+                        .Map(type => TypeInvokeMember(type, "Instance"));
+
+            Assembly AssemblyLoadFromString(string assemblyName)
+            {
+                try { return Assembly.Load(assemblyName); }
+                catch { return default; }
+            }
+
+            object TypeInvokeMember(Type type, string member)
+            {
+                try
+                {
+                    return type.InvokeMember(
+                                member,
+                                BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty,
+                                null, type, null);
+                }
+                catch { return default; }
+            }
+        }
+    }
+}
+
+using System;
+using System.Data.Common;
+using System.Globalization;
+using System.Linq;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Implementation of a command parameter builder.
+    /// </summary>
+    public sealed class DataParemeterBuilder : IDataParameterBuilder
+    {
+        public DbCommand Build(DbCommand command, params object[] parameters)
+        {
+            if (command is null)
+                throw new ArgumentNullException(nameof(command));
+
+            if (parameters is null || parameters.Length == 0)
+                return command;
+
+            var dbParameters = new DbParameter[parameters.Length];
+            if (parameters.All(p => p is DbParameter))
+            {
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    dbParameters[i] = (DbParameter)parameters[i];
+                }
+            }
+            else
+            if (!parameters.Any(p => p is DbParameter))
+            {
+                var parameterNames = new string[parameters.Length];
+                var parameterSql = new string[parameters.Length];
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    parameterNames[i] = string.Format(CultureInfo.InvariantCulture, "p{0}", i);
+                    dbParameters[i] = command.CreateParameter();
+                    dbParameters[i].ParameterName = parameterNames[i];
+                    dbParameters[i].Value = parameters[i] ?? DBNull.Value;
+
+                    parameterSql[i] = "@" + parameterNames[i];
+                }
+
+                command.CommandText = string.Format(CultureInfo.InvariantCulture, command.CommandText, parameterSql);
+            }
+            else
+            {
+                throw new ArgumentException("Arguments provided can not be a mix of DbParameters and values.");
+            }
+
+            command.Parameters.AddRange(dbParameters);
+
+            return command;
+        }
+    }
+}
+
+using System;
+using System.Data;
+using System.Linq;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides wit a method to map a data row to an entity.
+    /// </summary>
+    public sealed class DataMapperRow : IFluent
+    {
+        private readonly DataMapperEntityBuilder _entityBuilder;
+        private readonly ICorrelationCollection<string, DataMapperEntity> _mappedEntities;
+
+        public DataMapperRow(
+            DataMapperEntityBuilder entityBuilder,
+            ICorrelationCollection<string, DataMapperEntity> mappedEntities)
+        {
+            _entityBuilder = entityBuilder ?? throw new ArgumentNullException(nameof(entityBuilder));
+            _mappedEntities = mappedEntities ?? throw new ArgumentNullException(nameof(mappedEntities));
+        }
+
+        /// <summary>
+        /// Maps the data row to the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of expected result..</typeparam>
+        /// <param name="source">The data row to act on.</param>
+        /// <returns>An instance that contains the result of mapping.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public DataMapperEntity<T> MapFrom<T>(DataRow source)
+            where T : class, new()
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+
+            var entity = _entityBuilder.Build<T>();
+
+            DoDataMapperRow<T>(source, entity);
+
+            _mappedEntities.AddOrUpdateValue(entity.Identity, entity);
+
+            return entity;
+        }
+
+        private void DoDataMapperRow<T>(DataRow source, DataMapperEntity entity)
+            where T : class, new()
+        {
+            DataMapperPrimitives(source, entity);
+
+            _mappedEntities.GetValue(entity.Identity)
+                .Map(found => entity = found as DataMapperEntity<T>);
+
+            DataMapperReferences<T>(source, entity);
+        }
+
+        private void DataMapperPrimitives(DataRow source, DataMapperEntity entity)
+        {
+            var primitives = entity.Properties.Where(property => property.IsPrimitive);
+            foreach (var primitive in primitives)
+                primitive.Map(source, entity.Entity);
+
+            entity.BuildIdentity();
+        }
+
+        private void DataMapperReferences<T>(DataRow source, DataMapperEntity entity)
+            where T : class, new()
+        {
+            var references = entity.Properties.Where(property => !property.IsPrimitive);
+            foreach (var reference in references)
+            {
+                var nestedEntity = _entityBuilder.Build(reference.Type);
+                DoDataMapperRow<T>(source, nestedEntity);
+                reference.SetValue(entity.Entity, nestedEntity.Entity);
+            }
+        }
+
+        private void ExceptionHandler(object sender, DataMapperEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
+    }
+}
+
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Linq;
+using System.Reflection;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides with a method to build implementations of 
+    /// <see cref="DataMapperProperty"/> and <see cref="DataMapperProperty{T}"/>.
+    /// </summary>
+    public class DataMapperPropertyBuilder : DataMapperMemoryCacheAccessor, IFluent
+    {
+        /// <summary>
+        /// Initializes with memory cache.
+        /// </summary>
+        /// <param name="memoryCache">The memory cache instance.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="memoryCache"/> is null.</exception>
+        public DataMapperPropertyBuilder(IMemoryCache memoryCache)
+            : base(memoryCache) { }
+
+        /// <summary>
+        /// Builds an implementation of <see cref="DataMapperProperty{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the class.</typeparam>
+        /// <param name="source">The property info source.</param>
+        /// <param name="identityProperties">A collection of keys identity.</param>
+        /// <returns>An implementation of <see cref="DataMapperProperty{T}"/>.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="source"/> is null.</exception>
+        public virtual DataMapperProperty<T> Build<T>(PropertyInfo source, string[] identityProperties)
+            where T : class, new()
+        {
+            Func<DataMapperProperty<T>> propertyProducer = () =>
+              {
+                  var parameters = BuildParameters(source, identityProperties);
+                  return new DataMapperProperty<T>(
+                          parameters.PropertyName,
+                          parameters.DataName,
+                          parameters.DataPrefix,
+                          parameters.IsIdentity,
+                          parameters.Type,
+                          MemoryCache);
+              };
+
+            return propertyProducer();
+        }
+
+        /// <summary>
+        /// Builds an implementation of <see cref="DataMapperProperty"/>.
+        /// </summary>
+        /// <param name="source">The property info source.</param>
+        /// <param name="identityProperties">A collection of keys identity.</param>
+        /// <returns>An implementation of <see cref="DataMapperProperty"/>.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="source"/> is null.</exception>
+        public virtual DataMapperProperty Build(PropertyInfo source, string[] identityProperties)
+        {
+            Func<DataMapperProperty> propertyProducer = () =>
+              {
+                  var parameters = BuildParameters(source, identityProperties);
+                  return new DataMapperProperty(
+                          parameters.PropertyName,
+                          parameters.DataName,
+                          parameters.DataPrefix,
+                          parameters.IsIdentity,
+                          parameters.Type,
+                          MemoryCache);
+              };
+
+            return propertyProducer();
+        }
+
+        private (string DataPrefix, string PropertyName, string DataName, bool IsIdentity, Type Type)
+            BuildParameters(PropertyInfo source, string[] identityProperties)
+        {
+            var property = source ?? throw new ArgumentNullException(nameof(source));
+            var keys = identityProperties ?? Array.Empty<string>();
+
+            var ownerAttr = property.DeclaringType.GetAttribute<DataMapperPrefixAttribute>().ToOptional();
+            var propertyAttr = property.GetAttribute<DataMapperPrefixAttribute>().ToOptional();
+            var nameAttr = property.GetAttribute<DataMapperNameAttribute>().ToOptional();
+
+            string dataPrefix = propertyAttr.Map(attr => attr.Prefix)
+                .ReduceOptional(() => ownerAttr.Map(attr => attr.Prefix));
+            var dataName = nameAttr.Map(attr => attr.Name).Reduce(() => property.Name);
+            var isIdentity = keys.Any(k => k == property.Name);
+            var type = property.PropertyType;
+
+            return (dataPrefix, property.Name, dataName, isIdentity, type);
+        }
+    }
+}
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections;
+using System.Data;
+using System.Threading;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides with custom information for a mapping associated with a property.
+    /// </summary>
+    public class DataMapperProperty : DataMapperMemoryCacheAccessor, IFluent
+    {
+        static SpinLock _spinLock = new SpinLock();
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DataMapperProperty"/> with all arguments using cache.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="dataName">The data name from the source.</param>
+        /// <param name="dataPrefix">The data prefix from the source.</param>
+        /// <param name="isIdentity">Whether the property is an identity key or not.</param>
+        /// <param name="type">The property type.</param>
+        /// <param name="memoryCache">The memory cache instance.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="propertyName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="dataPrefix"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="dataName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="memoryCache"/> is null.</exception>
+        public DataMapperProperty(
+            string propertyName,
+            string dataName,
+            string dataPrefix,
+            bool isIdentity,
+            Type type,
+            IMemoryCache memoryCache)
+            : base(memoryCache)
+        {
+            DataPrefix = dataPrefix;
+            PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            DataName = dataName ?? throw new ArgumentNullException(nameof(dataName));
+            IsIdentity = isIdentity;
+            Type = type ?? throw new ArgumentNullException(nameof(type));
+
+            IsPrimitive = type.IsNullable()
+                && (Nullable.GetUnderlyingType(type).IsValueType
+                    || Nullable.GetUnderlyingType(type).Equals(typeof(string)))
+                || type.IsEnumerable()
+                    && (type.GetGenericArguments()[0].IsValueType
+                    || type.GetGenericArguments()[0].Equals(typeof(string)))
+                || type.IsValueType || Type.Equals(typeof(string));
+
+            IsNullable = type.IsNullable();
+            IsEnumerable = type.IsEnumerable();
+        }
+
+        /// <summary>
+        /// Gets the target property name.
+        /// </summary>
+        public string PropertyName { get; }
+
+        /// <summary>
+        /// Gets the name of the column in the data source.
+        /// </summary>
+        public string DataName { get; }
+
+        /// <summary>
+        /// Gets the prefix of the column in the data source.
+        /// </summary>
+        public string DataPrefix { get; }
+
+        /// <summary>
+        /// Gets the full name of the column in the data source.
+        /// </summary>
+        public string DataFullName => $"{DataPrefix}{DataName}";
+
+        /// <summary>
+        /// Determine whether the property is nullable.
+        /// </summary>
+        public bool IsNullable { get; }
+
+        /// <summary>
+        /// Determine whether the property is a value type|string or reference type.
+        /// </summary>
+        public bool IsPrimitive { get; }
+
+        /// <summary>
+        /// Determine whether the property is used for uniquely identify the data source.
+        /// </summary>
+        public bool IsIdentity { get; protected set; }
+
+        /// <summary>
+        /// Determine whether the property is a collection.
+        /// </summary>
+        public bool IsEnumerable { get; }
+
+        /// <summary>
+        /// Gets the property type.
+        /// </summary>
+        public Type Type { get; }
+
+        /// <summary>
+        /// Returns the property type.
+        /// <para>If the entity type is nullable, returns <see langword="Nullable.GetUnderlyingType(Type)"/>.</para>
+        /// If the entity is a collection, returns <see langword="Type.GetGenericArguments()[0]"/>.
+        /// </summary>
+        public Type GetPropertyType()
+        {
+            Func<Type> typeProducer = () =>
+              {
+                  var targetType = Type;
+                  if (IsNullable) targetType = Nullable.GetUnderlyingType(targetType);
+                  if (IsEnumerable) targetType = targetType.GetGenericArguments()[0];
+
+                  return targetType;
+              };
+
+            return (Type)GetFromCache($"BasicType{Type.FullName}", typeProducer);
+        }
+
+        /// <summary>
+        /// Returns the property type.
+        /// If the entity is a collection, returns <see langword="Type.GetGenericArguments()[0]"/>.
+        /// </summary>
+        public virtual Type GetPropertyStronglyType()
+        {
+            Func<Type> typeProducer = () =>
+              {
+                  var targetType = Type;
+                  return IsNullable ? Nullable.GetUnderlyingType(targetType) : targetType;
+              };
+
+            return (Type)GetFromCache($"StronglyType{Type.FullName}", typeProducer);
+        }
+
+        /// <summary>
+        /// Creates an instance of the <see cref="System.Type"/>. The type must contains a parameterless constructor.
+        /// </summary>
+        /// <returns>A new instance.</returns>
+        public virtual object CreateProperty()
+        {
+            return GetFromCache(
+                $"BasicInstance{Type.FullName}",
+                () => Activator.CreateInstance(GetPropertyType()));
+        }
+
+        /// <summary>
+        /// Creates an instance of the exactly value to <see cref="System.Type"/>.
+        /// </summary>
+        /// <returns>An new instance of <see cref="System.Type"/>.</returns>
+        public virtual object CreateStronglyTypedProperty()
+        {
+            return GetFromCache(
+                $"StronglyInstance{Type}",
+                () => Activator.CreateInstance(GetPropertyStronglyType()));
+        }
+
+        /// <summary>
+        /// Maps the data row to the property.
+        /// </summary>
+        /// <param name="source">The data row to act on.</param>
+        /// <param name="entity">the entity to save to.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">the <paramref name="entity"/> is null.</exception>
+        public virtual void Map(DataRow source, object entity)
+        {
+            if (source.Table.Columns.Contains(DataFullName))
+            {
+                var dataValue = source[DataFullName];
+                SetValue(entity, dataValue);
+            }
+        }
+
+        /// <summary>
+        /// Sets the value to the target using the property environment.
+        /// </summary>
+        /// <param name="target">The target to act on.</param>
+        /// <param name="value">The value to use.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="target"/> is null.</exception>
+        public virtual void SetValue(object target, object value)
+        {
+            if (target is null) throw new ArgumentNullException(nameof(target));
+
+            var dataValue = value;
+            if (value is null || value is DBNull)
+                dataValue = null;
+
+            var lockTaken = false;
+            try
+            {
+                _spinLock.Enter(ref lockTaken);
+                var propertyInfo = target.GetType().GetProperty(PropertyName);
+                if (IsEnumerable)
+                {
+                    if (propertyInfo.GetValue(target, null) is null)
+                        propertyInfo.SetValue(target, CreateStronglyTypedProperty());
+
+                    ((IList)propertyInfo.GetValue(target, null)).Add(dataValue);
+                }
+                else
+                {
+                    propertyInfo.SetValue(target, dataValue);
+                }
+            }
+            finally
+            {
+                if (lockTaken) _spinLock.Exit(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Implementation of a mapping associated with a property and a specify type class.
+    /// </summary>
+    /// <typeparam name="T">Type of the class.</typeparam>
+    public class DataMapperProperty<T> : DataMapperProperty
+        where T : class, new()
+    {
+        /// <summary>
+        /// Initializes a new instance of <see cref="DataMapperProperty{T}"/> with all arguments.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="dataName">The data name from the source.</param>
+        /// <param name="dataPrefix">The data prefix from the source.</param>
+        /// <param name="isIdentity">Whether the property is an identity key or not.</param>
+        /// <param name="type">The property type.</param>
+        /// <param name="memoryCache"></param>
+        /// <exception cref="ArgumentNullException">The <paramref name="propertyName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="dataPrefix"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="dataName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        public DataMapperProperty(
+            string propertyName,
+            string dataName,
+            string dataPrefix,
+            bool isIdentity,
+            Type type,
+            IMemoryCache memoryCache)
+            : base(propertyName, dataName, dataPrefix, isIdentity, type, memoryCache) { }
+
+        /// <summary>
+        /// Sets the value to the target using the property environment.
+        /// </summary>
+        /// <param name="target">The target to act on.</param>
+        /// <param name="value">The value to use.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="target"/> is null.</exception>
+        public void SetValue(T target, object value) => base.SetValue(target, value);
+
+        /// <summary>
+        /// Creates an instance of the exactly value to <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>An new instance of <typeparamref name="T"/>.</returns>
+        public new T CreateProperty()
+        {
+            return (T)GetFromCache(
+                $"BasicInstance{Type.FullName}",
+                () => Activator.CreateInstance(GetPropertyType()));
+        }
+
+        /// <summary>
+        /// Creates an instance of the exactly value to <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>An new instance of <typeparamref name="T"/>.</returns>
+        public new T CreateStronglyTypedProperty()
+        {
+            return (T)GetFromCache(
+                $"StronglyInstance{Type.FullName}",
+                () => Activator.CreateInstance(GetPropertyStronglyType()));
+        }
+    }
+}
+
+using System;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Defines the prefix of the property/field on the target data source.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class DataMapperPrefixAttribute : Attribute
+    {
+        /// <summary>
+        /// Defines the prefix of the property/field to be used on a data source.
+        /// </summary>
+        /// <param name="prefix">The prefix value.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="prefix"/> is null.</exception>
+        public DataMapperPrefixAttribute(string prefix)
+        {
+            Prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
+        }
+
+        /// <summary>
+        /// Gets the value of the prefix string used to map the data source column with.
+        /// </summary>
+        public string Prefix { get; }
+    }
+}
+
+using System;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Defines the name of the property/field on the target data source.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class DataMapperNameAttribute : Attribute
+    {
+        /// <summary>
+        /// Defines the name of the property/field to be used on a data source.
+        /// </summary>
+        /// <param name="name">The name value.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="name"/> is null.</exception>
+        public DataMapperNameAttribute(string name)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+        }
+
+        /// <summary>
+        /// Gets the value of the name string used to map the data source column with.
+        /// </summary>
+        public string Name { get; }
+    }
+}
+
+using Microsoft.Extensions.Caching.Memory;
+using System;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    public abstract class DataMapperMemoryCacheAccessor
+    {
+        protected readonly IMemoryCache MemoryCache;
+        protected DataMapperMemoryCacheAccessor(IMemoryCache memoryCache)
+        {
+            MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        }
+        protected virtual object GetFromCache(string key, Func<object> creator)
+        {
+            if (!MemoryCache.TryGetValue(key, out var found))
+            {
+                found = creator();
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(10));
+
+                MemoryCache.Set(key, found, cacheEntryOptions);
+            }
+
+            return found;
+        }
+    }
+}
+
+using System;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Denotes one or more properties that uniquely identify the decorated class.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public sealed class DataMapperKeysAttribute : Attribute
+    {
+        /// <summary>
+        /// Initializes a new instance of <see cref="DataMapperKeysAttribute"/> with the collection of keys.
+        /// </summary>
+        /// <param name="keys">List of keys to be used to uniquely identify the decorated class.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="keys"/> is null or empty.</exception>
+        public DataMapperKeysAttribute(params string[] keys)
+        {
+            if (keys is null)
+                throw new ArgumentNullException(nameof(keys));
+            if (keys.Length <= 0)
+                throw new ArgumentException("The collection of keys can not be empty.");
+
+            Keys = keys;
+        }
+
+        /// <summary>
+        /// Gets the collection of keys used to uniquely identify the decorated class.
+        /// </summary>
+        public string[] Keys { get; }
+    }
+}
+
+using System;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Contains information an event raised in the mapper.
+    /// </summary>
+    public sealed class DataMapperEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Build a new instance of <see cref="DataMapperEventArgs"/> with the specified message.
+        /// </summary>
+        /// <param name="message">The message to registered.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="message"/> is null.</exception>
+        public DataMapperEventArgs(string message)
+            => Message = message ?? throw new ArgumentException(nameof(message));
+        public string Message { get; private set; }
+    }
+}
+
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Linq;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Provides with a method to build implementations of 
+    /// <see cref="DataMapperEntity"/> and <see cref="DataMapperEntity{T}"/>.
+    /// </summary>
+    public class DataMapperEntityBuilder : DataMapperMemoryCacheAccessor, IFluent
+    {
+        private readonly DataMapperPropertyBuilder _propertyBuilder;
+
+        public DataMapperEntityBuilder(
+            DataMapperPropertyBuilder propertyBuilder,
+            IMemoryCache memoryCache)
+            : base(memoryCache)
+        {
+            _propertyBuilder = propertyBuilder ?? throw new ArgumentNullException(nameof(propertyBuilder));
+        }
+
+        /// <summary>
+        /// Builds an implementation of <see cref="DataMapperEntity{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the class.</typeparam>
+        /// <returns>An implementation of <see cref="DataMapperEntity{T}"/>.</returns>
+        /// <exception cref="InvalidOperationException">Unable to build an instance. See inner exception.</exception>
+        public DataMapperEntity<T> Build<T>() where T : class, new()
+        {
+            Func<DataMapperEntity<T>> entityProducer = () =>
+              {
+                  var parameters = BuildParameters(typeof(T));
+                  var properties = parameters
+                      .Type
+                      .GetProperties()
+                      .Select(property => _propertyBuilder.Build<T>(property, parameters.IdentityProperties));
+
+                  var dataMapperEntity = new DataMapperEntity<T>(typeof(T), properties, MemoryCache);
+                  dataMapperEntity.SetEntity(dataMapperEntity.CreateEntity());
+
+                  return dataMapperEntity;
+              };
+
+            return (DataMapperEntity<T>)GetFromCache(
+                 $"BasicTypeMapperEntity{typeof(T).FullName}",
+                 entityProducer);
+        }
+
+        /// <summary>
+        /// Builds an implementation of <see cref="DataMapperEntity"/>.
+        /// </summary>
+        /// <param name="type">The type of the class.</param>
+        /// <returns>An instance of <see cref="DataMapperEntity"/>.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Unable to build an instance. See inner exception.</exception>
+        public DataMapperEntity Build(Type type)
+        {
+            Func<DataMapperEntity> entityProducer = () =>
+              {
+                  var parameters = BuildParameters(type);
+                  var properties = parameters
+                      .Type
+                      .GetProperties()
+                      .Select(property => _propertyBuilder.Build(property, parameters.IdentityProperties));
+
+                  var dataMapperEntity = new DataMapperEntity(type, properties, MemoryCache);
+                  dataMapperEntity.SetEntity(dataMapperEntity.CreateEntity());
+
+                  return dataMapperEntity;
+              };
+
+            return (DataMapperEntity)GetFromCache(
+                $"BasicTypeMapperEntity{type.FullName}",
+                entityProducer);
+        }
+
+        protected (string[] IdentityProperties, Type Type) BuildParameters(Type source)
+        {
+            var type = source ?? throw new ArgumentNullException(nameof(source));
+
+            if (type.IsEnumerable())
+                type = type.GetGenericArguments()[0];
+            else if (type.IsNullable())
+                type = Nullable.GetUnderlyingType(type);
+
+            var keys = type.GetAttribute<DataMapperKeysAttribute>()
+                    .ToOptional()
+                    .Map(attr => attr.Keys)
+                    .Reduce(() => Array.Empty<string>());
+
+            return (keys, type);
+        }
+    }
+}
+
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Implementation of a mapping associated with a class.
+    /// </summary>
+    public class DataMapperEntity : DataMapperMemoryCacheAccessor, IFluent
+    {
+        static readonly string Key = "ABCDEFG0123456789";
+        static readonly IStringGenerator stringGenerator = new StringGenerator();
+        static readonly IStringEncryptor stringEncryptor = new StringEncryptor();
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DataMapperEntity"/> that contains a type and a collection of properties.
+        /// </summary>
+        /// <param name="type">the type of the entity.</param>
+        /// <param name="properties">The collection of properties.</param>
+        /// <param name="memoryCache"></param>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="properties"/> is null.</exception>
+        public DataMapperEntity(
+            Type type,
+            IEnumerable<DataMapperProperty> properties,
+            IMemoryCache memoryCache)
+            : base(memoryCache)
+        {
+            Type = type ?? throw new ArgumentNullException(nameof(type));
+            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+            IsNullable = type.IsNullable();
+            IsEnumerable = type.IsEnumerable();
+        }
+
+        /// <summary>
+        /// Gets the entity instance.
+        /// </summary>
+        public object Entity { get; protected set; }
+
+        /// <summary>
+        /// Gets the type full name of the instance.
+        /// </summary>
+        public Type Type { get; }
+
+        /// <summary>
+        /// Gets the collection of properties from the type.
+        /// </summary>
+        public IEnumerable<DataMapperProperty> Properties { get; }
+
+        /// <summary>
+        /// Gets the identity that is unique for the entity.
+        /// </summary>
+        public string Identity { get; protected set; }
+        /// <summary>
+        /// Determine whether or not the underlying object is already signed.
+        /// </summary>
+        public bool IsIdentified => !string.IsNullOrWhiteSpace(Identity);
+
+        /// <summary>
+        /// Determine whether the property is nullable.
+        /// </summary>
+        public bool IsNullable { get; }
+
+        /// <summary>
+        /// Determine whether the property is a collection.
+        /// </summary>
+        public bool IsEnumerable { get; }
+
+        /// <summary>
+        /// Builds the identity using the current entity instance.
+        /// The properties must be already assigned.
+        /// </summary>
+        public void BuildIdentity()
+        {
+            if (IsIdentified)
+                return;
+
+            var value = string.Empty;
+            if (Properties.Count(property => property.IsIdentity) <= 0)
+            {
+                value = stringGenerator.Generate(32, Key);
+            }
+            else
+            {
+                if (Entity is null)
+                    return;
+
+                value = Properties
+                    .Where(property => property.IsIdentity)
+                    .Select(property =>
+                        Entity
+                            .GetType()
+                            .GetProperty(property.PropertyName)
+                            ?.GetValue(Entity, null)
+                            ?.ToString())
+                    .StringJoin(';');
+            }
+
+            DoBuildIdentity(() => new[] { value });
+        }
+
+        /// <summary>
+        /// Builds the identity using the keys provided.
+        /// </summary>
+        /// <param name="keysProvider">Identity keys provider.</param>
+        /// <exception cref="ArgumentNullException">the <paramref name="keysProvider"/> is null.</exception>
+        public void BuildIdentity(Func<IEnumerable<DataMapperProperty>, IEnumerable<string>> keysProvider)
+        {
+            if (Properties.Count(property => property.IsIdentity) <= 0)
+            {
+                BuildIdentity();
+                return;
+            }
+
+            DoBuildIdentity(() => keysProvider(Properties));
+        }
+
+        protected void DoBuildIdentity(Func<IEnumerable<string>> keysProvider)
+        {
+            var value = keysProvider().StringJoin(';').Trim();
+            if (string.IsNullOrWhiteSpace(value))
+                value = stringGenerator.Generate(32, Key);
+
+            Identity = stringEncryptor.Encrypt(value, Key);
+        }
+
+        /// <summary>
+        /// Returns the entity type.
+        /// <para>If the entity type is nullable, returns <see langword="Nullable.GetUnderlyingType(Type)"/>.</para>
+        /// If the entity is a collection, returns <see langword="Type.GetGenericArguments()[0]"/>.
+        /// </summary>
+        public virtual Type GetEntityType()
+        {
+            Func<Type> typeProducer = () =>
+              {
+                  var targetType = Type;
+                  if (IsNullable) targetType = Nullable.GetUnderlyingType(targetType);
+                  if (IsEnumerable) targetType = targetType.GetGenericArguments()[0];
+
+                  return targetType;
+              };
+
+            return (Type)GetFromCache(
+                $"BasicType{Type.FullName}",
+                typeProducer);
+        }
+
+        /// <summary>
+        /// Sets an instance value to the entity.
+        /// </summary>
+        /// <param name="instance">The instance to be set.</param>
+        public void SetEntity(object instance) => Entity = instance;
+
+        /// <summary>
+        /// Creates an instance of the exactly value to <see cref="Type"/>.
+        /// </summary>
+        public virtual object CreateEntity()
+        {
+            Func<object> instanceProducer = () => Activator.CreateInstance(GetEntityType());
+
+            return GetFromCache(
+                $"BasicInstance{Type.FullName}",
+                instanceProducer);
+        }
+    }
+
+    /// <summary>
+    /// Implementation of a mapping associated with a specific type class.
+    /// </summary>
+    /// <typeparam name="T">Type of the class.</typeparam>
+    public class DataMapperEntity<T> : DataMapperEntity
+        where T : class, new()
+    {
+        /// <summary>
+        /// Initializes a new instance of <see cref="DataMapperEntity{T}"/> that contains a type and a collection of properties.
+        /// </summary>
+        /// <param name="type">the type of the entity.</param>
+        /// <param name="properties">The collection of properties.</param>
+        /// <param name="memoryCache"></param>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="properties"/> is null.</exception>
+        public DataMapperEntity(
+            Type type,
+            IEnumerable<DataMapperProperty<T>> properties,
+            IMemoryCache memoryCache)
+            : base(type, properties, memoryCache)
+        {
+            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+        }
+
+        public new T Entity => (T)base.Entity;
+        public new IEnumerable<DataMapperProperty<T>> Properties { get; }
+        public void BuildIdentity(Func<IEnumerable<DataMapperProperty<T>>, IEnumerable<string>> keysProvider)
+        {
+            if (Properties.Count(property => property.IsIdentity) <= 0)
+            {
+                BuildIdentity();
+                return;
+            }
+
+            DoBuildIdentity(() => keysProvider(Properties));
+        }
+        public virtual new T CreateEntity() => (T)base.CreateEntity();
+    }
+}
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Database
+{
+    /// <summary>
+    /// Implementation of mapping a <see cref="DataTable"/> to an entities.
+    /// </summary>
+    public sealed class DataMapper : IDataMapper
+    {
+        private readonly DataMapperRow _dataMapperRow;
+        private readonly ICorrelationCollection<string, DataMapperEntity> _mappedEntites;
+
+        public DataMapper(
+            DataMapperRow dataMapperRow,
+            ICorrelationCollection<string, DataMapperEntity> mappedEntities)
+        {
+            _dataMapperRow = dataMapperRow ?? throw new ArgumentNullException(nameof(dataMapperRow));
+            _mappedEntites = mappedEntities ?? throw new ArgumentNullException(nameof(mappedEntities));
+        }
+
+        public ExecutionResult<IEnumerable<T>> MapFrom<T>(
+            DataTable source,
+            CancellationToken cancellationToken,
+            DataMapperOptions options = DataMapperOptions.Normal)
+            where T : class, new()
+        {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
+
+            var exceptions = new ConcurrentQueue<Exception>();
+            var parallelOptions = new ParallelOptions
+            {
+                CancellationToken = cancellationToken,
+                MaxDegreeOfParallelism = Environment.ProcessorCount * 20
+            };
+
+            try
+            {
+                switch (options)
+                {
+                    case DataMapperOptions.Normal:
+                        foreach (DataRow row in source.Rows)
+                        {
+                            _dataMapperRow.MapFrom<T>(row);
+                            parallelOptions.CancellationToken.ThrowIfCancellationRequested();
+                        }
+                        break;
+                    case DataMapperOptions.SpeedUp:
+                        var rowPartitioner = Partitioner
+                            .Create(source.Rows.Cast<DataRow>(), EnumerablePartitionerOptions.None);
+
+                        Parallel.ForEach(
+                            rowPartitioner,
+                            parallelOptions,
+                            row =>
+                            {
+                                _dataMapperRow.MapFrom<T>(row);
+                                parallelOptions.CancellationToken.ThrowIfCancellationRequested();
+                            });
+                        break;
+                    case DataMapperOptions.Expensive:
+                        Parallel.ForEach(
+                           source.Rows.Cast<DataRow>(),
+                           parallelOptions,
+                           row =>
+                           {
+                               _dataMapperRow.MapFrom<T>(row);
+                               parallelOptions.CancellationToken.ThrowIfCancellationRequested();
+                           });
+                        break;
+                }
+            }
+            catch (Exception exception)
+            {
+                exceptions.Enqueue(exception);
+            }
+
+            if (exceptions.Count > 0)
+                return ExecutionResult<IEnumerable<T>>.Error(new AggregateException(exceptions));
+
+            return ExecutionResult<IEnumerable<T>>.Some(
+                _mappedEntites.Select(entity => entity.Value.Entity as T).ToList());
+        }
+    }
+}
+
+using Intesa.SanPaolo.Servitia.Practices.Database;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Threading;
+
+namespace Intesa.SanPaolo.Servitia.Practices.Tests
+{
+    [TestClass]
+    public class DataMapperRowTests
+    {
+        readonly DataMapper dataMapper;
+        readonly IMemoryCache memoryCache;
+        readonly DataTable dataTable;
+        const string connection = "Data Source=ser-db-dev.servitia.internal;Initial Catalog=VisionBD_AMS;User id=visionBDAMS;Password=visionBDAMS9$;";
+
+        public DataMapperRowTests()
+        {
+            var dbProviderFactoryProvider = new DataProviderFactoryProvider();
+            DbProviderFactory dbProviderfactory = dbProviderFactoryProvider
+                .GetProviderFactory(DataProviderType.MSSQL);
+
+            var memoryCache = new ServiceCollection()
+              .AddMemoryCache()
+              .BuildServiceProvider()
+              .GetService<IMemoryCache>();
+
+            var dataPropertyBuilder = new DataMapperPropertyBuilder(memoryCache);
+            var dataEntityBuilder = new DataMapperEntityBuilder(dataPropertyBuilder, memoryCache);
+            var logs = new CorrelationCollection<string, DataMapperEntity>();
+            var dataMapperRow = new DataMapperRow(dataEntityBuilder, logs);
+            dataMapper = new DataMapper(dataMapperRow, logs);
+
+            using (var dbConnection = CreateDbConnection(dbProviderfactory, connection))
+            using (var command = dbConnection.CreateCommand())
+            using (var adapter = dbProviderfactory.CreateDataAdapter())
+            using (var dataSet = new DataSet())
+            {
+                command.CommandText = "SELECT TOP (1000) cli_clientId, cli_name, cli_firstName, cli_birthDate, cli_address, cli_houseNumber, cli_zip, cli_city FROM client WHERE cli_clientId IS NOT NULL";
+                command.CommandType = CommandType.Text;
+                adapter.SelectCommand = command;
+                adapter.Fill(dataSet);
+                dataTable = dataSet.Tables[0];
+            }
+        }
+
+        [TestMethod]
+        public void MapTableNormal()
+        {
+
+            var executionResult = dataMapper.MapFrom<Customer>(
+                dataTable, CancellationToken.None, DataMapperOptions.Normal);
+
+            Assert.IsTrue(executionResult.Single().Count() > 0);
+        }
+
+        [TestMethod]
+        public void MapTableSpeedUp()
+        {
+
+            var logs = dataMapper.MapFrom<Customer>(dataTable, CancellationToken.None, DataMapperOptions.SpeedUp);
+
+            var result = logs.Single().ToList();
+            Assert.IsTrue(result.Count() > 0);
+
+        }
+
+        [TestMethod]
+        public void MaptableExpensive()
+        {
+            var executionResult = dataMapper.MapFrom<Customer>(
+                dataTable, CancellationToken.None, DataMapperOptions.Expensive);
+
+            Assert.IsTrue(executionResult.Single().Count() > 0);
+
+            //table.Rows.Cast<DataRow>()
+            //    .AsParallel()
+            //    .ForAll(row => dataMapper.MapFrom<Customer>(row));
+
+            //var result = logs.Select(l => l.Value.Entity).ToList();
+            //Assert.IsTrue(result.Count() > 0);
+        }
+
+        DbConnection CreateDbConnection(DbProviderFactory dbProviderFactory, string connectionString)
+        {
+            var dbConnection = dbProviderFactory.CreateConnection();
+            dbConnection.ConnectionString = connectionString;
+            return dbConnection;
+        }
+
+        [DataMapperKeys(nameof(Id))]
+        [DataMapperPrefix("cli_")]
+        public class Customer
+        {
+            [DataMapperName("clientId")]
+            public string Id { get; set; }
+            [DataMapperName("firstName")]
+            public string FirstName { get; set; }
+            [DataMapperName("name")]
+            public string LastName { get; set; }
+            [DataMapperName("birthDate")]
+            public DateTime BirthDate { get; set; }
+            public List<Address> Addresses { get; set; }
+        }
+
+        [DataMapperPrefix("cli_")]
+        public class Address
+        {
+            [DataMapperName("houseNumber")]
+            public string HouseNumber { get; set; }
+            [DataMapperName("address")]
+            public string Street { get; set; }
+            [DataMapperName("city")]
+            public string City { get; set; }
+            [DataMapperName("zip")]
+            public string PostalCode { get; set; }
+        }
+    }
+}
