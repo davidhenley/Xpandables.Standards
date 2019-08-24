@@ -17,6 +17,8 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -240,6 +242,59 @@ namespace System
             }
 
             return new ExecutionResult<Type>(resultFromAss.Exception);
+        }
+
+        /// <summary>
+        /// Invokes the specified member, using the specified binding constraints and matching
+        /// the specified argument list.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="memberName">The string containing the name of the constructor, method, property, or field
+        /// member to invoke. /// -or- /// An empty string (&quot;&quot;) to invoke the default
+        /// member. /// -or- /// For IDispatch members, a string representing the DispID,
+        /// for example &quot;[DispID=3]&quot;.</param>
+        /// <param name="invokeAttr">A bitmask comprised of one or more System.Reflection.BindingFlags that specify
+        /// how the search is conducted. The access can be one of the BindingFlags such as
+        /// Public, NonPublic, Private, InvokeMethod, GetField, and so on. The type of lookup
+        /// need not be specified. If the type of lookup is omitted, BindingFlags.Public
+        /// | BindingFlags.Instance | BindingFlags.Static are used.</param>
+        /// <param name="binder">An object that defines a set of properties and enables binding, which can involve
+        /// selection of an overloaded method, coercion of argument types, and invocation
+        /// of a member through reflection. /// -or- /// A null reference (Nothing in Visual
+        /// Basic), to use the System.Type.DefaultBinder. Note that explicitly defining a
+        /// System.Reflection.Binder object may be required for successfully invoking method
+        /// overloads with variable arguments.</param>
+        /// <param name="target">The object on which to invoke the specified member.</param>
+        /// <param name="args">An array containing the arguments to pass to the member to invoke.</param>
+        /// <returns>An object representing the return value of the invoked member
+        /// or an empty result with handled exception.</returns>
+        public static ExecutionResult<object> TypeInvokeMember(
+            this Type type,
+            string memberName,
+            BindingFlags invokeAttr,
+            [AllowNull] Binder binder,
+            object target,
+            [AllowNull] object[] args)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (memberName is null) throw new ArgumentNullException(nameof(memberName));
+
+            try
+            {
+                return new ExecutionResult<object>(
+                    type.InvokeMember(memberName, invokeAttr, binder, target, args, CultureInfo.InvariantCulture));
+            }
+            catch (Exception exception) when (exception is ArgumentNullException
+                                            || exception is ArgumentException
+                                            || exception is MethodAccessException
+                                            || exception is MissingFieldException
+                                            || exception is MissingMethodException
+                                            || exception is TargetException
+                                            || exception is AmbiguousMatchException
+                                            || exception is InvalidOperationException)
+            {
+                return new ExecutionResult<object>(exception);
+            }
         }
     }
 }
