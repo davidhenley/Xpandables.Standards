@@ -79,6 +79,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Persistence operation failed. See inner exception..
+        /// </summary>
+        public static string DataContextPersistenceException {
+            get {
+                return ResourceManager.GetString("DataContextPersistenceException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à EnumerationType derived class expected..
         /// </summary>
         public static string EnumerationTypeDerivedClassExpected {

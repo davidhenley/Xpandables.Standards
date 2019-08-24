@@ -123,6 +123,9 @@
   <data name="CommandQueryHandlerMissingImplementation" xml:space="preserve">
     <value>The coresponding handler for '{0}' is missing.</value>
   </data>
+  <data name="DataContextPersistenceException" xml:space="preserve">
+    <value>Persistence operation failed. See inner exception.</value>
+  </data>
   <data name="EnumerationTypeDerivedClassExpected" xml:space="preserve">
     <value>EnumerationType derived class expected.</value>
   </data>
