@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -161,5 +162,84 @@ namespace System
                 .OfType<DescriptionAttribute>()
                 .FirstOrDefault()
                 ?.Description ?? string.Empty;
+
+        /// <summary>
+        /// Returns a loaded assembly from its name.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name.</param>
+        /// <returns>If found, returns a loaded assembly otherwise an empty result.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
+        public static ExecutionResult<Assembly> AssemblyLoadedFromString(this string assemblyName)
+        {
+            if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
+
+            try
+            {
+                return new ExecutionResult<Assembly>(Assembly.Load(assemblyName));
+            }
+            catch (Exception exception) when (exception is ArgumentException
+                                            || exception is FileNotFoundException
+                                            || exception is FileLoadException
+                                            || exception is BadImageFormatException)
+            {
+                return new ExecutionResult<Assembly>(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns type from its string name.
+        /// </summary>
+        /// <param name="typeName">The name of the type to find.</param>
+        /// <returns>if found, returns the type ortherwise an empty result.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
+        public static ExecutionResult<Type> TypeFromString(this string typeName)
+        {
+            if (typeName is null) throw new ArgumentNullException(nameof(typeName));
+
+            try
+            {
+                return new ExecutionResult<Type>(Type.GetType(typeName, true, true));
+            }
+            catch (Exception exception) when (exception is TargetInvocationException
+                                            || exception is TypeLoadException
+                                            || exception is ArgumentException
+                                            || exception is FileNotFoundException
+                                            || exception is FileLoadException
+                                            || exception is BadImageFormatException)
+            {
+                return new ExecutionResult<Type>(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns the type, if not found, try to load from the assembly.
+        /// </summary>
+        /// <param name="typeName">The name of the type to find.</param>
+        /// <param name="assemblyName">The assembly to act on.</param>
+        /// <returns>if found, returns the type ortherwise an empty result.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
+        public static ExecutionResult<Type> TypeFromString(this string typeName, string assemblyName)
+        {
+            if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
+            if (typeName is null) throw new ArgumentNullException(nameof(typeName));
+
+            var resultFromType = TypeFromString(typeName);
+            if (resultFromType.Any()) return resultFromType;
+
+            var resultFromAss = AssemblyLoadedFromString(assemblyName);
+            if (resultFromAss.Any())
+            {
+                var resultLoadedType = resultFromAss.Single()
+                    .GetExportedTypes()
+                    .FirstOrEmpty(t => t.FullName.Equals(typeName, StringComparison.InvariantCultureIgnoreCase));
+
+                return resultLoadedType
+                    .Map(value => new ExecutionResult<Type>(value))
+                    .Reduce(() => new ExecutionResult<Type>());
+            }
+
+            return new ExecutionResult<Type>(resultFromAss.Exception);
+        }
     }
 }
