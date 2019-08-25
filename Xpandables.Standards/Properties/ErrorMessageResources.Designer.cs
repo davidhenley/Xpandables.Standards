@@ -97,6 +97,33 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Invoke cannot be called recursively - try using a temporary variable..
+        /// </summary>
+        public static string LinqInvokeRecursivelyNotAllow {
+            get {
+                return ResourceManager.GetString("LinqInvokeRecursivelyNotAllow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Predicate cannot be started again..
+        /// </summary>
+        public static string LinqPredicateAlreadyStarted {
+            get {
+                return ResourceManager.GetString("LinqPredicateAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à IAsyncEnumeraableAccessor not implemented..
+        /// </summary>
+        public static string LinqQueryDontImplementIAsyncEnumeratorAccessor {
+            get {
+                return ResourceManager.GetString("LinqQueryDontImplementIAsyncEnumeratorAccessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Circular dependency found..
         /// </summary>
         public static string PropertyChangedCircularDependency {
