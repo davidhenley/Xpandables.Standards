@@ -25,7 +25,7 @@ namespace System
     /// <typeparam name="T">Type of the value.</typeparam>
     [Serializable]
     [DebuggerDisplay("{Starting}, {Ending}")]
-    public sealed class Interval<T> : IValidatableAttribute
+    public sealed class Interval<T> : IFluent
     {
         /// <summary>
         /// Returns a new instance of <see cref="Interval{TValue}"/> with the specified values.

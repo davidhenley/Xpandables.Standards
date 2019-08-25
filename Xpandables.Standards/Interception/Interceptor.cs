@@ -36,7 +36,7 @@ namespace System.Interception
         /// Any operation that does not deliver or do what it promises to do should throw an exception.
         /// </summary>
         /// <param name="invocation">The method argument to be called</param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="invocation" /> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="invocation" /> is null.</exception>
         public abstract void Intercept(IInvocation invocation);
     }
 }

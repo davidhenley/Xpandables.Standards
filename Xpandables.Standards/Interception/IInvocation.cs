@@ -36,12 +36,12 @@ namespace System.Interception
         /// If you set this value to null, the process will resume normally and
         /// take care to provide a <see cref="ReturnValue"/> if necessary.
         /// </summary>
-        Exception Exception { get; }
+        Optional<Exception> Exception { get; }
 
         /// <summary>
         /// Gets the executed method return value, only provided for non-void method and when no exception handled.
         /// </summary>
-        object ReturnValue { get; }
+        Optional<object> ReturnValue { get; }
 
         /// <summary>
         /// Get the elapsed time execution in milliseconds for the underlying method.

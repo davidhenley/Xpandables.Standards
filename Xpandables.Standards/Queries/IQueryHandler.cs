@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Query
 {
     /// <summary>
     /// Defines a generic method that a class implements to handle a type-specific query and
@@ -24,9 +24,6 @@ namespace System.Patterns
     /// </summary>
     /// <typeparam name="TQuery">Type of the query that will be used as argument.</typeparam>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    /// <remarks>
-    /// Any operation that does not deliver or do what it promises to do should throw an exception.
-    /// </remarks>
     public interface IQueryHandler<in TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {

@@ -22,38 +22,6 @@ namespace System
 {
     /// <summary>
     /// Default implementation of <see cref="IStringGenerator"/>.
-    /// <para>The implementation uses the <see cref="RNGCryptoServiceProvider"/>.</para>
     /// </summary>
-    /// <remarks>
-    /// Inspiration from https://stackoverflow.com/questions/32932679/using-rngcryptoserviceprovider-to-generate-random-string
-    /// </remarks>
-    public sealed class StringGenerator : IStringGenerator
-    {
-        string IStringGenerator.Generate(int length, string lookupCharacters)
-        {
-            if (length <= 0) throw new ArgumentOutOfRangeException(nameof(length));
-            if (string.IsNullOrWhiteSpace(lookupCharacters)) throw new ArgumentNullException(nameof(lookupCharacters));
-
-            var stringResult = new StringBuilder(length);
-            using (var random = new RNGCryptoServiceProvider())
-            {
-                var count = (int)Math.Ceiling(Math.Log(lookupCharacters.Length, 2) / 8.0);
-                Diagnostics.Debug.Assert(count <= sizeof(uint));
-
-                var offset = BitConverter.IsLittleEndian ? 0 : sizeof(uint) - count;
-                var max = (int)(Math.Pow(2, count * 8) / lookupCharacters.Length) * lookupCharacters.Length;
-
-                var uintBuffer = new byte[sizeof(uint)];
-                while (stringResult.Length < length)
-                {
-                    random.GetBytes(uintBuffer, offset, count);
-                    var number = BitConverter.ToUInt32(uintBuffer, 0);
-                    if (number < max)
-                        stringResult.Append(lookupCharacters[(int)(number % lookupCharacters.Length)]);
-                }
-            }
-
-            return stringResult.ToString();
-        }
-    }
+    public sealed class StringGenerator : IStringGenerator { }
 }

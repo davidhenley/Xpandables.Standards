@@ -107,7 +107,7 @@ namespace System
             catch (FormatException exception)
             {
                 throw new InvalidOperationException(
-                    "Formatting string failed. See inner exception",
+                    ErrorMessageResources.StringHelperFormattingFailed,
                     exception);
             }
         }
@@ -138,7 +138,7 @@ namespace System
         /// If value is an empty array, the method returns String.Empty.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="collection"/> is null.</exception>
         public static string StringJoin<T>(this IEnumerable<T> collection, char separator)
-            => string.Join(separator.ToString(), collection);
+            => string.Join(separator.ToString(CultureInfo.InvariantCulture), collection);
 
         /// <summary>
         /// Converts a string to a value type.

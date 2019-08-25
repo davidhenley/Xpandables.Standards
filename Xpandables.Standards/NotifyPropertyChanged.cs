@@ -36,7 +36,11 @@ namespace System
         /// <summary>
         /// Initializes the <see cref="Dependencies"/> collection.
         /// </summary>
-        protected NotifyPropertyChanged() => Dependencies = DependenciesProvider();
+        protected NotifyPropertyChanged()
+        {
+            Dependencies = DependenciesProvider();
+            PropertyChanged = (s, e) => { };
+        }
 
         /// <summary>
         /// Checks if the property does not match the old one.
@@ -52,7 +56,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         protected bool SetProperty<TValue, TProperty>(
             ref TValue storage, TValue value, Expression<Func<T, TProperty>> selector)
-            => SetProperty(ref storage, value, GetMemberNameFromExpression<TProperty>(selector));
+            => SetProperty(ref storage, value, GetMemberNameFromExpression(selector));
 
         /// <summary>
         /// Checks if the property does not match the old one.
@@ -85,8 +89,7 @@ namespace System
         protected virtual bool SetProperty<TValue>(
             ref TValue storage, TValue value, [CallerMemberName] string propertyName = "")
         {
-            if (string.IsNullOrWhiteSpace(propertyName))
-                throw new ArgumentNullException($"The parameter {nameof(propertyName)} is missing.");
+            if (string.IsNullOrWhiteSpace(propertyName)) throw new ArgumentNullException(nameof(propertyName));
 
             if (EqualityComparer<TValue>.Default.Equals(storage, value))
                 return false;
@@ -103,7 +106,7 @@ namespace System
 
                 (from keyValues in Dependencies
                  from dependent in keyValues.Value
-                 where keyValues.Key.Equals(property)
+                 where keyValues.Key.Equals(property, StringComparison.InvariantCulture)
                  select dependent)
                  .ToList()
                  .ForEach(onPropertyChangedAction);
@@ -145,7 +148,8 @@ namespace System
             return nameOfExpression.Body is ConstantExpression constantExpression
                 ? constantExpression.Value.ToString()
                 : throw new ArgumentException(
-                    $"The parameter {nameof(nameOfExpression)} is not a {nameof(ConstantExpression)}.");
+                    ErrorMessageResources.PropertyChangedMemberExpressionExpected,
+                    nameof(nameOfExpression));
         }
 
         /// <summary>
@@ -163,13 +167,14 @@ namespace System
                 ?? ((UnaryExpression)propertyExpression.Body).Operand as MemberExpression)
                 ?.Member.Name ??
                 throw new ArgumentException(
-                    $"The parameter {nameof(propertyExpression)} is not a {nameof(MemberExpression)}.");
+                    ErrorMessageResources.PropertyChangedMemberExpressionExpected,
+                    nameof(propertyExpression));
         }
 
         /// <summary>
         /// Provides with the collection of dependencies found in the underlying type.
         /// </summary>
-        protected virtual IDictionary<string, List<string>> DependenciesProvider()
+        protected IDictionary<string, List<string>> DependenciesProvider()
         {
             var dependencies = new Dictionary<string, List<string>>();
 
@@ -185,16 +190,22 @@ namespace System
                 {
                     if (property.Name == dependency)
                         throw new InvalidOperationException(
-                            "Circular dependency. See inner exception.",
-                            new ArgumentException($"Property '{dependency}' of '{typeof(T).Name}' can not depends on itself."));
+                            ErrorMessageResources.PropertyChangedCircularDependency,
+                            new ArgumentException(
+                                ErrorMessageResources
+                                    .PropertyChangedCircularDependencyItself
+                                        .StringFormat(dependency, typeof(T).Name)));
 
                     if (dependencies.TryGetValue(dependency, out var notifiers))
                     {
                         Predicate<string> predicateProperty = new Predicate<string>(PredicateFindProperty);
                         if (notifiers.Find(predicateProperty) != null)
                             throw new InvalidOperationException(
-                                "Duplicate dependency. See inner exception",
-                                new ArgumentException($"Dependency property duplicated. '{property.Name}' has already a dependency on '{dependency}'."));
+                                ErrorMessageResources.PropertyChangedDuplicateDependency,
+                                new ArgumentException(
+                                    ErrorMessageResources
+                                        .PropertyChangedDuplicateDependencyMore
+                                            .StringFormat(property.Name, dependency)));
 
                         notifiers.Add(property.Name);
                     }
@@ -205,8 +216,11 @@ namespace System
                             && propertyNotifiers.Find(predicateFind) != null)
                         {
                             throw new InvalidOperationException(
-                                "Circular dependency. See inner exception.",
-                                new ArgumentException($"'{property.Name}' depends on '{dependency}' which one depends on '{property.Name}'."));
+                                ErrorMessageResources.PropertyChangedCircularDependency,
+                                new ArgumentException(
+                                    ErrorMessageResources
+                                        .PropertyChangedCircularDependencyMore
+                                            .StringFormat(property.Name, dependency, property.Name)));
                         }
 
                         dependencies.Add(dependency, new List<string> { property.Name });

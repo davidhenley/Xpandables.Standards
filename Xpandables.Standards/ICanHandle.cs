@@ -20,7 +20,7 @@ namespace System
     /// <summary>
     /// Provides a method that determines whether or not an argument can be handled.
     /// </summary>
-    public interface ICanHandle
+    public interface ICanHandle : IFluent
     {
         /// <summary>
         /// Determines whether or not a an argument can be handled by the underlying context.

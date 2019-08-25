@@ -15,21 +15,17 @@
  *
 ************************************************************************************************************/
 
-namespace System.Data
+namespace System.Design.Database
 {
     /// <summary>
     /// Provides with the data context instance.
     /// </summary>
-    /// <remarks>
-    /// Any operation that does not deliver or do what it promises to do should throw an exception.
-    /// </remarks>
     public interface IDataContextProvider
     {
         /// <summary>
         /// Gets the ambient data context according to the environment.
         /// </summary>
         /// <returns>An implementation of <see cref="IDataContext" />.</returns>
-        /// <exception cref="InvalidOperationException">Creating the context failed. See inner exception.</exception>
-        IDataContext GetDataContext();
+        ExecutionResult<IDataContext> GetDataContext();
     }
 }

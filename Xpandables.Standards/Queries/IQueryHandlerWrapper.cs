@@ -15,10 +15,7 @@
  *
 ************************************************************************************************************/
 
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace System.Patterns
+namespace System.Design.Query
 {
     /// <summary>
     /// This interface allows application authors to avoid use of C# dynamics with query pattern.

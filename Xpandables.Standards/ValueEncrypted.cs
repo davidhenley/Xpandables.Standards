@@ -43,7 +43,7 @@ namespace System
         public static ValueEncrypted CreateWith(string key, string value) => new ValueEncrypted(key, value);
 
         /// <summary>
-        /// provides with deconstruction for <see cref="ValueEncrypted"/>.
+        /// Provides with deconstruction for <see cref="ValueEncrypted"/>.
         /// </summary>
         /// <param name="key">The output key.</param>
         /// <param name="value">The output value.</param>

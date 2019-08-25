@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Query
 {
     /// <summary>
     /// Implementation for <see cref="IQueryHandlerWrapper{TResult}"/>.

@@ -16,12 +16,8 @@
 ************************************************************************************************************/
 
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
 
 namespace System
 {
@@ -155,7 +151,7 @@ namespace System
             catch (OverflowException exception)
             {
                 Diagnostics.Debug.WriteLine(exception);
-                return Optional<TEnum>.Empty();
+                return Optional<TEnum>.Empty;
             }
         }
 
@@ -176,85 +172,8 @@ namespace System
             catch (OverflowException exception)
             {
                 Diagnostics.Debug.WriteLine(exception);
-                return Optional<TEnum>.Empty();
+                return Optional<TEnum>.Empty;
             }
         }
-
-        /// <summary>
-        /// Casts the current object to the specified type if possible.
-        /// Otherwise return the default value of the target type.
-        /// </summary>
-        /// <typeparam name="T">The type to filter the source on.</typeparam>
-        /// <param name="source">The source to filter.</param>
-        /// <returns>An instance that contains source from the input of type T.</returns>
-        public static T OfCastTo<T>(this object source)
-        {
-            if (source is T target) return target;
-
-            return default;
-        }
-
-        /// <summary>
-        /// Makes a deep copy of the underlying object using binary copy.
-        /// If <paramref name="source"/> is null, return null.
-        /// </summary>
-        /// <param name="source">Instance of the object to clone.</param>
-        /// <returns>A new copy of the object.</returns>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        public static object MemberWiseClone(this object source)
-        {
-            try
-            {
-                using var memoryStream = new MemoryStream();
-                var binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize(memoryStream, source);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                return binaryFormatter.Deserialize(memoryStream);
-            }
-            catch (Exception exception) when (exception is Runtime.Serialization.SerializationException
-                                                || exception is Security.SecurityException
-                                                || exception is IOException
-                                                || exception is ArgumentException
-                                                || exception is ObjectDisposedException)
-            {
-                throw new InvalidOperationException("Cloning failed. See inner exception.", exception);
-            }
-        }
-
-        /// <summary>
-        /// Sets the specified task to be executed after the underlying one.
-        /// This is useful when you don't want to use the ContinueWith extension method.
-        /// </summary>
-        /// <typeparam name="T">Type of the source value.</typeparam>
-        /// <typeparam name="TResult">Type of the result value.</typeparam>
-        /// <param name="source">Instance of the source type.</param>
-        /// <param name="func">The delegate that defines the continuation task.</param>
-        /// <returns>A task that represents the fun operation. The task contains the operation result.</returns>
-        public static async Task<TResult> ThenAsync<T, TResult>(this Task<T> source, Func<T, Task<TResult>> func)
-            => await func(await source.ConfigureAwait(false)).ConfigureAwait(false);
-
-        /// <summary>
-        /// Sets the specified task to be executed after the underlying instance.
-        /// This is useful when you don't want to use the ContinueWith extension method.
-        /// </summary>
-        /// <typeparam name="T">Type of the source value.</typeparam>
-        /// <typeparam name="TResult">Type of the result value.</typeparam>
-        /// <param name="source">Instance of the source type.</param>
-        /// <param name="func">The delegate that defines the continuation task.</param>
-        /// <returns>A task that represents the fun operation. The task contains the operation result.</returns>
-        public static async Task<TResult> ThenAsync<T, TResult>(this T source, Func<T, Task<TResult>> func)
-            => await func(source).ConfigureAwait(false);
-
-        /// <summary>
-        /// Sets the specified task to be executed after the underlying instance.
-        /// This is useful when you don't want to use the ContinueWith extension method.
-        /// </summary>
-        /// <typeparam name="T">Type of the source value.</typeparam>
-        /// <typeparam name="TResult">Type of the result value.</typeparam>
-        /// <param name="source">Instance of the source type.</param>
-        /// <param name="func">The delegate that defines the continuation task.</param>
-        /// <returns>A task that represents the fun operation. The task contains the operation result.</returns>
-        public static async Task<TResult> ThenAsync<T, TResult>(this Task<T> source, Func<T, TResult> func)
-            => func(await source.ConfigureAwait(false));
     }
 }

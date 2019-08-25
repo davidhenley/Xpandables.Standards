@@ -1,5 +1,5 @@
 ﻿/************************************************************************************************************
- * Copyright (C) 2019 Francis-Black EWANE
+ * Copyright (C) 2018 Francis-Black EWANE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,9 @@ namespace System.Collections.Generic
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (source.GetType().IsAssignableFrom(typeof(IEnumerable)))
+#pragma warning disable CA1303 // Ne pas passer de littéraux en paramètres localisés
                 throw new ArgumentException("The current instance is already an enumerable.");
+#pragma warning restore CA1303 // Ne pas passer de littéraux en paramètres localisés
 
             yield return source;
         }
@@ -76,7 +78,7 @@ namespace System.Collections.Generic
         /// Enumerates the sequence and invokes the given action for each value in the sequence.
         /// </summary>
         /// <typeparam name="T">Type of the element in the sequence.</typeparam>
-        /// <typeparam name="U">Type of the result element.</typeparam>
+        /// <typeparam name="TResult">Type of the result element.</typeparam>
         /// <param name="source">The source of the sequence.</param>
         /// <param name="action">Action to invoke for each element.</param>
         /// <returns>Collection of items.</returns>
@@ -84,7 +86,7 @@ namespace System.Collections.Generic
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">An element of the collection has be modified
         /// outside the process.</exception>
-        public static IEnumerable<U> ForEach<T, U>(this IEnumerable<T> source, Func<T, U> action)
+        public static IEnumerable<TResult> ForEach<T, TResult>(this IEnumerable<T> source, Func<T, TResult> action)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (action is null) throw new ArgumentNullException(nameof(action));
@@ -97,7 +99,7 @@ namespace System.Collections.Generic
         /// Enumerates the sequence and invokes the given action for each value in the sequence using an index.
         /// </summary>
         /// <typeparam name="T">Type of the element in the sequence.</typeparam>
-        /// <typeparam name="U">Type of the result element.</typeparam>
+        /// <typeparam name="TResult">Type of the result element.</typeparam>
         /// <param name="source">The source of the sequence.</param>
         /// <param name="action">Action to invoke for each element.</param>
         /// <returns>Collection of items.</returns>
@@ -105,28 +107,13 @@ namespace System.Collections.Generic
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">An element of the collection has be modified
         /// outside the process.</exception>
-        public static IEnumerable<U> ForEach<T, U>(this IEnumerable<T> source, Func<T, int, U> action)
+        public static IEnumerable<TResult> ForEach<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> action)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (action is null) throw new ArgumentNullException(nameof(action));
 
-            var index = 0;
-            return from item in source
-                   select action(item, index);
+            return from item in source.Select((Value, Index) => new { Index, Value })
+                   select action(item.Value, item.Index);
         }
-
-#if NETSTANDARD2_0
-        public static bool Contains(this string str, string substring, StringComparison comp)
-        {
-            if (substring == null)
-                throw new ArgumentNullException("substring",
-                                                "substring cannot be null.");
-            else if (!Enum.IsDefined(typeof(StringComparison), comp))
-                throw new ArgumentException("comp is not a member of StringComparison",
-                                            "comp");
-
-            return str.IndexOf(substring, comp) >= 0;
-        }
-#endif
     }
 }

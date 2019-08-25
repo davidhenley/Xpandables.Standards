@@ -15,12 +15,14 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Query
 {
+#pragma warning disable CA1040 // Éviter les interfaces vides
     /// <summary>
     /// Defines a query that contains a specific-type result when using the query pattern.
     /// </summary>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
     public interface IQuery<out TResult>
+#pragma warning restore CA1040 // Éviter les interfaces vides
     { }
 }

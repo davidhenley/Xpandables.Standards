@@ -43,9 +43,14 @@ namespace System
             if (base.IsValid(value, validationContext) != ValidationResult.Success)
                 return base.IsValid(value, validationContext);
 
+#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
             if (value.GetType().IsPrimitive || value is string)
+#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
                 return new ValidationResult(
-                    "Can not validate primitive types or string.", new string[] { validationContext.MemberName });
+                    ErrorMessageResources.RequiredNestedAttributeTypeMissmatched,
+#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
+                    new string[] { validationContext.MemberName });
+#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
 
             var context = new ValidationContext(value, null, null);
             var requiredValidation = base.IsValid(value, context);

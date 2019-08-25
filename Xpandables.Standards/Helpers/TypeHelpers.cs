@@ -17,6 +17,9 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -33,6 +36,7 @@ namespace System
         /// </summary>
         /// <param name="methodInfo">The method info to act on.</param>
         /// <returns><see langword="true"/> if so, otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="methodInfo"/> is null.</exception>
         public static bool IsOverridden(this MethodInfo methodInfo)
         {
             if (methodInfo is null) throw new ArgumentNullException(nameof(methodInfo));
@@ -44,59 +48,12 @@ namespace System
         /// </summary>
         /// <param name="methodInfo">The method info to act on.</param>
         /// <returns><see langword="true"/> if so, otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="methodInfo"/> is null.</exception>
         public static bool IsAwaitable(this MethodInfo methodInfo)
         {
             if (methodInfo is null) throw new ArgumentNullException(nameof(methodInfo));
             return methodInfo.ReturnType.GetMethod(nameof(Task.GetAwaiter)) != null;
         }
-
-        /// <summary>
-        /// Returns the generic type that implements the specified generic interface type.
-        /// </summary>
-        /// <param name="genericTypeInterface">The generic interface type to find.</param>
-        /// <param name="assemblies">The assemblies to act on.</param>
-        /// <returns>The generic type that implements the generic interface.</returns>
-        /// <exception cref="ArgumentException">Generic implementation not found.</exception>
-        public static Type GetGenericTypeImplementationFromGenericTypeInterface(this Type genericTypeInterface, IEnumerable<Assembly> assemblies)
-            => (from ass in assemblies
-                from type in ass.GetExportedTypes()
-                where !type.IsAbstract && !type.IsInterface && type.IsSealed && type.IsGenericType
-                from interf in type.GetInterfaces()
-                where interf.IsGenericType && interf.GetGenericTypeDefinition() == genericTypeInterface
-                select interf.GetGenericTypeDefinition())
-                    .FirstOrDefault()
-                    ?? throw new ArgumentException($"Generic type implementation for {genericTypeInterface} not found.");
-
-        /// <summary>
-        /// Returns the type that implements the specified interface type.
-        /// </summary>
-        /// <param name="typeInterface">The interface type to find.</param>
-        /// <param name="assemblies">The assemblies to act on.</param>
-        /// <returns>The type that implements the interface.</returns>
-        /// <exception cref="ArgumentException">Type implementation not found.</exception>
-        public static Type GetTypeImplementationFromTypeInterface(this Type typeInterface, IEnumerable<Assembly> assemblies)
-            => (from ass in assemblies
-                from type in ass.GetExportedTypes()
-                where !type.IsAbstract && !type.IsInterface && type.IsSealed && !type.IsGenericType
-                from interf in type.GetInterfaces()
-                where !interf.IsGenericType && interf.IsEquivalentTo(typeInterface)
-                select type)
-                    .FirstOrDefault()
-                    ?? throw new ArgumentException($"Type implementation for {typeInterface} not found.");
-
-        /// <summary>
-        /// Determines whether the <paramref name="genericInterfaceDefinition"/> is found in the current type.
-        /// </summary>
-        /// <param name="type">The type to act on.</param>
-        /// <param name="genericInterfaceDefinition">The generic type to search.</param>
-        /// <returns><see langword="true"/> if found, otherwise <see langword="false"/>.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="genericInterfaceDefinition"/> is null.</exception>
-        public static bool ContainsGenericInterfaceTypeDefinition(this Type type, Type genericInterfaceDefinition)
-            => (from interf in type.GetInterfaces()
-                where interf.IsGenericType && interf.GetGenericTypeDefinition() == genericInterfaceDefinition
-                select interf)
-                .Any();
 
         /// <summary>
         /// Determines whether the current generic type is a nullable type.
@@ -106,7 +63,10 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
         public static bool IsGenericNullable(this Type type)
-            => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
 
         /// <summary>
         /// Determines whether the current type is a null-able type.
@@ -115,7 +75,11 @@ namespace System
         /// <returns><see langword="true"/> if found, otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
-        public static bool IsNullable(this Type type) => !type.IsPrimitive && Nullable.GetUnderlyingType(type) != null;
+        public static bool IsNullable(this Type type)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            return !type.IsPrimitive && Nullable.GetUnderlyingType(type) != null;
+        }
 
         /// <summary>
         /// Determines whether the current type implements <see cref="IEnumerable{T}"/>.
@@ -126,9 +90,12 @@ namespace System
         /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
         /// <exception cref="TargetInvocationException">A static initializer is invoked and throws an exception.</exception>
         public static bool IsEnumerable(this Type type)
-            => !type.IsPrimitive
-                && type != typeof(string)
-                && type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            return !type.IsPrimitive
+                    && type != typeof(string)
+                    && type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        }
 
         /// <summary>
         /// Returns the name of the type without the generic arity '`'.
@@ -139,7 +106,9 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         public static string GetNameWithoutGenericArity(this Type type)
         {
-            var index = type.Name.IndexOf('`');
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
+            var index = type.Name.IndexOf('`', StringComparison.InvariantCulture);
             return index == -1 ? type.Name : type.Name.Substring(0, index);
         }
 
@@ -156,6 +125,8 @@ namespace System
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         public static object CreateInstance(this Type type, params object[] args)
         {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
             try
             {
                 return args.Count(arg => arg == null) == args.Length
@@ -193,5 +164,137 @@ namespace System
                 .OfType<DescriptionAttribute>()
                 .FirstOrDefault()
                 ?.Description ?? string.Empty;
+
+        /// <summary>
+        /// Returns a loaded assembly from its name.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name.</param>
+        /// <returns>If found, returns a loaded assembly otherwise an empty result.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
+        public static ExecutionResult<Assembly> AssemblyLoadedFromString(this string assemblyName)
+        {
+            if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
+
+            try
+            {
+                return new ExecutionResult<Assembly>(Assembly.Load(assemblyName));
+            }
+            catch (Exception exception) when (exception is ArgumentException
+                                            || exception is FileNotFoundException
+                                            || exception is FileLoadException
+                                            || exception is BadImageFormatException)
+            {
+                return new ExecutionResult<Assembly>(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns type from its string name.
+        /// </summary>
+        /// <param name="typeName">The name of the type to find.</param>
+        /// <returns>if found, returns the type ortherwise an empty result.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
+        public static ExecutionResult<Type> TypeFromString(this string typeName)
+        {
+            if (typeName is null) throw new ArgumentNullException(nameof(typeName));
+
+            try
+            {
+                return new ExecutionResult<Type>(Type.GetType(typeName, true, true));
+            }
+            catch (Exception exception) when (exception is TargetInvocationException
+                                            || exception is TypeLoadException
+                                            || exception is ArgumentException
+                                            || exception is FileNotFoundException
+                                            || exception is FileLoadException
+                                            || exception is BadImageFormatException)
+            {
+                return new ExecutionResult<Type>(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns the type, if not found, try to load from the assembly.
+        /// </summary>
+        /// <param name="typeName">The name of the type to find.</param>
+        /// <param name="assemblyName">The assembly to act on.</param>
+        /// <returns>if found, returns the type ortherwise an empty result.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
+        public static ExecutionResult<Type> TypeFromString(this string typeName, string assemblyName)
+        {
+            if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
+            if (typeName is null) throw new ArgumentNullException(nameof(typeName));
+
+            var resultFromType = TypeFromString(typeName);
+            if (resultFromType.Any()) return resultFromType;
+
+            var resultFromAss = AssemblyLoadedFromString(assemblyName);
+            if (resultFromAss.Any())
+            {
+                var resultLoadedType = resultFromAss.Single()
+                    .GetExportedTypes()
+                    .FirstOrEmpty(t => t.FullName.Equals(typeName, StringComparison.InvariantCultureIgnoreCase));
+
+                return resultLoadedType
+                    .Map(value => new ExecutionResult<Type>(value))
+                    .Reduce(() => new ExecutionResult<Type>());
+            }
+
+            return new ExecutionResult<Type>(resultFromAss.Exception);
+        }
+
+        /// <summary>
+        /// Invokes the specified member, using the specified binding constraints and matching
+        /// the specified argument list.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="memberName">The string containing the name of the constructor, method, property, or field
+        /// member to invoke. /// -or- /// An empty string (&quot;&quot;) to invoke the default
+        /// member. /// -or- /// For IDispatch members, a string representing the DispID,
+        /// for example &quot;[DispID=3]&quot;.</param>
+        /// <param name="invokeAttr">A bitmask comprised of one or more System.Reflection.BindingFlags that specify
+        /// how the search is conducted. The access can be one of the BindingFlags such as
+        /// Public, NonPublic, Private, InvokeMethod, GetField, and so on. The type of lookup
+        /// need not be specified. If the type of lookup is omitted, BindingFlags.Public
+        /// | BindingFlags.Instance | BindingFlags.Static are used.</param>
+        /// <param name="binder">An object that defines a set of properties and enables binding, which can involve
+        /// selection of an overloaded method, coercion of argument types, and invocation
+        /// of a member through reflection. /// -or- /// A null reference (Nothing in Visual
+        /// Basic), to use the System.Type.DefaultBinder. Note that explicitly defining a
+        /// System.Reflection.Binder object may be required for successfully invoking method
+        /// overloads with variable arguments.</param>
+        /// <param name="target">The object on which to invoke the specified member.</param>
+        /// <param name="args">An array containing the arguments to pass to the member to invoke.</param>
+        /// <returns>An object representing the return value of the invoked member
+        /// or an empty result with handled exception.</returns>
+        public static ExecutionResult<object> TypeInvokeMember(
+            this Type type,
+            string memberName,
+            BindingFlags invokeAttr,
+            [AllowNull] Binder binder,
+            object target,
+            [AllowNull] object[] args)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (memberName is null) throw new ArgumentNullException(nameof(memberName));
+
+            try
+            {
+                return new ExecutionResult<object>(
+                    type.InvokeMember(memberName, invokeAttr, binder, target, args, CultureInfo.InvariantCulture));
+            }
+            catch (Exception exception) when (exception is ArgumentNullException
+                                            || exception is ArgumentException
+                                            || exception is MethodAccessException
+                                            || exception is MissingFieldException
+                                            || exception is MissingMethodException
+                                            || exception is TargetException
+                                            || exception is AmbiguousMatchException
+                                            || exception is InvalidOperationException)
+            {
+                return new ExecutionResult<object>(exception);
+            }
+        }
     }
 }

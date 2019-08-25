@@ -15,16 +15,13 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Command
 {
     /// <summary>
     /// Defines a generic method that a class implements to handle a type-specific command.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to be handled.</typeparam>
-    /// <remarks>
-    /// Any operation that does not deliver or do what it promises to do should throw an exception.
-    /// </remarks>
     public interface ICommandHandler<in TCommand>
         where TCommand : class, ICommand
     {

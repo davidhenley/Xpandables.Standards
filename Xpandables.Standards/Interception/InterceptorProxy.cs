@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
@@ -23,7 +24,7 @@ namespace System.Interception
 {
     /// <summary>
     /// The base implementation for interceptor.
-    /// This implementation uses the <see cref="T:System.Reflection.DispatchProxy" /> process to apply customer behaviors to a method.
+    /// This implementation uses the <see cref="DispatchProxy" /> process to apply customer behaviors to a method.
     /// </summary>
     /// <typeparam name="TInstance">Type of instance to be intercepted.</typeparam>
     public class InterceptorProxy<TInstance> : DispatchProxy
@@ -33,6 +34,7 @@ namespace System.Interception
         private TInstance _realInstance;
         private IInterceptor _interceptor;
 
+#pragma warning disable CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         /// <summary>
         /// Returns a new instance of <typeparamref name="TInstance"/> wrapped by a proxy.
         /// </summary>
@@ -42,6 +44,7 @@ namespace System.Interception
         /// <exception cref="ArgumentNullException">The <paramref name="instance"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="interceptor"/> is null.</exception>
         public static TInstance Create(TInstance instance, IInterceptor interceptor)
+#pragma warning restore CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         {
             object proxy = Create<TInstance, InterceptorProxy<TInstance>>();
             ((InterceptorProxy<TInstance>)proxy).SetParameters(instance, interceptor);
@@ -53,8 +56,8 @@ namespace System.Interception
         /// </summary>
         public InterceptorProxy()
         {
-            _realInstance = default;
-            _interceptor = default;
+            _realInstance = default!;
+            _interceptor = default!;
         }
 
         /// <summary>
@@ -78,7 +81,7 @@ namespace System.Interception
         /// <param name="targetMethod">The target method.</param>
         /// <param name="args">The expected arguments.</param>
         /// <returns></returns>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="targetMethod" /> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="targetMethod" /> is null.</exception>
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
             if (targetMethod is null)
@@ -98,7 +101,9 @@ namespace System.Interception
                 {
                     _interceptor.Intercept(invocation);
                 }
+#pragma warning disable CA1031 // Ne pas intercepter les types d'exception générale
                 catch (Exception exception)
+#pragma warning restore CA1031 // Ne pas intercepter les types d'exception générale
                 {
                     invocation.WithException(
                         new InvalidOperationException(
@@ -108,10 +113,10 @@ namespace System.Interception
             else
                 invocation.Proceed();
 
-            if (invocation.Exception != null)
+            if (invocation.Exception.Any())
                 ExceptionDispatchInfo.Capture(invocation.Exception).Throw();
 
-            return invocation.ReturnValue;
+            return invocation.ReturnValue.Cast<object>();
         }
 
         /// <summary>

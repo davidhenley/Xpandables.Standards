@@ -22,30 +22,41 @@ namespace System
     /// <summary>
     /// Defines a representation for an old and a new value of a specific type.
     /// </summary>
-    /// <typeparam name="TValue">Type of the value.</typeparam>
+    /// <typeparam name="T">Type of the value.</typeparam>
     [Serializable]
     [DebuggerDisplay("{OldValue}, {NewValue}")]
-    public sealed class Values<TValue> : IValidatableAttribute
+    public sealed class Values<T> : IFluent
     {
         /// <summary>
-        /// Returns a new instance of <see cref="Values{TValue}"/> with the specified values.
+        /// Returns a new instance of <see cref="Values{T}"/> with the specified values.
         /// </summary>
         /// <param name="oldValue">The old value</param>
         /// <param name="newValue">The new value</param>
-        public Values(TValue oldValue, TValue newValue)
+        public Values(T oldValue, T newValue)
         {
             OldValue = oldValue;
             NewValue = newValue;
         }
 
         /// <summary>
+        /// Provides with deconstruction for <see cref="Values{T}"/>.
+        /// </summary>
+        /// <param name="oldValue">The output old value.</param>
+        /// <param name="newValue">The output new value.</param>
+        public void Deconstruct(out T oldValue, out T newValue)
+        {
+            oldValue = OldValue;
+            newValue = NewValue;
+        }
+
+        /// <summary>
         /// Contains the old value.
         /// </summary>
-        public TValue OldValue { get; }
+        public T OldValue { get; }
 
         /// <summary>
         /// Contains the new value.
         /// </summary>
-        public TValue NewValue { get; }
+        public T NewValue { get; }
     }
 }

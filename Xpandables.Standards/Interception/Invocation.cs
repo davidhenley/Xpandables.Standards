@@ -45,13 +45,15 @@ namespace System.Interception
             _instance = targetInstance ?? throw new ArgumentNullException(nameof(targetInstance));
 
             ReturnType = _method.ReturnType;
+            ReturnValue = Optional<object>.Empty;
+            Exception = Optional<Exception>.Empty;
             Arguments = GetParametersFromMethod(_method, argsValue).ToArray();
         }
 
         public IEnumerable<Parameter> Arguments { get; }
-        public object ReturnValue { get; private set; }
+        public Optional<object> ReturnValue { get; private set; }
         public Type ReturnType { get; }
-        public Exception Exception { get; private set; }
+        public Optional<Exception> Exception { get; private set; }
         public long ElapsedTime { get; private set; }
 
         public IInvocation WithException(Exception exception)
@@ -78,10 +80,16 @@ namespace System.Interception
                                    _instance,
                                    Arguments.Select(arg => arg.Value).ToArray());
 
-                            if (ReturnValue is Task task && task.Exception != null)
+                            if (ReturnValue.Cast<Task>() is Task task && task.Exception != null)
                                 Exception = task.Exception.GetBaseException();
                         }
-                        catch (Exception exception)
+                        catch (Exception exception) when (exception is TargetException
+                                                    || exception is ArgumentNullException
+                                                    || exception is TargetInvocationException
+                                                    || exception is TargetParameterCountException
+                                                    || exception is MethodAccessException
+                                                    || exception is InvalidOperationException
+                                                    || exception is NotSupportedException)
                         {
                             Exception = exception;
                         }

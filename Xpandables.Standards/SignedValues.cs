@@ -25,7 +25,7 @@ namespace System
     /// <typeparam name="T">Type of value.</typeparam>
     [Serializable]
     [DebuggerDisplay("{Positive}, {Negative}")]
-    public sealed class SignedValues<T> : IValidatableAttribute
+    public sealed class SignedValues<T> : IFluent
         where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
     {
         /// <summary>
@@ -37,6 +37,17 @@ namespace System
         {
             Positive = positive;
             Negative = negative;
+        }
+
+        /// <summary>
+        /// Provides with deconstruction for <see cref="SignedValues{T}"/>.
+        /// </summary>
+        /// <param name="positive">The output positive value.</param>
+        /// <param name="negative">The output negative value.</param>
+        public void Deconstruct(out T positive, out T negative)
+        {
+            positive = Positive;
+            negative = Negative;
         }
 
         /// <summary>

@@ -15,19 +15,18 @@
  *
 ************************************************************************************************************/
 
-namespace System.Data
+namespace System.Design.Database
 {
     /// <summary>
     /// Provides with the data context options instance.
     /// </summary>
-    public interface IDataContextOptionsProvider<TOptions>
-        where TOptions : class
+    public interface IDataContextOptionsProvider<TDataContextOption>
+        where TDataContextOption : class
     {
         /// <summary>
         /// Gets the data context options according to the environment.
         /// </summary>
-        /// <returns>An implementation of <typeparamref name="TOptions"/>.</returns>
-        /// <exception cref="InvalidOperationException">Creating the context options failed. See inner exception.</exception>
-        TOptions GetOptions();
+        /// <returns>An implementation of <typeparamref name="TDataContextOption"/>.</returns>
+        ExecutionResult<TDataContextOption> GetDataContextOptions();
     }
 }

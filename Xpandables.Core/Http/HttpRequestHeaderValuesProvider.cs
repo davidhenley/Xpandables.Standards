@@ -21,32 +21,31 @@ using System.Linq;
 
 namespace System.Http
 {
-    public sealed class HttpRequestHeaderValuesProvider : Explicit<IHttpRequestHeaderValuesProvider>, IHttpRequestHeaderValuesProvider
+    /// <summary>
+    /// Implementation for <see cref="IHttpRequestHeaderValuesAccessor"/>.
+    /// </summary>
+    public sealed class HttpRequestHeaderValuesProvider : IHttpRequestHeaderValuesAccessor
     {
-        private readonly IHttpContextProvider _httpContextProvider;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public HttpRequestHeaderValuesProvider(IHttpContextProvider httpContextProvider)
+        public HttpRequestHeaderValuesProvider(IHttpContextAccessor contextAccessor)
         {
-            _httpContextProvider = httpContextProvider ?? throw new ArgumentNullException(nameof(httpContextProvider));
+            _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
         }
 
-        Optional<string> IHttpRequestHeaderValuesProvider.GetRequestHeaderValue(string key)
-            => Instance.GetRequestHeaderValues(key).FirstOrEmpty();
+        public Optional<string> GetRequestHeaderValue(string key)
+            => GetRequestHeaderValues(key).FirstOrEmpty();
 
-        IEnumerable<string> IHttpRequestHeaderValuesProvider.GetRequestHeaderValues(string key)
+        public IEnumerable<string> GetRequestHeaderValues(string key)
         {
             if (key is null) throw new ArgumentNullException(nameof(key));
-
-            var result = _httpContextProvider.GetHttpContext<HttpContext>()
-                            .Map(httpContext => httpContext.Request)
-                            .Map(request => request.HttpContext)
-                            .Map(httpContext => httpContext.Request)
-                            .Map(request => request.Headers)
-                            .Map(headers => headers[key])
-                            .Map(values => values.Select(s => s))
-                            .Reduce(() => Enumerable.Empty<string>());
-
-            return result.Single();
+            return _contextAccessor.HttpContext
+                ?.Request
+                ?.HttpContext
+                ?.Request
+                ?.Headers
+                ?[key]
+                ?? Enumerable.Empty<string>();
         }
     }
 }

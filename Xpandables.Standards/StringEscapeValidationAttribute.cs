@@ -28,6 +28,8 @@ namespace Xpandables
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            if (validationContext is null) throw new ArgumentNullException(nameof(validationContext));
+
             if (value is string stringValue)
             {
                 var validCharArray = Array.FindAll(

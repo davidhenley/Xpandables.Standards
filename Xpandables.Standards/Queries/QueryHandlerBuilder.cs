@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Query
 {
     /// <summary>
     /// A helper class used to implement the <see cref="IQueryHandler{TQuery, TResult}"/> interface.

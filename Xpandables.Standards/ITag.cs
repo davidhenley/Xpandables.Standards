@@ -23,7 +23,7 @@ namespace System
     /// Provides a tag property to an object.
     /// The tag uses the <see cref="TypeConverter"/> attribute with the <see cref="StringConverter"/> type.
     /// </summary>
-    public interface ITag
+    public interface ITag : IFluent
     {
         /// <summary>
         /// Gets or sets any type of data for the current object.

@@ -15,44 +15,16 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
-using Xpandables;
-
 namespace System
 {
+#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
     /// <summary>
     /// The correlation context provider.
     /// </summary>
-    public sealed class CorrelationContext : Explicit<ICorrelationContext>, ICorrelationContext
+    public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext
+#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
     {
-        private readonly AsyncLocal<ConcurrentDictionary<string, object>> _items;
-
-        /// <summary>
-        /// Constructs a new instance that initializes the collection.
-        /// </summary>
-        public CorrelationContext() => _items = new AsyncLocal<ConcurrentDictionary<string, object>>
-        {
-            Value = new ConcurrentDictionary<string, object>()
-        };
-
-        Optional<object> ICorrelationContext.this[string key]
-        {
-            get => _items.Value.TryGetValue(key, out var value) ? value : default;
-            set
-            {
-                if (_items.Value.TryGetValue(key, out var foundValue))
-                    _items.Value.TryUpdate(key, value, foundValue);
-                else
-                    _items.Value.TryAdd(key, value);
-            }
-        }
-
-        IReadOnlyDictionary<string, object> ICorrelationContext.Collection => _items.Value;
-
-        Optional<T> ICorrelationContext.GetValue<T>(string key) => Instance[key].OfType<T>();
-
-        void ICorrelationContext.SetOrUpdateValue<T>(string key, T value) => Instance[key] = value;
+        public CorrelationContext() : base() { }
     }
+
 }

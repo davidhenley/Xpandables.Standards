@@ -29,7 +29,9 @@ namespace System
         /// Re declaration that hides the <see cref="object.GetType()"/> method from IntelliSense.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
         Type GetType();
+#pragma warning restore CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
 
         /// <summary>
         /// Re declaration that hides the <see cref="object.GetHashCode()"/> method from IntelliSense.
@@ -48,6 +50,8 @@ namespace System
         /// </summary>
         /// <param name="obj"></param>
         [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CA1720 // L'identificateur contient le nom de type
         bool Equals(object obj);
+#pragma warning restore CA1720 // L'identificateur contient le nom de type
     }
 }

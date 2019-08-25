@@ -22,7 +22,6 @@ using System.Security.Cryptography;
 
 namespace System
 {
-#pragma warning disable CA2235 // Mark all non-serializable fields
     /// <summary>
     /// The domain object base implementation that provide an identifier and a key generator for derived class.
     /// This is an <see langword="abstract"/> and serializable class.
@@ -31,6 +30,7 @@ namespace System
     [DebuggerDisplay("{Id}")]
     public abstract class Entity
     {
+        [NonSerialized]
         private string _id = string.Empty;
 
         /// <summary>
@@ -46,11 +46,22 @@ namespace System
         }
 
         /// <summary>
-        /// Determine whether or not the underlying instance is new.
+        /// Determines whether or not the underlying instance is new.
         /// The default implementation just compare the <see cref="Id"/> value to its default one.
         /// You must override this property in order to match your request.
         /// </summary>
         public bool IsNew() => string.IsNullOrWhiteSpace(Id);
+
+        /// <summary>
+        /// Determines whether or not the underlying instance is deleted.
+        /// </summary>
+        public bool IsDeleted { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the creation date of the underlying instance.
+        /// </summary>
+        [DataType(DataType.DateTime)]
+        public bool CreatedOn { get; protected set; }
 
         /// <summary>
         /// Returns the unique signature of string type for an instance.
@@ -64,10 +75,9 @@ namespace System
 
             var salt = new byte[32];
             var guid = Guid.NewGuid().ToString();
-            var date = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.ffffff");
             rnd.GetBytes(salt);
 
-            return $"{guid}-{BitConverter.ToString(salt)}-{date}";
+            return $"{guid}{BitConverter.ToString(salt)}";
         }
 
         /// <summary>
@@ -121,6 +131,6 @@ namespace System
         /// Serves as the default hash function.
         /// </summary>
         /// <returns>A hash code for the current entity.</returns>
-        public override int GetHashCode() => (GetType().ToString() + Id).GetHashCode();
+        public override int GetHashCode() => (GetType().ToString() + Id).GetHashCode(StringComparison.InvariantCulture);
     }
 }

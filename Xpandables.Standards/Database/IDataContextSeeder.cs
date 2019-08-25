@@ -15,12 +15,11 @@
  *
 ************************************************************************************************************/
 
-namespace System.Data
+namespace System.Design.Database
 {
     /// <summary>
     /// Allows an application author to dynamically seed a data context.
     /// This is useful when you need a data context not to be empty.
-    /// To be used with <see cref="DataContextSeederDecorator"/>.
     /// </summary>
     public interface IDataContextSeeder
     {
@@ -28,6 +27,7 @@ namespace System.Data
         /// Seeds the specified data context.
         /// </summary>
         /// <param name="dataContext">The data context instance to act on.</param>
-        void Seed(IDataContext dataContext);
+        /// <returns>A seeded data context.</returns>
+        IDataContext Seed(IDataContext dataContext);
     }
 }

@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Command
 {
     /// <summary>
     /// A helper class used to implement the <see cref="ICommandHandler{TCommand}"/> interface.

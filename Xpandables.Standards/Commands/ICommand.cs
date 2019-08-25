@@ -15,10 +15,12 @@
  *
 ************************************************************************************************************/
 
-namespace System.Patterns
+namespace System.Design.Command
 {
+#pragma warning disable CA1040 // Éviter les interfaces vides
     /// <summary>
     /// This interface is used as a marker for commands when using the command pattern.
     /// </summary>
     public interface ICommand { }
+#pragma warning restore CA1040 // Éviter les interfaces vides
 }
