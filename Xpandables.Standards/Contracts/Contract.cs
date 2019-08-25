@@ -34,9 +34,9 @@ namespace System
         /// <param name="message">The default exception message.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         public Contract(
-            [AllowNull]T value,
-            [NotNull] Predicate<T> predicate,
-            [NotNull] string message)
+            T value,
+            Predicate<T> predicate,
+            string message)
         {
             Value = value;
             Predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));

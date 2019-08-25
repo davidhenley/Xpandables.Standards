@@ -16,13 +16,11 @@
 ************************************************************************************************************/
 
 using System.Data.Common;
-using System.Reflection;
 
 namespace System.Design.Database.Common
 {
     /// <summary>
     /// Allows an application author to access a data provider factory from a provider type.
-    /// <para>Contains default implementation.</para>
     /// </summary>
     public interface IDataProviderFactoryAccessor
     {
@@ -32,16 +30,6 @@ namespace System.Design.Database.Common
         /// <param name="providerType">The provider type to find factory.</param>
         /// <returns>An instance of <see cref="DbProviderFactory"/> if found, otherwise an empty optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="providerType"/> is null.</exception>
-        Optional<DbProviderFactory> GetProviderFactory(DataProviderType providerType)
-        {
-            if (providerType is null) throw new ArgumentNullException(nameof(providerType));
-
-            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty;
-
-            return providerType.ProviderFactoryTypeName
-                .TypeFromString(providerType.DisplayName)
-                .MapOptional(type => type.TypeInvokeMember("Instance", flags, null, type, null))
-                .Cast<DbProviderFactory>();
-        }
+        Optional<DbProviderFactory> GetProviderFactory(DataProviderType providerType);
     }
 }

@@ -29,7 +29,7 @@ namespace System
         /// Returns the ambient date time.
         /// The default behavior returns <see cref="DateTime.UtcNow"/>.
         /// </summary>
-        DateTime GetDateTime() => DateTime.UtcNow;
+        DateTime GetDateTime();
 
         /// <summary>
         /// Converts string date time to <see cref="DateTime"/> type.
@@ -47,23 +47,7 @@ namespace System
             string source,
             IFormatProvider provider,
             DateTimeStyles styles,
-            params string[] formats)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            if (provider is null) throw new ArgumentNullException(nameof(provider));
-
-            try
-            {
-                if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
-                    return new ExecutionResult<DateTime>(dateTime);
-
-                return new ExecutionResult<DateTime>();
-            }
-            catch (Exception exception) when (exception is ArgumentException)
-            {
-                return new ExecutionResult<DateTime>(exception);
-            }
-        }
+            params string[] formats);
 
         /// <summary>
         /// Converts the value of the current System.DateTime object to its equivalent string
@@ -76,19 +60,6 @@ namespace System
         /// by format and provider.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
-        ExecutionResult<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
-        {
-            if (format is null) throw new ArgumentNullException(nameof(format));
-            if (provider is null) throw new ArgumentNullException(nameof(provider));
-
-            try
-            {
-                return new ExecutionResult<string>(dateTime.ToString(format, provider));
-            }
-            catch (Exception exception) when (exception is FormatException || exception is ArgumentOutOfRangeException)
-            {
-                return new ExecutionResult<string>(exception);
-            }
-        }
+        ExecutionResult<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider);
     }
 }

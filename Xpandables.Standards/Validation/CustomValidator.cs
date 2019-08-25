@@ -30,6 +30,13 @@ namespace System.ComponentModel.DataAnnotations
         /// The default value is zero.
         /// </summary>
         public virtual int Order => 0;
+
+        public virtual void Validate(object argument)
+              => Validator
+               .ValidateObject(
+                   argument,
+                   new ValidationContext(argument, null, null),
+                   true);
     }
 
     /// <summary>
@@ -41,5 +48,7 @@ namespace System.ComponentModel.DataAnnotations
     [Serializable]
     public class CustomValidator<TArgument> : CustomValidator, ICustomValidator<TArgument>
         where TArgument : class
-    { }
+    {
+        public virtual void Validate(TArgument argument) => ((ICustomValidator)this).Validate(argument);
+    }
 }

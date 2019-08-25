@@ -130,7 +130,7 @@ namespace Microsoft.Extensions.Internal
                 }
             }
 
-            var genericPartIndex = type.Name.IndexOf('`', StringComparison.InvariantCulture);
+            var genericPartIndex = type.Name.IndexOf('`');
             if (genericPartIndex <= 0)
             {
                 builder.Append(type.Name);

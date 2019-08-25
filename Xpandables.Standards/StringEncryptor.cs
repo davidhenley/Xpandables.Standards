@@ -23,5 +23,25 @@ namespace System
     /// Default implementation of <see cref="IStringEncryptor"/>.
     /// <para>The implementation uses the <see cref="SHA512Managed"/>.</para>
     /// </summary>
-    public sealed class StringEncryptor : IStringEncryptor { }
+    public sealed class StringEncryptor : IStringEncryptor
+    {
+        public ExecutionResult<string> Encrypt(string value, string key)
+        {
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
+
+            try
+            {
+                using var cryptoManaged = new SHA512Managed();
+                var data = Text.Encoding.UTF8.GetBytes(value);
+                var hash = cryptoManaged.ComputeHash(data);
+                var result = BitConverter.ToString(hash).Replace("-", string.Empty);
+                return new ExecutionResult<string>(result);
+            }
+            catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
+            {
+                return new ExecutionResult<string>(exception);
+            }
+        }
+    }
 }

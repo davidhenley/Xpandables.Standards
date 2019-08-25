@@ -260,7 +260,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            throw error;
+            throw error!;
         }
 
         private static bool IsSameGenericType(Type t1, Type t2)
@@ -268,7 +268,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return t1.IsGenericType && t2.IsGenericType && t1.GetGenericTypeDefinition() == t2.GetGenericTypeDefinition();
         }
 
-        private static bool TryDecorateOpenGeneric(this IServiceCollection services, Type serviceType, Type decoratorType, [NotNullWhen(false)] out Exception? error)
+        private static bool TryDecorateOpenGeneric(this IServiceCollection services, Type serviceType, Type decoratorType,  out Exception? error)
         {
             var arguments = services
                 .Where(x => !x.ServiceType.IsGenericTypeDefinition)
@@ -304,10 +304,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            throw error;
+            throw error!;
         }
 
-        private static bool TryDecorateDescriptors(this IServiceCollection services, Type serviceType, [NotNullWhen(false)] out Exception? error, Func<ServiceDescriptor, ServiceDescriptor> decorator)
+        private static bool TryDecorateDescriptors(this IServiceCollection services, Type serviceType,  out Exception? error, Func<ServiceDescriptor, ServiceDescriptor> decorator)
         {
             if (!services.TryGetDescriptors(serviceType, out var descriptors))
             {

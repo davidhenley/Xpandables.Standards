@@ -22,9 +22,11 @@
 ************************************************************************************************************/
 
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Design.Linq
 {
@@ -67,7 +69,15 @@ namespace System.Design.Linq
             return _query.InnerQuery.Provider.Execute(optimized);
         }
 
-        TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
+        {
+            if (_query.InnerQuery.Provider is IAsyncQueryProvider asyncQueryProvider)
+                return asyncQueryProvider.ExecuteAsync<TResult>(expression.Expand());
+
+            throw new InvalidOperationException(ErrorMessageResources.LinqQueryDontImplementIAsyncEnumeratorAccessor);
+        }
+
+        Task<TResult> IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
             var expanded = expression.Expand();
             var optimized = _queryOptimizer(expanded);
@@ -77,7 +87,7 @@ namespace System.Design.Linq
                 return asyncQueryProvider.ExecuteAsync<TResult>(optimized, cancellationToken);
 #pragma warning restore EF1001 // Internal EF Core API usage.
 
-            return _query.InnerQuery.Provider.Execute<TResult>(optimized);
+            return Task.FromResult(_query.InnerQuery.Provider.Execute<TResult>(optimized));
         }
     }
 }

@@ -21,6 +21,7 @@
  *
 ************************************************************************************************************/
 
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,10 +51,13 @@ namespace System.Design.Linq
         public Type ElementType => typeof(T);
         public Expression Expression => InnerQuery.Expression;
         public IQueryProvider Provider => InnerQueryProvider;
-        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        IAsyncEnumerator<T> IAsyncEnumerable<T>.GetEnumerator()
         {
             if (InnerQuery is IAsyncEnumerable<T> asyncEnumerable)
-                return asyncEnumerable.GetAsyncEnumerator(cancellationToken);
+                return asyncEnumerable.GetEnumerator();
+
+            if (InnerQuery is IAsyncEnumerableAccessor<T> asyncEnumerbleAccessor)
+                return asyncEnumerbleAccessor.AsyncEnumerable.GetEnumerator();
 
             throw new InvalidOperationException(ErrorMessageResources.LinqQueryDontImplementIAsyncEnumeratorAccessor);
         }

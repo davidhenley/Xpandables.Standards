@@ -30,7 +30,7 @@ namespace System.ComponentModel.DataAnnotations
         /// Default implementation.
         /// </summary>
         /// <param name="argument"></param>
-        public void Validate(TArgument argument)
+        public override void Validate(TArgument argument)
         {
             // Class intentionally left empty.
         }

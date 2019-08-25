@@ -76,7 +76,7 @@ namespace System.Design.Linq
         }
 
         /// <summary>Or</summary>
-        public Expression<Func<T, bool>> Or([NotNull] Expression<Func<T, bool>> expr2)
+        public Expression<Func<T, bool>> Or(Expression<Func<T, bool>> expr2)
         {
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
 
@@ -87,7 +87,7 @@ namespace System.Design.Linq
         }
 
         /// <summary>And</summary>
-        public Expression<Func<T, bool>> And([NotNull] Expression<Func<T, bool>> expr2)
+        public Expression<Func<T, bool>> And(Expression<Func<T, bool>> expr2)
         {
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
 
@@ -106,21 +106,21 @@ namespace System.Design.Linq
         /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
-        public static implicit operator Expression<Func<T, bool>>([NotNull] ExpressionStarter<T> right)
+        public static implicit operator Expression<Func<T, bool>>(ExpressionStarter<T> right)
             => right.ToOptional().MapOptional(value => value.Predicate);
 
         /// <summary>
         /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
-        public static implicit operator Func<T, bool>([NotNull] ExpressionStarter<T> right)
+        public static implicit operator Func<T, bool>(ExpressionStarter<T> right)
             => right.ToOptional().MapOptional<Func<T, bool>>(value => value.Predicate.Single().Compile());
 
         /// <summary>
         /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
-        public static implicit operator ExpressionStarter<T>([NotNull] Expression<Func<T, bool>> right)
+        public static implicit operator ExpressionStarter<T>(Expression<Func<T, bool>> right)
             => new ExpressionStarter<T>(right);
 
 #pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées

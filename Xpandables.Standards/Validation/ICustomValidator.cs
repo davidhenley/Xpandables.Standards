@@ -31,12 +31,7 @@ namespace System.ComponentModel.DataAnnotations
         /// <param name="argument">The target argument to be validated.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
-        void Validate(object argument)
-               => Validator
-                .ValidateObject(
-                    argument,
-                    new ValidationContext(argument, null, null),
-                    true);
+        void Validate(object argument);
 
         /// <summary>
         /// Determines the order for the underlying object.
@@ -58,6 +53,6 @@ namespace System.ComponentModel.DataAnnotations
         /// <param name="argument">The target argument to be validated.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
-        void Validate(TArgument argument) => ((ICustomValidator)this).Validate(argument);
+        void Validate(TArgument argument);
     }
 }

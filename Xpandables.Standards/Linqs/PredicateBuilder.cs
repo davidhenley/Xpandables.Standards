@@ -76,8 +76,8 @@ namespace System.Design.Linq
 
         /// <summary> OR </summary>
         public static Expression<Func<T, bool>> Or<T>(
-            [NotNull] this Expression<Func<T, bool>> expr1,
-            [NotNull] Expression<Func<T, bool>> expr2)
+            this Expression<Func<T, bool>> expr1,
+            Expression<Func<T, bool>> expr2)
         {
             if (expr1 is null) throw new ArgumentNullException(nameof(expr1));
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
@@ -91,8 +91,8 @@ namespace System.Design.Linq
 
         /// <summary> AND </summary>
         public static Expression<Func<T, bool>> And<T>(
-            [NotNull] this Expression<Func<T, bool>> expr1,
-            [NotNull] Expression<Func<T, bool>> expr2)
+            this Expression<Func<T, bool>> expr1,
+            Expression<Func<T, bool>> expr2)
         {
             if (expr1 is null) throw new ArgumentNullException(nameof(expr1));
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
@@ -113,8 +113,8 @@ namespace System.Design.Linq
         /// <param name="operator">The Operator (can be "And" or "Or").</param>
         /// <returns>Expression{Func{T, bool}}</returns>
         public static Expression<Func<T, bool>> Extend<T>(
-            [NotNull] this Expression<Func<T, bool>> first,
-            [NotNull] Expression<Func<T, bool>> second,
+            this Expression<Func<T, bool>> first,
+            Expression<Func<T, bool>> second,
             PredicateOperator @operator = PredicateOperator.Or)
         {
             if (first is null) throw new ArgumentNullException(nameof(first));
@@ -132,8 +132,8 @@ namespace System.Design.Linq
         /// <param name="operator">The Operator (can be "And" or "Or").</param>
         /// <returns>Expression{Func{T, bool}}</returns>
         public static Expression<Func<T, bool>> Extend<T>(
-            [NotNull] this ExpressionStarter<T> first,
-            [NotNull] Expression<Func<T, bool>> second,
+            this ExpressionStarter<T> first,
+            Expression<Func<T, bool>> second,
             PredicateOperator @operator = PredicateOperator.Or)
         {
             if (first is null) throw new ArgumentNullException(nameof(first));

@@ -108,7 +108,7 @@ namespace System
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
 
-            var index = type.Name.IndexOf('`', StringComparison.InvariantCulture);
+            var index = type.Name.IndexOf('`');
             return index == -1 ? type.Name : type.Name.Substring(0, index);
         }
 
@@ -272,9 +272,9 @@ namespace System
             this Type type,
             string memberName,
             BindingFlags invokeAttr,
-            [AllowNull] Binder binder,
+             Binder? binder,
             object target,
-            [AllowNull] object[] args)
+             object[]? args)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
             if (memberName is null) throw new ArgumentNullException(nameof(memberName));

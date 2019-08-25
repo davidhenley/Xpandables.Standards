@@ -217,7 +217,7 @@ namespace System
         /// </summary>
         /// <returns>hash-code.</returns>
         public override int GetHashCode()
-            => Value.GetHashCode() + DisplayName.GetHashCode(StringComparison.InvariantCulture);
+            => Value.GetHashCode() + DisplayName.GetHashCode();
 
         /// <summary>
         /// Returns the comparison value of both <see cref="EnumerationType"/> objects.

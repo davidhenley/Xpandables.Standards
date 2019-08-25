@@ -15,6 +15,8 @@
  *
 ************************************************************************************************************/
 
+using System.Reflection;
+
 namespace System
 {
     /// <summary>
@@ -22,5 +24,11 @@ namespace System
     /// </summary>
     public class AttributeAccessor : IAttributeAccessor
     {
+        public Optional<TAttribute> GetAttribute<TAttribute>(Type type)
+            where TAttribute : Attribute
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            return type.GetCustomAttribute<TAttribute>();
+        }
     }
 }

@@ -33,10 +33,6 @@ namespace System
         /// <returns>An optional instance that may be contains the found attribute.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         Optional<TAttribute> GetAttribute<TAttribute>(Type type)
-            where TAttribute : Attribute
-        {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            return type.GetCustomAttribute<TAttribute>();
-        }
+            where TAttribute : Attribute;
     }
 }

@@ -32,7 +32,7 @@ namespace System.Design.Database
             where T : Entity
         {
             if (selector is null) throw new ArgumentNullException(nameof(selector));
-            return selector(Set<T>()).AsAsyncEnumerable();
+            return selector(Set<T>()).ToAsyncEnumerable();
         }
         public virtual async Task<Optional<TResult>> GetFirstAsync<T, TResult>(
            Func<IQueryable<T>, IQueryable<TResult>> selector,

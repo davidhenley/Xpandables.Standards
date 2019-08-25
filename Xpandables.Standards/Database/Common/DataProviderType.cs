@@ -51,7 +51,7 @@ namespace System.Design.Database.Common
         /// <summary>
         /// Determines whether or not the provider type refers to an instance factory.
         /// </summary>
-        public bool IsInstance => DisplayName.Contains("Instance", StringComparison.InvariantCultureIgnoreCase);
+        public bool IsInstance => DisplayName.Contains("Instance");
 
         /// <summary>
         /// Provides data access for Microsoft SQL Server.

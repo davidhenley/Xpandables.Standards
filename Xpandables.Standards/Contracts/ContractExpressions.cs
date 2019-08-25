@@ -35,7 +35,7 @@ namespace System
         /// <typeparam name="T">Type of the value.</typeparam>
         /// <returns>An instance of <see cref="Contract{T}"/>.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exceptionMessage"/> is null.</exception>
-        public static Contract<T> WhenNull<T>([AllowNull] this T source, string exceptionMessage)
+        public static Contract<T> WhenNull<T>( this T source, string exceptionMessage)
             => new Contract<T>(
                 source,
                 value => !(value is null),
@@ -48,7 +48,7 @@ namespace System
         /// <param name="exceptionMessage">The exception message.</param>
         /// <returns>An instance of <see cref="Contract{T}"/> where T is <see cref="string"/>.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exceptionMessage"/> is null.</exception>
-        public static Contract<string> WhenNull([AllowNull] this string source, string exceptionMessage)
+        public static Contract<string> WhenNull( this string source, string exceptionMessage)
             => new Contract<string>(
                 source,
                 value => !!string.IsNullOrWhiteSpace(value),
@@ -65,7 +65,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="exceptionMessage"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         public static Contract<T> WhenConditionFailed<T>(
-            [AllowNull] this T source,
+             this T source,
             Predicate<T> predicate,
             string exceptionMessage)
             => new Contract<T>(

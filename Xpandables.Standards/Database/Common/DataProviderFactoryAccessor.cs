@@ -15,10 +15,26 @@
  *
 ************************************************************************************************************/
 
+using System.Data.Common;
+using System.Reflection;
+
 namespace System.Design.Database.Common
 {
     /// <summary>
     /// The default implementation to return data provider factory from provider type.
     /// </summary>
-    public sealed class DataProviderFactoryAccessor : IDataProviderFactoryAccessor { }
+    public sealed class DataProviderFactoryAccessor : IDataProviderFactoryAccessor
+    {
+        public Optional<DbProviderFactory> GetProviderFactory(DataProviderType providerType)
+        {
+            if (providerType is null) throw new ArgumentNullException(nameof(providerType));
+
+            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty;
+
+            return providerType.ProviderFactoryTypeName
+                .TypeFromString(providerType.DisplayName)
+                .MapOptional(type => type.TypeInvokeMember("Instance", flags, null, type, null))
+                .Cast<DbProviderFactory>();
+        }
+    }
 }
