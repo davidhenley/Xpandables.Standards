@@ -129,6 +129,9 @@
   <data name="EnumerationTypeDerivedClassExpected" xml:space="preserve">
     <value>EnumerationType derived class expected.</value>
   </data>
+  <data name="LinqAggregateBalanceNoItems" xml:space="preserve">
+    <value>Sequence contains no elements.</value>
+  </data>
   <data name="LinqInvokeRecursivelyNotAllow" xml:space="preserve">
     <value>Invoke cannot be called recursively - try using a temporary variable.</value>
   </data>

@@ -66,6 +66,9 @@ namespace System.Design.Linq
             return new ExpressionStarter<T>(expr);
         }
 
+        /// <summary>Start an expression false.</summary>
+        public static ExpressionStarter<T> New<T>() => new ExpressionStarter<T>();
+
         /// <summary>
         /// Create an expression with a stub expression true or false to use when the expression is not yet started.
         /// </summary>

@@ -97,6 +97,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Sequence contains no elements..
+        /// </summary>
+        public static string LinqAggregateBalanceNoItems {
+            get {
+                return ResourceManager.GetString("LinqAggregateBalanceNoItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Invoke cannot be called recursively - try using a temporary variable..
         /// </summary>
         public static string LinqInvokeRecursivelyNotAllow {
