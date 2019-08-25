@@ -28,6 +28,19 @@ namespace System
         public Optional<TResult> CastOptional<TResult>() => Cast<TResult>();
 
         /// <summary>
+        /// Converts the optional to an empty one.
+        /// </summary>
+        /// <returns>An empty optional.</returns>
+        public Optional<T> ToEmpty() => Empty;
+
+        /// <summary>
+        /// Converst the optional to an empty of the specific type.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <returns>An empty optional of the specific type.</returns>
+        public Optional<TResult> ToEmpty<TResult>() => Optional<TResult>.Empty;
+
+        /// <summary>
         /// Casts the element of optional to the specied type.
         /// </summary>
         /// <typeparam name="TResult">The type to cast the elements of source to.</typeparam>
