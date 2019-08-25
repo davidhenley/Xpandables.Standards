@@ -26,13 +26,13 @@ namespace System.Design.Command
     /// The command must be decorated with the <see cref="SupportTransactionAttribute"/>.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to apply transaction.</typeparam>
-    public sealed class AsyncCommandHanlderTransaction<TCommand> : IAsyncCommandHandler<TCommand>
+    public sealed class AsyncCommandHandlerTransaction<TCommand> : IAsyncCommandHandler<TCommand>
         where TCommand : class, ICommand
     {
         private readonly IAsyncCommandHandler<TCommand> _decoratee;
         private readonly IAttributeAccessor _attributeAccessor;
 
-        public AsyncCommandHanlderTransaction(IAsyncCommandHandler<TCommand> decoratee, IAttributeAccessor attributeAccessor)
+        public AsyncCommandHandlerTransaction(IAsyncCommandHandler<TCommand> decoratee, IAttributeAccessor attributeAccessor)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(nameof(attributeAccessor));

@@ -26,13 +26,13 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class AsyncrQueryHandlerValidator<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
+    public sealed class AsyncQueryHandlerValidator<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
         private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
         private readonly ICustomCompositeValidator<TQuery> _validator;
 
-        public AsyncrQueryHandlerValidator(
+        public AsyncQueryHandlerValidator(
             IAsyncQueryHandler<TQuery, TResult> decoratee,
             ICustomCompositeValidator<TQuery> validator)
         {
