@@ -22,7 +22,7 @@
     <PackageTags>ICommand, IMediator, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Database, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Add Linqs extend implementation.</PackageReleaseNotes>
+    <PackageReleaseNotes>Add command/query persistence, transaction.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables</AssemblyName>
     <RootNamespace>Xpandables</RootNamespace>
