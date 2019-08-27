@@ -47,6 +47,7 @@ namespace System.ComponentModel.DataAnnotations
     /// <summary>
     /// Defines a method contract used to validate a type-specific argument.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
+    /// <para>Contains default implementation.</para>
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
     public interface ICustomValidator<in TArgument> : ICustomValidator

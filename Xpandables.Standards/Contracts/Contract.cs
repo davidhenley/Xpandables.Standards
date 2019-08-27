@@ -96,7 +96,7 @@ namespace System
                 : throw this.BuildException(ContractExceptionBuilders.BuildArgumentNullException<T>());
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> with when the contract failed.
+        /// Throws an <see cref="ArgumentException"/> when the contract failed.
         /// </summary>
         /// <returns>An <see cref="ArgumentException"/>.</returns>
         public T ThrowArgumentException()
@@ -105,7 +105,7 @@ namespace System
                 : throw this.BuildException(ContractExceptionBuilders.BuildArgumentException<T>());
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> with when the contract failed.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when the contract failed.
         /// </summary>
         /// <returns>An <see cref="ArgumentOutOfRangeException"/>.</returns>
         public T ThrowArgumentOutOfRangeException()

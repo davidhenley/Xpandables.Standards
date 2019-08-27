@@ -121,7 +121,7 @@
     <value>{0} operation failed. See inner exception.</value>
   </data>
   <data name="CommandQueryHandlerMissingImplementation" xml:space="preserve">
-    <value>The coresponding handler for '{0}' is missing.</value>
+    <value>The corresponding handler for '{0}' is missing.</value>
   </data>
   <data name="DataContextPersistenceException" xml:space="preserve">
     <value>Persistence operation failed. See inner exception.</value>
@@ -139,7 +139,7 @@
     <value>Predicate cannot be started again.</value>
   </data>
   <data name="LinqQueryDontImplementIAsyncEnumeratorAccessor" xml:space="preserve">
-    <value>IAsyncEnumeraableAccessor not implemented.</value>
+    <value>IAsyncEnumerableAccessor not implemented.</value>
   </data>
   <data name="PropertyChangedCircularDependency" xml:space="preserve">
     <value>Circular dependency found.</value>

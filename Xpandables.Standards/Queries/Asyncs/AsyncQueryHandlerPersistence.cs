@@ -19,29 +19,32 @@ using System.Design.Database;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Command
+namespace System.Design.Query
 {
     /// <summary>
-    /// This class allows the application author to add persistence support to command.
-    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a command execution.</para>
+    /// This class allows the application author to add persistence support to query.
+    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a query execution.</para>
     /// </summary>
-    /// <typeparam name="TCommand">Type of command.</typeparam>
-    public sealed class AsyncCommandHandlerPersistence<TCommand> : IAsyncCommandHandler<TCommand>
-        where TCommand : class, ICommand
+    /// <typeparam name="TQuery"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public sealed class AsyncQueryHandlerPersistence<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>
     {
         private readonly IDataContext _dataContext;
-        private readonly IAsyncCommandHandler<TCommand> _decoratee;
+        private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
 
-        public AsyncCommandHandlerPersistence(IDataContext dataContext, IAsyncCommandHandler<TCommand> decoratedHandler)
+        public AsyncQueryHandlerPersistence(IDataContext dataContext, IAsyncQueryHandler<TQuery, TResult> decoratee)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            _decoratee = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
         }
 
-        public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
-            await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
+            var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
             await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
+
+            return result;
         }
     }
 }

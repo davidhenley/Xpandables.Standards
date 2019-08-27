@@ -70,7 +70,7 @@ namespace System {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à The coresponding handler for &apos;{0}&apos; is missing..
+        ///   Recherche une chaîne localisée semblable à The corresponding handler for &apos;{0}&apos; is missing..
         /// </summary>
         public static string CommandQueryHandlerMissingImplementation {
             get {
@@ -124,7 +124,7 @@ namespace System {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à IAsyncEnumeraableAccessor not implemented..
+        ///   Recherche une chaîne localisée semblable à IAsyncEnumerableAccessor not implemented..
         /// </summary>
         public static string LinqQueryDontImplementIAsyncEnumeratorAccessor {
             get {
