@@ -131,10 +131,15 @@ namespace System
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTaskEventRegister<,>));
             if (decorateWith.HasFlag(DecorateWith.Validation))
                 services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerValidator<,>));
+            if (decorateWith.HasFlag(DecorateWith.Persistence))
+                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistence<,>));
+            if (decorateWith.HasFlag(DecorateWith.Transaction))
+                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTransaction<,>));
+            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTaskEventRegister<,>));
+
 
             return services;
         }
@@ -163,10 +168,15 @@ namespace System
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerTaskEventRegister<,>));
             if (decorateWith.HasFlag(DecorateWith.Validation))
                 services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerValidator<,>));
+            if (decorateWith.HasFlag(DecorateWith.Persistence))
+                services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerPersistence<,>));
+            if (decorateWith.HasFlag(DecorateWith.Transaction))
+                services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerTransaction<,>));
+            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+                services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerTaskEventRegister<,>));
+
 
             return services;
         }
@@ -194,14 +204,14 @@ namespace System
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTaskEventRegister<>));
+            if (decorateWith.HasFlag(DecorateWith.Validation))
+                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidator<>));
             if (decorateWith.HasFlag(DecorateWith.Persistence))
                 services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistence<>));
             if (decorateWith.HasFlag(DecorateWith.Transaction))
                 services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransaction<>));
-            if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidator<>));
+            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTaskEventRegister<>));
 
             return services;
         }
@@ -229,14 +239,14 @@ namespace System
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerTaskEventRegister<>));
+            if (decorateWith.HasFlag(DecorateWith.Validation))
+                services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerValidator<>));
             if (decorateWith.HasFlag(DecorateWith.Persistence))
                 services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerPersistence<>));
             if (decorateWith.HasFlag(DecorateWith.Transaction))
                 services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerTransaction<>));
-            if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerValidator<>));
+            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+                services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerTaskEventRegister<>));
 
             return services;
         }
