@@ -26,12 +26,12 @@ namespace System.Design.Mediator
     /// <summary>
     /// This class allows the application author to add validation support before a query/command is handled.
     /// </summary>
-    public sealed class AsyncCommandQueryHandlerValidator : IAsyncCommandQueryHandler
+    public sealed class AsyncProcessorValidator : IAsyncProcessor
     {
-        private readonly IAsyncCommandQueryHandler _decoratee;
+        private readonly IAsyncProcessor _decoratee;
         private readonly IServiceProvider _serviceProvider;
 
-        public AsyncCommandQueryHandlerValidator(IAsyncCommandQueryHandler decoratee, IServiceProvider serviceProvider)
+        public AsyncProcessorValidator(IAsyncProcessor decoratee, IServiceProvider serviceProvider)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

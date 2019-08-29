@@ -62,8 +62,8 @@ namespace System
         /// <summary>
         /// Gets or sets the creation date of the underlying instance.
         /// </summary>
-        [DataType(DataType.DateTime)]
-        public bool CreatedOn { get; protected set; }
+        [field: NonSerialized, DataType(DataType.DateTime)]
+        public DateTime CreatedOn { get; protected set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Returns the unique signature of string type for an instance.

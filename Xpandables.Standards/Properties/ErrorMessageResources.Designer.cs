@@ -88,6 +88,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Unable to retrieve the data context. See inner exception..
+        /// </summary>
+        public static string DataContextProviderException {
+            get {
+                return ResourceManager.GetString("DataContextProviderException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à EnumerationType derived class expected..
         /// </summary>
         public static string EnumerationTypeDerivedClassExpected {

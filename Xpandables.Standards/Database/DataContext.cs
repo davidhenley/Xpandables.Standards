@@ -27,7 +27,7 @@ namespace System.Design.Database
     /// This is the <see langword="abstract"/> db context class that inherits from <see cref="DbContext"/>
     /// and implements <see cref="IDataContext"/>.
     /// </summary>
-    public abstract partial class DataContext : DbContext, IDataContext
+    public abstract partial class DataContext
     {
         public virtual IQueryable<T> SetOf<T>() where T : Entity => Set<T>();
         Optional<T> IDataContext.Find<T>(params object[] keyValues) => Find<T>(keyValues);

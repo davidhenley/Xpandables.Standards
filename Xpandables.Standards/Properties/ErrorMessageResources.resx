@@ -126,6 +126,9 @@
   <data name="DataContextPersistenceException" xml:space="preserve">
     <value>Persistence operation failed. See inner exception.</value>
   </data>
+  <data name="DataContextProviderException" xml:space="preserve">
+    <value>Unable to retrieve the data context. See inner exception.</value>
+  </data>
   <data name="EnumerationTypeDerivedClassExpected" xml:space="preserve">
     <value>EnumerationType derived class expected.</value>
   </data>

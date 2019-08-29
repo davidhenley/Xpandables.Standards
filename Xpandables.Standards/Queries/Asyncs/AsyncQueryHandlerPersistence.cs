@@ -23,17 +23,18 @@ namespace System.Design.Query
 {
     /// <summary>
     /// This class allows the application author to add persistence support to query.
-    /// <para>This decorator uses the <see cref="IDataContext.PersistAsync(CancellationToken)"/> after a query execution.</para>
+    /// <para>This decorator uses the <see cref="IAsyncDataContext.PersistAsync(CancellationToken)"/>
+    /// after a query execution.</para>
     /// </summary>
     /// <typeparam name="TQuery"></typeparam>
     /// <typeparam name="TResult"></typeparam>
     public sealed class AsyncQueryHandlerPersistence<TQuery, TResult> : IAsyncQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
-        private readonly IDataContext _dataContext;
+        private readonly IAsyncDataContext _dataContext;
         private readonly IAsyncQueryHandler<TQuery, TResult> _decoratee;
 
-        public AsyncQueryHandlerPersistence(IDataContext dataContext, IAsyncQueryHandler<TQuery, TResult> decoratee)
+        public AsyncQueryHandlerPersistence(IAsyncDataContext dataContext, IAsyncQueryHandler<TQuery, TResult> decoratee)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));

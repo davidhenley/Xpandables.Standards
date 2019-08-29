@@ -23,7 +23,7 @@ using System.Linq.Expressions;
 namespace System.Design.Database
 {
     /// <summary>
-    /// Allows an application author to manage domain objects.
+    /// Allows an application author to synchronously manage domain objects.
     /// It contains all the methods that describe the domain objects manager.
     /// <para>When argument is null, an <see cref="ArgumentNullException"/> will be thrown.</para>
     /// <para>When execution failed, an <see cref="InvalidOperationException"/> will be thrown.</para>

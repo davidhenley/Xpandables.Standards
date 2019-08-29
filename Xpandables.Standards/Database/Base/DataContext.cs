@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace System.Design.Database
 {
-    public abstract partial class DataContext
+    public abstract partial class DataContext : DbContext, IDataContext, IAsyncDataContext
     {
 #pragma warning disable CS8601 // Existence possible d'une assignation de référence null.
         private static readonly MethodInfo convertToStringMethodInfo =

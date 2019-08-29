@@ -26,7 +26,7 @@ namespace System.Design.Database
 {
     public abstract partial class DataContext
     {
-        async Task<Optional<T>> IDataContext.FindAsync<T>(CancellationToken cancellationToken, params object[] keyValues)
+        async Task<Optional<T>> IAsyncDataContext.FindAsync<T>(CancellationToken cancellationToken, params object[] keyValues)
              => await FindAsync<T>(keyValues, cancellationToken).ConfigureAwait(false);
         public virtual IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
             where T : Entity
@@ -50,12 +50,12 @@ namespace System.Design.Database
             if (selector is null) throw new ArgumentNullException(nameof(selector));
             return await selector(Set<T>()).LastOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
-        async Task IDataContext.AddAsync<T>(T entity, CancellationToken cancellationToken)
+        async Task IAsyncDataContext.AddAsync<T>(T entity, CancellationToken cancellationToken)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
             await AddAsync(entity, cancellationToken).ConfigureAwait(false);
         }
-        async Task IDataContext.AddRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken)
+        async Task IAsyncDataContext.AddRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken)
         {
             if (entities is null || !entities.Any())
                 throw new ArgumentNullException(nameof(entities));

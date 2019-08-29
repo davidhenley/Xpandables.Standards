@@ -24,12 +24,12 @@ namespace System.Design.Mediator
     /// <summary>
     /// This class allows the application author to add validation support before a query/command is handled.
     /// </summary>
-    public sealed class CommandQueryHandlerValidator : ICommandQueryHandler
+    public sealed class ProcessorValidator : IProcessor
     {
-        private readonly ICommandQueryHandler _decoratee;
+        private readonly IProcessor _decoratee;
         private readonly IServiceProvider _serviceProvider;
 
-        public CommandQueryHandlerValidator(ICommandQueryHandler decoratee, IServiceProvider serviceProvider)
+        public ProcessorValidator(IProcessor decoratee, IServiceProvider serviceProvider)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

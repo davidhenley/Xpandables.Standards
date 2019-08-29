@@ -19,11 +19,13 @@ using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Design.Command;
+using System.Design.Database;
 using System.Design.Mediator;
 using System.Design.Query;
 using System.Design.TaskEvent;
 using System.Linq;
 using System.Reflection;
+using System;
 
 namespace System
 {
@@ -70,39 +72,102 @@ namespace System
         }
 
         /// <summary>
-        /// Adds the <see cref="ICommandQueryHandler"/> to the services.
+        /// Adds the <see cref="IProcessor"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="decorateWith">The decorator to be added with.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCommandQueryHandler(
+        public static IServiceCollection AddProcessor(
             this IServiceCollection services,
             DecorateWith decorateWith = DecorateWith.None)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<ICommandQueryHandler, CommandQueryHandler>();
+            services.AddScoped<IProcessor, Processor>();
             if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate<ICommandQueryHandler, CommandQueryHandlerValidator>();
+                services.TryDecorate<IProcessor, ProcessorValidator>();
+            if (decorateWith.HasFlag(DecorateWith.Persistence))
+                services.TryDecorate<IProcessor, ProcessorPersistence>();
+            if (decorateWith.HasFlag(DecorateWith.Transaction))
+                services.TryDecorate<IProcessor, ProcessorTransaction>();
+            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+                services.TryDecorate<IProcessor, ProcessorTaskEventRegister>();
 
             return services;
         }
 
         /// <summary>
-        /// Adds the <see cref="IAsyncCommandQueryHandler"/> to the services.
+        /// Adds the <see cref="IAsyncProcessor"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="decorateWith">The decorator to be added with.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddAsyncCommandQueryHandler(
+        public static IServiceCollection AddAsyncProcessor(
             this IServiceCollection services,
             DecorateWith decorateWith = DecorateWith.None)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<IAsyncCommandQueryHandler, AsyncCommandQueryHandler>();
+            services.AddScoped<IAsyncProcessor, AsyncProcessor>();
             if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate<IAsyncCommandQueryHandler, AsyncCommandQueryHandlerValidator>();
+                services.TryDecorate<IAsyncProcessor, AsyncProcessorValidator>();
+            if (decorateWith.HasFlag(DecorateWith.Persistence))
+                services.TryDecorate<IAsyncProcessor, AsyncProcessorPersistence>();
+            if (decorateWith.HasFlag(DecorateWith.Transaction))
+                services.TryDecorate<IAsyncProcessor, AsyncProcessorTransaction>();
+            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+                services.TryDecorate<IAsyncProcessor, AsyncProcessorTaskEventRegister>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the <see cref="IDataContext"/> to the services.
+        /// </summary>
+        /// <typeparam name="TDataContextProvider">The type of data context provider.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddDataContext<TDataContextProvider>(this IServiceCollection services)
+            where TDataContextProvider : class, IDataContextProvider
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+
+            services.AddScoped<IDataContextProvider, TDataContextProvider>();
+            services.AddScoped(serviceProvider =>
+            {
+                var dataContextProvider = serviceProvider.GetRequiredService<IDataContextProvider>();
+                return dataContextProvider.GetDataContext()
+                    .WhenException(exception => throw new InvalidOperationException(
+                        ErrorMessageResources.DataContextProviderException,
+                        exception))
+                    .Cast<IDataContext>();
+            });
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the <see cref="IAsyncDataContext"/> provider to the services.
+        /// </summary>
+        /// <typeparam name="TAsyncDataContextProvider">The type of async data context provider.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncDataContext<TAsyncDataContextProvider>(this IServiceCollection services)
+            where TAsyncDataContextProvider : class, IAsyncDataContextProvider
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+
+            services.AddScoped<IAsyncDataContextProvider, TAsyncDataContextProvider>();
+            services.AddScoped(serviceProvider =>
+            {
+                var dataContextProvider = serviceProvider.GetRequiredService<IAsyncDataContextProvider>();
+
+                return AsyncHelpers.RunSync(() => dataContextProvider.GetDataContextAsync())
+                    .WhenException(exception => throw new InvalidOperationException(
+                        ErrorMessageResources.DataContextProviderException,
+                        exception))
+                    .Cast<IAsyncDataContext>();
+            });
 
             return services;
         }

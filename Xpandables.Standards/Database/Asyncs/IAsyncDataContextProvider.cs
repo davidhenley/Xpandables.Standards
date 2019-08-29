@@ -27,9 +27,9 @@ namespace System.Design.Database
         /// <summary>
         /// Gets the ambient data context according to the environment.
         /// </summary>
-        /// <returns>An implementation of <see cref="IDataContext" />.</returns>
+        /// <returns>An implementation of <see cref="IAsyncDataContext" />.</returns>
         /// <returns>A task that represents the asynchronous get data context operation.
         /// The task result contains the data context built, or optional empty.</returns>
-        Task<ExecutionResult<IDataContext>> GetDataContextAsync();
+        Task<ExecutionResult<IAsyncDataContext>> GetDataContextAsync();
     }
 }

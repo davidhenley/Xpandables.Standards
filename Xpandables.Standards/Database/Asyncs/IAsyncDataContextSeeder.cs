@@ -30,6 +30,6 @@ namespace System.Design.Database
         /// </summary>
         /// <param name="dataContext">The data context instance to act on.</param>
         /// <returns>A task that represents the asynchronous seed operation.</returns>
-        Task<IDataContext> SeedAsync(IDataContext dataContext);
+        Task<IAsyncDataContext> SeedAsync(IAsyncDataContext dataContext);
     }
 }

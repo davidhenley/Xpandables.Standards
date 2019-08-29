@@ -24,16 +24,16 @@ using System.Threading.Tasks;
 namespace System.Design.Mediator
 {
     /// <summary>
-    /// The default implementation for <see cref="IAsyncCommandQueryHandler"/>.
+    /// The default implementation for <see cref="IAsyncProcessor"/>.
     /// Implements methods to execute the <see cref="IAsyncQueryHandler{TQuery, TResult}"/> and
     /// <see cref="IAsyncCommandHandler{TCommand}"/> process dynamically.
     /// This class can not be inherited.
     /// </summary>
-    public sealed class AsyncCommandQueryHandler : IAsyncCommandQueryHandler
+    public sealed class AsyncProcessor : IAsyncProcessor
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public AsyncCommandQueryHandler(IServiceProvider serviceProvider)
+        public AsyncProcessor(IServiceProvider serviceProvider)
             => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
         public async Task HandleCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)

@@ -22,16 +22,16 @@ using System.Design.Query;
 namespace System.Design.Mediator
 {
     /// <summary>
-    /// The default implementation for <see cref="ICommandQueryHandler"/>.
+    /// The default implementation for <see cref="IProcessor"/>.
     /// Implements methods to execute the <see cref="IQueryHandler{TQuery, TResult}"/> and
     /// <see cref="ICommandHandler{TCommand}"/> process dynamically.
     /// This class can not be inherited.
     /// </summary>
-    public sealed class CommandQueryHandler : ICommandQueryHandler
+    public sealed class Processor : IProcessor
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public CommandQueryHandler(IServiceProvider serviceProvider)
+        public Processor(IServiceProvider serviceProvider)
             => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
         public void HandleCommand<TCommand>(TCommand command)
