@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -99,9 +100,11 @@ namespace System
             }
         }
 
-        private static TDelegate GetLambdaConstructor<TDelegate>(Type type, params Type[] parameterTypes)
+        protected virtual TDelegate GetLambdaConstructor<TDelegate>([NotNull] Type type, params Type[] parameterTypes)
             where TDelegate : Delegate
         {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
             var constructor = GetConstructorInfo(type, parameterTypes);
             var parameterExpression = GetParameterExpression(parameterTypes);
             var constructorExpression = GetConstructorExpression(constructor, parameterExpression);
@@ -112,24 +115,28 @@ namespace System
         }
 
         // Get the Constructor which matches the given argument Types.
-        private static ConstructorInfo GetConstructorInfo(Type type, params Type[] parameterTypes)
-            => type.GetConstructor(
+        static ConstructorInfo GetConstructorInfo([NotNull] Type type, params Type[] parameterTypes)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
+            return type.GetConstructor(
                 BindingFlags.Instance | BindingFlags.Public,
                 null,
                 CallingConventions.HasThis,
                 parameterTypes,
                 Array.Empty<ParameterModifier>());
+        }
 
         // Get a set of Expressions representing the parameters which will be passed to the constructor.
-        private static ParameterExpression[] GetParameterExpression(params Type[] parameterTypes)
+        static ParameterExpression[] GetParameterExpression(params Type[] parameterTypes)
             => parameterTypes
                 .Select((type, index) => Expression.Parameter(type, $"param{index + 1}"))
                 .ToArray();
 
         // Get an Expression representing the constructor call, passing in the constructor parameters.
-        private static Expression GetConstructorExpression(
-            ConstructorInfo constructorInfo,
-            params ParameterExpression[] parameterExpressions)
-            => Expression.New(constructorInfo, parameterExpressions);
+        static Expression GetConstructorExpression(
+           [NotNull] ConstructorInfo constructorInfo,
+           params ParameterExpression[] parameterExpressions)
+           => Expression.New(constructorInfo, parameterExpressions);
     }
 }
