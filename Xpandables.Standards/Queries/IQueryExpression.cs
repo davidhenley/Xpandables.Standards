@@ -25,7 +25,7 @@ namespace System.Design.Query
     /// This can significantly improve the use of the command/query pattern, allowing class conversion to an expression tree.
     /// </summary>
     /// <typeparam name="TSource">The data type to apply expression to.</typeparam>
-    public interface ICriteriaExpression<TSource>
+    public interface IQueryExpression<TSource>
         where TSource : class
     {
         /// <summary>

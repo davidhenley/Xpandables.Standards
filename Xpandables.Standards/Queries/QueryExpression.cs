@@ -22,26 +22,32 @@ using System.Linq.Expressions;
 namespace System.Design.Query
 {
     /// <summary>
-    /// This class is a helper that provides a default implementation for <see cref="ICriteriaExpression{TSource}"/>.
+    /// This class is a helper that provides a default implementation for <see cref="IQueryExpression{TSource}"/>.
     /// </summary>
     /// <typeparam name="TSource">The data source type.</typeparam>
-    public class CriteriaExpression<TSource> : ICriteriaExpression<TSource>
+    public class QueryExpression<TSource> : IQueryExpression<TSource>
         where TSource : class
     {
-        public Expression<Func<TSource, bool>> Expression { get; protected set; } = PredicateBuilder.New<TSource>();
+        public Expression<Func<TSource, bool>> Expression => BuildExpression();
+
+        /// <summary>
+        /// When implemented in derived class, this method will return the expression
+        /// to be used for the clause <see langword="Where"/> in a query.
+        /// </summary>
+        protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
 
         [SuppressMessage(
             "Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>")]
         [SuppressMessage(
             "Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
-        public static implicit operator Expression<Func<TSource, bool>>([NotNull] CriteriaExpression<TSource> criteria)
+        public static implicit operator Expression<Func<TSource, bool>>([NotNull] QueryExpression<TSource> criteria)
              => criteria.Expression;
 
         [SuppressMessage(
             "Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>")]
         [SuppressMessage(
             "Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
-        public static implicit operator Func<TSource, bool>([NotNull] CriteriaExpression<TSource> criteria)
+        public static implicit operator Func<TSource, bool>([NotNull] QueryExpression<TSource> criteria)
             => criteria!.Expression.Compile();
     }
 }
