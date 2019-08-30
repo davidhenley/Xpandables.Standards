@@ -49,7 +49,9 @@ namespace System.Design.Linq
         private ExpandableQueryProvider<T> InnerQueryProvider { get; }
         public Type ElementType => typeof(T);
         public Expression Expression => InnerQuery.Expression;
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
         public IQueryProvider Provider => InnerQueryProvider;
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             if (InnerQuery is IAsyncEnumerable<T> asyncEnumerable)
