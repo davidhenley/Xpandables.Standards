@@ -24,11 +24,11 @@ namespace System.Http
     /// <summary>
     /// Implementation for <see cref="IHttpRequestHeaderValuesAccessor"/>.
     /// </summary>
-    public sealed class HttpRequestHeaderValuesProvider : IHttpRequestHeaderValuesAccessor
+    public sealed class HttpRequestHeaderValuesAccessor : IHttpRequestHeaderValuesAccessor
     {
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public HttpRequestHeaderValuesProvider(IHttpContextAccessor contextAccessor)
+        public HttpRequestHeaderValuesAccessor(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
         }

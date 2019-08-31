@@ -35,7 +35,7 @@ namespace System.Http
 
             return _headerValuesAccessor.GetRequestHeaderValue(key)
                 .Map(header => header.StartsWith("Bearer", StringComparison.InvariantCulture)
-                ? header.Remove(0, "Bearer ".Length - 1)
+                ? header.Remove(0, "Bearer ".Length - 1).Trim()
                 : header);
         }
     }
