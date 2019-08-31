@@ -47,7 +47,7 @@ namespace System.Design.Mediator
                    .Reduce(() => throw new NotImplementedException(
                        ErrorMessageResources.CommandQueryHandlerMissingImplementation
                         .StringFormat(nameof(TCommand))))
-                   .MapAsync((handler, cancel) => handler.HandleAsync(command, cancel), cancellationToken)
+                   .MapAsync(handler => handler.HandleAsync(command, cancellationToken))
                    .ConfigureAwait(false);
             }
             catch (Exception exception) when (!(exception is ArgumentException)
@@ -75,7 +75,7 @@ namespace System.Design.Mediator
                     .Reduce(() => throw new NotImplementedException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
-                    .MapAsync((handler, cancel) => handler.HandleAsync(query, cancel), cancellationToken)
+                    .MapAsync(handler => handler.HandleAsync(query, cancellationToken))
                     .ConfigureAwait(false);
             }
             catch (Exception exception) when (!(exception is ArgumentException)
@@ -105,7 +105,7 @@ namespace System.Design.Mediator
                     .Reduce(() => throw new NotImplementedException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(query.GetType().Name)))
-                    .MapAsync((handler, cancel) => handler.HandleAsync(query, cancel), cancellationToken)
+                    .MapAsync(handler => handler.HandleAsync(query, cancellationToken))
                     .ConfigureAwait(false);
             }
             catch (Exception exception) when (!(exception is ArgumentException)

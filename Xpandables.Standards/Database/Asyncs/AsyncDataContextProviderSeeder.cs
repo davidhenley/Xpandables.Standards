@@ -39,8 +39,8 @@ namespace System.Design.Database
         {
             var context = await _decoratee.GetDataContextAsync().ConfigureAwait(false);
             await context
-                .MapAsync((ctxt, can) => _seeder.SeedAsync(ctxt), CancellationToken.None)
-                .MapAsync((ctxt, can) => ctxt.PersistAsync(can), CancellationToken.None)
+                .MapAsync(ctxt => _seeder.SeedAsync(ctxt))
+                .MapAsync(ctxt => ctxt.PersistAsync(CancellationToken.None))
                 .ConfigureAwait(false);
 
             return context;
