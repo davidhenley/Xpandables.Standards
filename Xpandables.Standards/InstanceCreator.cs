@@ -28,22 +28,22 @@ namespace System
     /// </summary>
     public class InstanceCreator : IInstanceCreator
     {
-        public ExecutionResult<object> Create(Type type)
+        public Optional<object> Create(Type type)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
 
             try
             {
                 var lambdaConstructor = GetLambdaConstructor<Func<object>>(type, Array.Empty<Type>());
-                return new ExecutionResult<object>(lambdaConstructor.Invoke());
+                return lambdaConstructor.Invoke();
             }
             catch (Exception exception)
             {
-                return new ExecutionResult<object>(exception);
+                return Optional<object>.Exception(exception);
             }
         }
 
-        public ExecutionResult<object> Create<TParam>(Type type, TParam param)
+        public Optional<object> Create<TParam>(Type type, TParam param)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
             if (param is null) throw new ArgumentNullException(nameof(param));
@@ -51,15 +51,15 @@ namespace System
             try
             {
                 var lambdaConstructor = GetLambdaConstructor<Func<TParam, object>>(type, new[] { typeof(TParam) });
-                return new ExecutionResult<object>(lambdaConstructor.Invoke(param));
+                return lambdaConstructor.Invoke(param);
             }
             catch (Exception exception)
             {
-                return new ExecutionResult<object>(exception);
+                return Optional<object>.Exception(exception);
             }
         }
 
-        public ExecutionResult<object> Create<TParam1, TParam2>(Type type, TParam1 param1, TParam2 param2)
+        public Optional<object> Create<TParam1, TParam2>(Type type, TParam1 param1, TParam2 param2)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
             if (param1 is null) throw new ArgumentNullException(nameof(param1));
@@ -71,15 +71,15 @@ namespace System
                     type,
                     new[] { typeof(TParam1), typeof(TParam2) });
 
-                return new ExecutionResult<object>(lambdaConstructor.Invoke(param1, param2));
+                return lambdaConstructor.Invoke(param1, param2);
             }
             catch (Exception exception)
             {
-                return new ExecutionResult<object>(exception);
+                return Optional<object>.Exception(exception);
             }
         }
 
-        public ExecutionResult<object> Create<TParam1, TParam2, TParam3>(Type type, TParam1 param1, TParam2 param2, TParam3 param3)
+        public Optional<object> Create<TParam1, TParam2, TParam3>(Type type, TParam1 param1, TParam2 param2, TParam3 param3)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
             if (param1 is null) throw new ArgumentNullException(nameof(param1));
@@ -92,11 +92,11 @@ namespace System
                     type,
                     new[] { typeof(TParam1), typeof(TParam2), typeof(TParam3) });
 
-                return new ExecutionResult<object>(lambdaConstructor.Invoke(param1, param2, param3));
+                return lambdaConstructor.Invoke(param1, param2, param3);
             }
             catch (Exception exception)
             {
-                return new ExecutionResult<object>(exception);
+                return Optional<object>.Exception(exception);
             }
         }
 

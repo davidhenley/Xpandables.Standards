@@ -36,7 +36,7 @@ namespace System.Design.Database
                 ?? throw new ArgumentNullException(nameof(dataContextSeeder));
         }
 
-        ExecutionResult<IDataContext> IDataContextProvider.GetDataContext()
+        Optional<IDataContext> IDataContextProvider.GetDataContext()
         {
             var context = _decoratee.GetDataContext();
 

@@ -27,6 +27,6 @@ namespace System.Design.Database
         /// Gets the data context options according to the environment.
         /// </summary>
         /// <returns>An implementation of <typeparamref name="TDataContextOption"/>.</returns>
-        ExecutionResult<TDataContextOption> GetDataContextOptions();
+        Optional<TDataContextOption> GetDataContextOptions();
     }
 }

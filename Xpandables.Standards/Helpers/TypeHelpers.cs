@@ -171,20 +171,20 @@ namespace System
         /// <param name="assemblyName">The assembly name.</param>
         /// <returns>If found, returns a loaded assembly otherwise an empty result.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
-        public static ExecutionResult<Assembly> AssemblyLoadedFromString(this string assemblyName)
+        public static Optional<Assembly> AssemblyLoadedFromString(this string assemblyName)
         {
             if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
 
             try
             {
-                return new ExecutionResult<Assembly>(Assembly.Load(assemblyName));
+                return Assembly.Load(assemblyName);
             }
             catch (Exception exception) when (exception is ArgumentException
                                             || exception is FileNotFoundException
                                             || exception is FileLoadException
                                             || exception is BadImageFormatException)
             {
-                return new ExecutionResult<Assembly>(exception);
+                return Optional<Assembly>.Exception(exception);
             }
         }
 
@@ -194,13 +194,13 @@ namespace System
         /// <param name="typeName">The name of the type to find.</param>
         /// <returns>if found, returns the type ortherwise an empty result.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
-        public static ExecutionResult<Type> TypeFromString(this string typeName)
+        public static Optional<Type> TypeFromString(this string typeName)
         {
             if (typeName is null) throw new ArgumentNullException(nameof(typeName));
 
             try
             {
-                return new ExecutionResult<Type>(Type.GetType(typeName, true, true));
+                return Type.GetType(typeName, true, true);
             }
             catch (Exception exception) when (exception is TargetInvocationException
                                             || exception is TypeLoadException
@@ -209,7 +209,7 @@ namespace System
                                             || exception is FileLoadException
                                             || exception is BadImageFormatException)
             {
-                return new ExecutionResult<Type>(exception);
+                return Optional<Type>.Exception(exception);
             }
         }
 
@@ -221,7 +221,7 @@ namespace System
         /// <returns>if found, returns the type ortherwise an empty result.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
-        public static ExecutionResult<Type> TypeFromString(this string typeName, string assemblyName)
+        public static Optional<Type> TypeFromString(this string typeName, string assemblyName)
         {
             if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
             if (typeName is null) throw new ArgumentNullException(nameof(typeName));
@@ -237,11 +237,13 @@ namespace System
                     .FirstOrEmpty(t => t.FullName.Equals(typeName, StringComparison.InvariantCultureIgnoreCase));
 
                 return resultLoadedType
-                    .Map(value => new ExecutionResult<Type>(value))
-                    .Reduce(() => new ExecutionResult<Type>());
+                    .Map(value => value);
             }
 
-            return new ExecutionResult<Type>(resultFromAss.Exception);
+            var exception = default(Exception);
+            resultFromAss.WhenException(ex => exception = ex);
+
+            return Optional<Type>.Exception(exception!);
         }
 
         /// <summary>
@@ -268,7 +270,7 @@ namespace System
         /// <param name="args">An array containing the arguments to pass to the member to invoke.</param>
         /// <returns>An object representing the return value of the invoked member
         /// or an empty result with handled exception.</returns>
-        public static ExecutionResult<object> TypeInvokeMember(
+        public static Optional<object> TypeInvokeMember(
             this Type type,
             string memberName,
             BindingFlags invokeAttr,
@@ -281,8 +283,7 @@ namespace System
 
             try
             {
-                return new ExecutionResult<object>(
-                    type.InvokeMember(memberName, invokeAttr, binder, target, args, CultureInfo.InvariantCulture));
+                return type.InvokeMember(memberName, invokeAttr, binder, target, args, CultureInfo.InvariantCulture);
             }
             catch (Exception exception) when (exception is ArgumentNullException
                                             || exception is ArgumentException
@@ -293,7 +294,7 @@ namespace System
                                             || exception is AmbiguousMatchException
                                             || exception is InvalidOperationException)
             {
-                return new ExecutionResult<object>(exception);
+                return Optional<object>.Exception(exception);
             }
         }
     }

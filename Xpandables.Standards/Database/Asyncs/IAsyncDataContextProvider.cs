@@ -30,6 +30,6 @@ namespace System.Design.Database
         /// <returns>An implementation of <see cref="IAsyncDataContext" />.</returns>
         /// <returns>A task that represents the asynchronous get data context operation.
         /// The task result contains the data context built, or optional empty.</returns>
-        Task<ExecutionResult<IAsyncDataContext>> GetDataContextAsync();
+        Task<Optional<IAsyncDataContext>> GetDataContextAsync();
     }
 }

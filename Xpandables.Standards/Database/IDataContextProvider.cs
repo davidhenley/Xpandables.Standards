@@ -26,6 +26,6 @@ namespace System.Design.Database
         /// Gets the ambient data context according to the environment.
         /// </summary>
         /// <returns>An implementation of <see cref="IDataContext" />.</returns>
-        ExecutionResult<IDataContext> GetDataContext();
+        Optional<IDataContext> GetDataContext();
     }
 }

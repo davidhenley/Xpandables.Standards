@@ -35,7 +35,7 @@ namespace System.Design.Database
             _seeder = seeder ?? throw new ArgumentNullException(nameof(seeder));
         }
 
-        async Task<ExecutionResult<IAsyncDataContext>> IAsyncDataContextProvider.GetDataContextAsync()
+        async Task<Optional<IAsyncDataContext>> IAsyncDataContextProvider.GetDataContextAsync()
         {
             var context = await _decoratee.GetDataContextAsync().ConfigureAwait(false);
             await context

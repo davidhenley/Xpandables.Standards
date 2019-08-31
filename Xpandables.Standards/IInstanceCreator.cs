@@ -29,7 +29,7 @@ namespace System
         /// <returns>An execution result with an instance of the <paramref name="type"/> if ok,
         /// otherwise an empty result with exception.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        ExecutionResult<object> Create(Type type);
+        Optional<object> Create(Type type);
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
@@ -41,7 +41,7 @@ namespace System
         /// otherwise an empty result with exception.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param"/> is null.</exception>
-        ExecutionResult<object> Create<TParam>(Type type, TParam param);
+        Optional<object> Create<TParam>(Type type, TParam param);
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
@@ -56,7 +56,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param2"/> is null.</exception>
-        ExecutionResult<object> Create<TParam1, TParam2>(Type type, TParam1 param1, TParam2 param2);
+        Optional<object> Create<TParam1, TParam2>(Type type, TParam1 param1, TParam2 param2);
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
@@ -74,6 +74,6 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param2"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param3"/> is null.</exception>
-        ExecutionResult<object> Create<TParam1, TParam2, TParam3>(Type type, TParam1 param1, TParam2 param2, TParam3 param3);
+        Optional<object> Create<TParam1, TParam2, TParam3>(Type type, TParam1 param1, TParam2 param2, TParam3 param3);
     }
 }

@@ -30,8 +30,12 @@ namespace System
     [DebuggerDisplay("{Id}")]
     public abstract class Entity
     {
-        [NonSerialized]
-        private string _id = string.Empty;
+        /// <summary>
+        /// Initializes the Id key.
+        /// </summary>
+        protected Entity() => Id = DoKeyGenerator();
+
+        protected string DoKeyGenerator() => KeyGenerator();
 
         /// <summary>
         /// Gets the domain object identity.
@@ -39,11 +43,8 @@ namespace System
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id
-        {
-            get => !string.IsNullOrWhiteSpace(_id) ? _id : (_id = KeyGenerator());
-            protected internal set => _id = value;
-        }
+        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2235:Mark all non-serializable fields", Justification = "<En attente>")]
+        public string Id { get; protected set; }
 
         /// <summary>
         /// Determines whether or not the underlying instance is new.

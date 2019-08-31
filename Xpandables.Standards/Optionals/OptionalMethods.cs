@@ -34,11 +34,19 @@ namespace System
         public Optional<T> ToEmpty() => Empty;
 
         /// <summary>
-        /// Converst the optional to an empty of the specific type.
+        /// Converts the optional to an empty of the specific type.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <returns>An empty optional of the specific type.</returns>
         public Optional<TResult> ToEmpty<TResult>() => Optional<TResult>.Empty;
+
+        /// <summary>
+        /// Converts the optional to an optional with exception.
+        /// </summary>
+        /// <param name="exception">The exception ot be used.</param>
+        /// <returns>An optional with exception value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
+        public Optional<T> ToException(Exception exception) => Optional<T>.Exception(exception);
 
         /// <summary>
         /// Casts the element of optional to the specied type.
@@ -164,6 +172,41 @@ namespace System
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (!this.Any()) action();
+        }
+
+        /// <summary>
+        /// Creates a new element that is the result of applying the given function to the element on exception.
+        /// </summary>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
+        public Optional<T> WhenException(Func<Optional<T>> some)
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return _exceptions.Any() ? some() : (this);
+        }
+
+        /// <summary>
+        /// Creates a new element that is the result of applying the given function to the element on exception.
+        /// </summary>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
+        public Optional<T> WhenException(Func<Exception, Optional<T>> some)
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return _exceptions.Any() ? some(_exceptions.Single()) : this;
+        }
+
+        /// <summary>
+        /// Executes the given delegate on exception.
+        /// </summary>
+        /// <param name="action">The delegate to be executed.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
+        public void WhenException(Action<Exception> action)
+        {
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            if (_exceptions.Any()) action(_exceptions.Single());
         }
     }
 }

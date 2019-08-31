@@ -43,7 +43,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
-        ExecutionResult<DateTime> StringToDateTime(
+        Optional<DateTime> StringToDateTime(
             string source,
             IFormatProvider provider,
             DateTimeStyles styles,
@@ -55,13 +55,13 @@ namespace System
             try
             {
                 if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
-                    return new ExecutionResult<DateTime>(dateTime);
+                    return dateTime;
 
-                return new ExecutionResult<DateTime>();
+                return Optional<DateTime>.Empty;
             }
             catch (Exception exception) when (exception is ArgumentException)
             {
-                return new ExecutionResult<DateTime>(exception);
+                return Optional<DateTime>.Exception(exception);
             }
         }
 
@@ -76,18 +76,18 @@ namespace System
         /// by format and provider.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
-        ExecutionResult<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
+        Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
         {
             if (format is null) throw new ArgumentNullException(nameof(format));
             if (provider is null) throw new ArgumentNullException(nameof(provider));
 
             try
             {
-                return new ExecutionResult<string>(dateTime.ToString(format, provider));
+                return dateTime.ToString(format, provider);
             }
             catch (Exception exception) when (exception is FormatException || exception is ArgumentOutOfRangeException)
             {
-                return new ExecutionResult<string>(exception);
+                return Optional<string>.Exception(exception);
             }
         }
     }
