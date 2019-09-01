@@ -42,14 +42,20 @@ namespace System
 
         /// <summary>
         /// Converts the optional to optional pair.
+        /// if one of the value is null, returns an empty optional.
         /// </summary>
         /// <typeparam name="U">The type of the right.</typeparam>
         /// <param name="right">The value to used.</param>
         /// <returns>An optional pair.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
         [Diagnostics.CodeAnalysis.SuppressMessage(
             "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
-        public Optional<OptionalPair<T, U>> ToOptionalPair<U>(U right) => new OptionalPair<T, U>(this, right);
+        public Optional<OptionalPair<T, U>> ToOptionalPair<U>(U right)
+        {
+            if (this.Any() && !(right is null))
+                return new OptionalPair<T, U>(this, right);
+
+            return Optional<OptionalPair<T, U>>.Empty;
+        }
 
         /// <summary>
         /// Converts the optional to an optional with exception.

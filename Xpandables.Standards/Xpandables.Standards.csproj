@@ -17,7 +17,7 @@
     <Version>3.0.0</Version>
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0</FileVersion>
-    <PackageVersion>3.0.0-preview9.310919.45</PackageVersion>
+    <PackageVersion>3.0.0-preview9.310919.48</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>

@@ -41,6 +41,42 @@ namespace System
         }
 
         /// <summary>
+        /// Converts the specified value to an optional pair instance.
+        /// if one of the value is null, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="TValue">The Type of the value.</typeparam>
+        /// <typeparam name="TResult">The type of the right value.</typeparam>
+        /// <param name="value">The value to act on.</param>
+        /// <param name="right">The right value to act on.</param>
+        /// <returns>An optional pair instance.</returns>
+        public static Optional<OptionalPair<TValue, TResult>> ToOptionalPair<TValue, TResult>(
+            this TValue value, TResult right)
+        {
+            if (!(value is null) && !(right is null))
+                return new OptionalPair<TValue, TResult>(value, right);
+
+            return Optional<OptionalPair<TValue, TResult>>.Empty;
+        }
+
+        /// <summary>
+        /// Converts the specified optional to an optional pair instance.
+        /// if one of the value is null, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="TValue">The Type of the value.</typeparam>
+        /// <typeparam name="TResult">The type of the right value.</typeparam>
+        /// <param name="optional">The optional to act on.</param>
+        /// <param name="right">The right value to act on.</param>
+        /// <returns>An optional pair instance.</returns>
+        public static Optional<OptionalPair<TValue, TResult>> ToOptionalPair<TValue, TResult>(
+            this Optional<TValue> optional, TResult right)
+        {
+            if (!(optional is null) && optional.Any() && !(right is null))
+                return new OptionalPair<TValue, TResult>(optional, right);
+
+            return Optional<OptionalPair<TValue, TResult>>.Empty;
+        }
+
+        /// <summary>
         /// Converts the specified object to an optional instance.
         /// </summary>
         /// <typeparam name="TResult">The type of the expected result.</typeparam>
