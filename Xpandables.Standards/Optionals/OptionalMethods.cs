@@ -41,12 +41,30 @@ namespace System
         public Optional<TResult> ToEmpty<TResult>() => Optional<TResult>.Empty;
 
         /// <summary>
+        /// Converts the optional to optional pair.
+        /// </summary>
+        /// <typeparam name="U">The type of the right.</typeparam>
+        /// <param name="right">The value to used.</param>
+        /// <returns>An optional pair.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public Optional<OptionalPair<T, U>> ToOptionalPair<U>(U right) => new OptionalPair<T, U>(this, right);
+
+        /// <summary>
         /// Converts the optional to an optional with exception.
         /// </summary>
         /// <param name="exception">The exception ot be used.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
         public Optional<T> ToException(Exception exception) => Optional<T>.Exception(exception);
+
+        /// <summary>
+        /// Returns the underlying value.
+        /// If optional is empty, returns the default type of <typeparamref name="T"/>.
+        /// <para>if <typeparamref name="T"/> is not nullable, be aware of exception.</para>
+        /// </summary>
+        public T Return() => Cast<T>();
 
         /// <summary>
         /// Casts the element of optional to the specied type.
@@ -79,16 +97,108 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a pair optional pair with the second instance.
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
         /// </summary>
-        /// <typeparam name="TResult">The type of the second instance</typeparam>
-        /// <param name="second">The instance to be added.</param>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
-        public Optional<(Optional<T> First, Optional<TResult> Second)> And<TResult>(Func<Optional<T>, Optional<TResult>> second)
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public Optional<OptionalPair<T, U>> And<U>(Func<Optional<T>, Optional<U>> right)
         {
-            if (second is null) throw new ArgumentNullException(nameof(second));
-            return (this, second(this));
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = right(this);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public Optional<OptionalPair<T, U>> And<U>(Func<T, Optional<U>> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = right(this);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public Optional<OptionalPair<T, U>> And<U>(Func<Optional<U>> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = right();
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public Optional<OptionalPair<T, U>> And<U>(Func<U> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = right().ToOptional();
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public Optional<OptionalPair<T, U>> And<U>(Func<T, U> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = right(this).ToOptional();
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
         }
 
         /// <summary>

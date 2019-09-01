@@ -15,10 +15,8 @@
  *
 ************************************************************************************************************/
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace System
@@ -78,10 +76,58 @@ namespace System
                 .MapAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<(Task<Optional<TValue>> First, Task<Optional<TResult>> Second)>>
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
             AndAsync<TValue, TResult>(
             this Task<Optional<TValue>> optional,
             Func<Task<Optional<TResult>>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+          AndAsync<TValue, TResult>(
+          this Task<Optional<TValue>> optional,
+          Func<TValue, Task<Optional<TResult>>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+          AndAsync<TValue, TResult>(
+          this Task<Optional<TValue>> optional,
+          Func<Optional<TValue>, Task<Optional<TResult>>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+           AndAsync<TValue, TResult>(
+           this Task<Optional<TValue>> optional,
+           Func<TValue, Task<TResult>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+        AndAsync<TValue, TResult>(
+        this Task<Optional<TValue>> optional,
+        Func<Task<TResult>> second)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));

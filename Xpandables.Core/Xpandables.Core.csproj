@@ -15,9 +15,9 @@
     <Version>3.0.0</Version>
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0</FileVersion>
-    <PackageVersion>3.0.0-preview3.310819.17</PackageVersion>
+    <PackageVersion>3.0.0-preview4.10919.3</PackageVersion>
     <PackageId>Xpandables.Core</PackageId>
-    <PackageTags>Database, Http, EntityFramework</PackageTags>
+    <PackageTags>AspNet Core, Http</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageReleaseNotes>Update ref.</PackageReleaseNotes>

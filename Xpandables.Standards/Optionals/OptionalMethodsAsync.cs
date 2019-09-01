@@ -23,6 +23,13 @@ namespace System
     public partial class Optional<T>
     {
         /// <summary>
+        /// Returns the underlying value.
+        /// If optional is empty, returns the default type of <typeparamref name="T"/>.
+        /// <para>if <typeparamref name="T"/> is not nullable, be aware of exception.</para>
+        /// </summary>
+        public async Task<T> ReturnAsync() => await Task.FromResult(Cast<T>()).ConfigureAwait(false);
+
+        /// <summary>
         /// Creates a new element that is the result of applying the given function to the element.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
@@ -50,18 +57,108 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a pair optional pair with the second instance.
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
         /// </summary>
-        /// <typeparam name="TResult">The type of the second instance</typeparam>
-        /// <param name="second">The instance to be added.</param>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="second"/> is null.</exception>
-        public async Task<Optional<(Task<Optional<T>> First, Task<Optional<TResult>> Second)>> AndAsync<TResult>(
-            Func<Task<Optional<TResult>>> second)
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public async Task<Optional<OptionalPair<T, U>>> AndAsync<U>(Func<T, Task<Optional<U>>> right)
         {
-            if (second is null) throw new ArgumentNullException(nameof(second));
-            var secondPart = await second().ConfigureAwait(false);
-            return (this, secondPart);
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = await right(this).ConfigureAwait(false);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public async Task<Optional<OptionalPair<T, U>>> AndAsync<U>(Func<Optional<T>, Task<Optional<U>>> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = await right(this).ConfigureAwait(false);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public async Task<Optional<OptionalPair<T, U>>> AndAsync<U>(Func<Task<Optional<U>>> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            var second = await right().ConfigureAwait(false);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public async Task<Optional<OptionalPair<T, U>>> AndAsync<U>(Func<Task<U>> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            Optional<U> second = await right().ConfigureAwait(false);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
+        }
+
+        /// <summary>
+        /// Creates an optional pair with the second instance.
+        /// if one of the optional is empty, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="U">The type of the second instance</typeparam>
+        /// <param name="right">The instance to be added.</param>
+        /// <returns>An optional of pair instance of optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming", "CA1715:Les identificateurs doivent être dotés d'un préfixe correct", Justification = "<En attente>")]
+        public async Task<Optional<OptionalPair<T, U>>> AndAsync<U>(Func<T, Task<U>> right)
+        {
+            if (!this.Any()) return Optional<OptionalPair<T, U>>.Empty;
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
+            Optional<U> second = await right(this).ConfigureAwait(false);
+            return second.Any()
+                ? Optional<OptionalPair<T, U>>.Some(new OptionalPair<T, U>(this, second))
+                : Optional<OptionalPair<T, U>>.Empty;
         }
 
         /// <summary>

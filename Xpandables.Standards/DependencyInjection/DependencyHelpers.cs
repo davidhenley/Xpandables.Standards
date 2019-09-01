@@ -176,7 +176,7 @@ namespace System
         /// Adds the <see cref="IQueryHandler{TQuery, TResult}"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with.</param>
+        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
@@ -205,7 +205,54 @@ namespace System
             if (decorateWith.HasFlag(DecorateWith.EventRegister))
                 services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTaskEventRegister<,>));
 
+            return services;
+        }
 
+        /// <summary>
+        /// Adds <see cref="QueryHandlerValidator{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddQueryValidatorDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerValidator<,>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="QueryHandlerPersistence{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddQueryPersistenceDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistence<,>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="QueryHandlerTransaction{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddQueryTransactionDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTransaction<,>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="QueryHandlerTaskEventRegister{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddQueryTaskEventRegisterDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTaskEventRegister<,>));
             return services;
         }
 
@@ -213,7 +260,7 @@ namespace System
         /// Adds the <see cref="IAsyncQueryHandler{TQuery, TResult}"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with.</param>
+        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
@@ -242,7 +289,54 @@ namespace System
             if (decorateWith.HasFlag(DecorateWith.EventRegister))
                 services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerTaskEventRegister<,>));
 
+            return services;
+        }
 
+        /// <summary>
+        /// Adds <see cref="AsyncQueryHandlerValidator{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncQueryValidatorDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerValidator<,>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncQueryHandlerPersistence{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncQueryPersistenceDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerPersistence<,>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncQueryHandlerTransaction{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncQueryTransactionDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerTransaction<,>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncQueryHandlerTaskEventRegister{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncQueryTaskEventRegisterDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncQueryHandler<,>), typeof(AsyncQueryHandlerTaskEventRegister<,>));
             return services;
         }
 
@@ -250,7 +344,7 @@ namespace System
         /// Adds the <see cref="ICommandHandler{TCommand}"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with.</param>
+        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
@@ -282,10 +376,58 @@ namespace System
         }
 
         /// <summary>
+        /// Adds <see cref="CommandHandlerValidator{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddCommandValidatorDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidator<>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="CommandHandlerPersistence{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddCommandPersistenceDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistence<>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="CommandHandlerTransaction{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddCommandTransactionDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransaction<>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="CommandHandlerTaskEventRegister{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddCommandTaskEventRegisterDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTaskEventRegister<>));
+            return services;
+        }
+
+        /// <summary>
         /// Adds the <see cref="IAsyncCommandHandler{TCommand}"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with.</param>
+        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
@@ -313,6 +455,54 @@ namespace System
             if (decorateWith.HasFlag(DecorateWith.EventRegister))
                 services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerTaskEventRegister<>));
 
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncCommandHandlerValidator{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncCommandValidatorDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerValidator<>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncCommandHandlerPersistence{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncCommandPersistenceDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerPersistence<>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncCommandHandlerTransaction{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncCommandTransactionDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerTransaction<>));
+            return services;
+        }
+
+        /// <summary>
+        /// Adds <see cref="AsyncCommandHandlerTaskEventRegister{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddAsyncCommandTaskEventRegisterDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorate(typeof(IAsyncCommandHandler<>), typeof(AsyncCommandHandlerTaskEventRegister<>));
             return services;
         }
 
