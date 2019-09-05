@@ -132,7 +132,7 @@ namespace SimpleInjector
             }
 
             // Both RootLogger and Logger<T> depend on ILoggerFactory
-            var loggerFactory = ServiceProviderHelpers.GetService<ILoggerFactory>(options.ApplicationServices).Return();
+            var loggerFactory = ServiceProviderServiceExtensions.GetService<ILoggerFactory>(options.ApplicationServices);
 
             if (loggerFactory is null)
             {
@@ -182,8 +182,8 @@ namespace SimpleInjector
                 throw new ArgumentNullException(nameof(options));
             }
 
-            var localizerFactory = ServiceProviderHelpers.GetService<IStringLocalizerFactory>(options.ApplicationServices)
-                .Return();
+            var localizerFactory = ServiceProviderServiceExtensions
+                .GetService<IStringLocalizerFactory>(options.ApplicationServices);
 
             if (localizerFactory is null)
             {
@@ -389,9 +389,10 @@ namespace SimpleInjector
                 var serviceTypeDefinition = serviceType.GetTypeInfo().GetGenericTypeDefinition();
                 descriptor = services.LastOrDefault(d => d.ServiceType == serviceTypeDefinition);
             }
-#nullable disable
+
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
             return descriptor;
-#nullable enable
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         }
 
         private static Lifestyle ToLifestyle(ServiceLifetime lifetime)

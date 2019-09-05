@@ -285,9 +285,10 @@ namespace SimpleInjector
                 var serviceTypeDefinition = serviceType.GetTypeInfo().GetGenericTypeDefinition();
                 descriptor = services.LastOrDefault(d => d.ServiceType == serviceTypeDefinition);
             }
-#nullable disable
+
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
             return descriptor;
-#nullable enable
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         }
 
         private static void CrossWireServiceScope(Container container, IServiceProvider appServices)
@@ -432,9 +433,9 @@ namespace SimpleInjector
             }
             else
             {
-#nullable disable
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
                 return descriptor;
-#nullable enable
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
             }
         }
 
@@ -468,7 +469,7 @@ namespace SimpleInjector
 
         private static IHttpContextAccessor GetHttpContextAccessor(IServiceProvider appServices)
         {
-            var accessor = ServiceProviderHelpers.GetService<IHttpContextAccessor>(appServices).Return();
+            var accessor = ServiceProviderServiceExtensions.GetService<IHttpContextAccessor>(appServices);
 
             if (accessor == null)
             {
