@@ -13,16 +13,16 @@
     <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
-    <PackageIconUrl>https://github.com/Francescolis/Xpandables/blob/master/Xpandables.png?raw=true</PackageIconUrl>
+    <PackageIcon>Xpandables.png</PackageIcon>
     <Version>3.0.0</Version>
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0</FileVersion>
-    <PackageVersion>3.0.0-preview2.10919.5</PackageVersion>
+    <PackageVersion>3.0.0-preview3.1909060.12</PackageVersion>
     <PackageId>Xpandables.EntityFrameworkCore</PackageId>
     <PackageTags>Database, IDataContext, IAsyncDataContext, EntityFrameworkCore</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Xpandables.EntityFrameworkCore</PackageReleaseNotes>
+    <PackageReleaseNotes>Update to netcore 3.0 preview9</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables.EntityFrameworkCore</AssemblyName>
     <RootNamespace>Xpandables.EntityFrameworkCore</RootNamespace>
@@ -57,5 +57,8 @@
     <ProjectReference Include="..\Xpandables.Standards\Xpandables.Standards.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Xpandables.png" Pack="true" Visible="true" PackagePath="" />
+  </ItemGroup>
 
 </Project>

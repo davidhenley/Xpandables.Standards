@@ -13,16 +13,16 @@
     <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
-    <PackageIconUrl>https://github.com/Francescolis/Xpandables/blob/master/Xpandables.png?raw=true</PackageIconUrl>
+    <PackageIcon>Xpandables.png</PackageIcon>
     <Version>3.0.0</Version>
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0</FileVersion>
-    <PackageVersion>3.0.0-preview9.310919.48</PackageVersion>
+    <PackageVersion>3.0.0-preview9.1909060.5</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Update Entity implementation.</PackageReleaseNotes>
+    <PackageReleaseNotes>Update to netcore 3.0 preview9.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables</AssemblyName>
     <RootNamespace>Xpandables</RootNamespace>
@@ -75,6 +75,10 @@
       <LastGenOutput>ErrorMessageResources.Designer.cs</LastGenOutput>
       <CustomToolNamespace>System</CustomToolNamespace>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Xpandables.png" Pack="true" Visible="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
