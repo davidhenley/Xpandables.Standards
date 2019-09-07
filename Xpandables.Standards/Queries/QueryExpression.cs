@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-using System.Diagnostics.CodeAnalysis;
+using System.Design.Linq;
 using System.Linq.Expressions;
 
 namespace System.Design.Query
@@ -33,20 +33,20 @@ namespace System.Design.Query
         /// When implemented in derived class, this method will return the expression
         /// to be used for the clause <see langword="Where"/> in a query.
         /// </summary>
-        protected virtual Expression<Func<TSource, bool>> BuildExpression() => _ => true;
+        protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
 
-        [SuppressMessage(
-            "Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>")]
-        [SuppressMessage(
-            "Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
+#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         public static implicit operator Expression<Func<TSource, bool>>(QueryExpression<TSource> criteria)
+#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
+#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
              => criteria.Expression;
+#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
 
-        [SuppressMessage(
-            "Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>")]
-        [SuppressMessage(
-            "Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
+#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         public static implicit operator Func<TSource, bool>(QueryExpression<TSource> criteria)
-            => criteria!.Expression.Compile();
+#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
+#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
+            => criteria.Expression.Compile();
+#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
     }
 }
