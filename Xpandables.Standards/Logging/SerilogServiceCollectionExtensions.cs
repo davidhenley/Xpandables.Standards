@@ -31,7 +31,7 @@ namespace System.Design.Logging
         /// <summary>
         /// Adds the logger using the default <see cref="LogEntity"/> event.
         /// The <see cref="LogEntity"/> must be registered in the data context and the context
-        /// must implement the <see cref="IAsyncDataContext"/> interface.
+        /// must implement the <see cref="IDataContext"/> interface.
         /// </summary>
         /// <param name="services">The current services collection.</param>
         /// <exception cref="InvalidOperationException">Registration failed.</exception>
@@ -41,7 +41,7 @@ namespace System.Design.Logging
         /// <summary>
         /// Adds the logger using the specified type of log event.
         /// The <typeparamref name="TLogEvent"/> must be registered in the data context and the context
-        /// must implement the <see cref="IAsyncDataContext"/> interface.
+        /// must implement the <see cref="IDataContext"/> interface.
         /// </summary>
         /// <typeparam name="TLogEvent">The type of the log entity.</typeparam>
         /// <param name="services">The current services collection.</param>
