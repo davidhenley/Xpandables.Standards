@@ -15,10 +15,8 @@
  *
 ************************************************************************************************************/
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace System
@@ -43,6 +41,42 @@ namespace System
         }
 
         /// <summary>
+        /// Converts the specified value to an optional pair instance.
+        /// if one of the value is null, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="TValue">The Type of the value.</typeparam>
+        /// <typeparam name="TResult">The type of the right value.</typeparam>
+        /// <param name="value">The value to act on.</param>
+        /// <param name="right">The right value to act on.</param>
+        /// <returns>An optional pair instance.</returns>
+        public static Optional<OptionalPair<TValue, TResult>> ToOptionalPair<TValue, TResult>(
+            this TValue value, TResult right)
+        {
+            if (!(value is null) && !(right is null))
+                return new OptionalPair<TValue, TResult>(value, right);
+
+            return Optional<OptionalPair<TValue, TResult>>.Empty;
+        }
+
+        /// <summary>
+        /// Converts the specified optional to an optional pair instance.
+        /// if one of the value is null, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="TValue">The Type of the value.</typeparam>
+        /// <typeparam name="TResult">The type of the right value.</typeparam>
+        /// <param name="optional">The optional to act on.</param>
+        /// <param name="right">The right value to act on.</param>
+        /// <returns>An optional pair instance.</returns>
+        public static Optional<OptionalPair<TValue, TResult>> ToOptionalPair<TValue, TResult>(
+            this Optional<TValue> optional, TResult right)
+        {
+            if (!(optional is null) && optional.Any() && !(right is null))
+                return new OptionalPair<TValue, TResult>(optional, right);
+
+            return Optional<OptionalPair<TValue, TResult>>.Empty;
+        }
+
+        /// <summary>
         /// Converts the specified object to an optional instance.
         /// </summary>
         /// <typeparam name="TResult">The type of the expected result.</typeparam>
@@ -58,113 +92,152 @@ namespace System
 
         public static async Task MapAsync<TValue, TResult>(
             this Task<Optional<TValue>> optional,
-            Func<TValue, CancellationToken, Task<TResult>> some,
-            CancellationToken cancellationToken)
+            Func<TValue, Task<TResult>> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             await (await optional.ConfigureAwait(false))
-                .MapAsync(some, cancellationToken).ConfigureAwait(false);
+                .MapAsync(some).ConfigureAwait(false);
         }
 
         public static async Task MapAsync<TValue>(
             this Task<Optional<TValue>> optional,
-            Func<TValue, CancellationToken, Task> some,
-            CancellationToken cancellationToken)
+            Func<TValue, Task> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             await (await optional.ConfigureAwait(false))
-                .MapAsync(some, cancellationToken).ConfigureAwait(false);
+                .MapAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<(Task<Optional<TValue>> First, Task<Optional<TResult>> Second)>>
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
             AndAsync<TValue, TResult>(
             this Task<Optional<TValue>> optional,
-            Func<Optional<TValue>, CancellationToken, Task<Optional<TResult>>> second,
-            CancellationToken cancellationToken)
+            Func<Task<Optional<TResult>>> second)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             return await (await optional.ConfigureAwait(false))
-                .AndAsync(second, cancellationToken).ConfigureAwait(false);
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+          AndAsync<TValue, TResult>(
+          this Task<Optional<TValue>> optional,
+          Func<TValue, Task<Optional<TResult>>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+          AndAsync<TValue, TResult>(
+          this Task<Optional<TValue>> optional,
+          Func<Optional<TValue>, Task<Optional<TResult>>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+           AndAsync<TValue, TResult>(
+           this Task<Optional<TValue>> optional,
+           Func<TValue, Task<TResult>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<OptionalPair<TValue, TResult>>>
+        AndAsync<TValue, TResult>(
+        this Task<Optional<TValue>> optional,
+        Func<Task<TResult>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndAsync(second).ConfigureAwait(false);
         }
 
         public static async Task<Optional<TResult>> MapOptionalAsync<TValue, TResult>(
             this Task<Optional<TValue>> optional,
-            Func<TValue, CancellationToken, Task<Optional<TResult>>> some,
-            CancellationToken cancellationToken)
+            Func<TValue, Task<Optional<TResult>>> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             return await (await optional.ConfigureAwait(false))
-                .MapOptionalAsync(some, cancellationToken).ConfigureAwait(false);
+                .MapOptionalAsync(some).ConfigureAwait(false);
         }
 
         public static async Task<Optional<TResult>> WhenAsync<TValue, TResult>(
             this Task<Optional<TValue>> optional,
             Predicate<TValue> predicate,
-            Func<TValue, CancellationToken, Task<TResult>> some,
-            CancellationToken cancellationToken)
+            Func<TValue, Task<TResult>> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             return await (await optional.ConfigureAwait(false))
-                .WhenAsync(predicate, some, cancellationToken).ConfigureAwait(false);
+                .WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
         public static async Task WhenAsync<TValue>(
             this Task<Optional<TValue>> optional,
             Predicate<TValue> predicate,
-            Func<TValue, CancellationToken, Task> some,
-            CancellationToken cancellationToken)
+            Func<TValue, Task> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             await (await optional.ConfigureAwait(false))
-                .WhenAsync(predicate, some, cancellationToken).ConfigureAwait(false);
+                .WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
         public static async Task<Optional<TValue>> ReduceAsync<TValue>(
             this Task<Optional<TValue>> optional,
-            Func<CancellationToken, Task<TValue>> empty,
-            CancellationToken cancellationToken)
+            Func<Task<TValue>> empty)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             return await (await optional.ConfigureAwait(false))
-                .ReduceAsync(empty, cancellationToken).ConfigureAwait(false);
+                .ReduceAsync(empty).ConfigureAwait(false);
         }
 
         public static async Task<Optional<TValue>> ReduceOptionalAsync<TValue>(
             this Task<Optional<TValue>> optional,
-            Func<CancellationToken, Task<Optional<TValue>>> empty,
-            CancellationToken cancellationToken)
+            Func<Task<Optional<TValue>>> empty)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             return await (await optional.ConfigureAwait(false))
-                .ReduceOptionalAsync(empty, cancellationToken).ConfigureAwait(false);
+                .ReduceOptionalAsync(empty).ConfigureAwait(false);
         }
 
         public static async Task ReduceAsync<TValue>(
             this Task<Optional<TValue>> optional,
-            Func<CancellationToken, Task> action,
-            CancellationToken cancellationToken)
+            Func<Task> action)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
 
             await (await optional.ConfigureAwait(false))
-                .ReduceAsync(action, cancellationToken).ConfigureAwait(false);
+                .ReduceAsync(action).ConfigureAwait(false);
         }
 
         public static void ForEach<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)

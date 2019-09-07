@@ -1,0 +1,64 @@
+﻿/************************************************************************************************************
+ * Copyright (C) 2019 Francis-Black EWANE
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+************************************************************************************************************/
+
+using Newtonsoft.Json.Linq;
+using Serilog.Events;
+using Serilog.Formatting.Json;
+using System.IO;
+using System.Text;
+
+namespace System.Design.TaskEvent
+{
+    /// <summary>
+    /// The default log entity.
+    /// </summary>
+    public class LogEntity : LogEventBase<LogEntity>
+    {
+        /// <summary>
+        /// Initializes a new log entity with default values.
+        /// </summary>
+        public static LogEntity CreateLogEntity() => new LogEntity();
+
+        /// <summary>
+        /// Loads the underlying instance from the event.
+        /// </summary>
+        /// <param name="logEvent">The event source.</param>
+        public override LogEntity LoadFrom(LogEvent logEvent)
+        {
+            var json = ConvertLogEventToJson(logEvent);
+            var jobject = JObject.Parse(json);
+            var properties = jobject["Properties"];
+
+            return
+                WithException(logEvent.Exception)
+                .WithLevel(logEvent.Level.ToString())
+                .WithProperties(properties!.ToString())
+                .WithMessage(logEvent.RenderMessage())
+                .WithMessageTemplate(logEvent.MessageTemplate?.ToString())
+                .WithTimeSpan(logEvent.Timestamp);
+
+            static string ConvertLogEventToJson(LogEvent logEvent)
+            {
+                var stringBuilder = new StringBuilder();
+                using (var writer = new StringWriter(stringBuilder))
+                    new JsonFormatter().Format(logEvent, writer);
+
+                return stringBuilder.ToString();
+            }
+        }
+    }
+}

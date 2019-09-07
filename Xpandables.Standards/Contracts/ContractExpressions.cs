@@ -42,7 +42,7 @@ namespace System
                 exceptionMessage ?? throw new ArgumentNullException(nameof(exceptionMessage)));
 
         /// <summary>
-        /// Checks whether the target value is null, empty, or consists only of white-space characters.
+        /// Checks whether the target string is null, empty, or consists only of white-space characters.
         /// </summary>
         /// <param name="source">The actual string.</param>
         /// <param name="exceptionMessage">The exception message.</param>

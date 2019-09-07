@@ -70,7 +70,7 @@ namespace System {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à The coresponding handler for &apos;{0}&apos; is missing..
+        ///   Recherche une chaîne localisée semblable à The corresponding handler for &apos;{0}&apos; is missing..
         /// </summary>
         public static string CommandQueryHandlerMissingImplementation {
             get {
@@ -84,6 +84,15 @@ namespace System {
         public static string DataContextPersistenceException {
             get {
                 return ResourceManager.GetString("DataContextPersistenceException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Unable to retrieve the data context. See inner exception..
+        /// </summary>
+        public static string DataContextProviderException {
+            get {
+                return ResourceManager.GetString("DataContextProviderException", resourceCulture);
             }
         }
         
@@ -124,7 +133,7 @@ namespace System {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à IAsyncEnumeraableAccessor not implemented..
+        ///   Recherche une chaîne localisée semblable à IAsyncEnumerableAccessor not implemented..
         /// </summary>
         public static string LinqQueryDontImplementIAsyncEnumeratorAccessor {
             get {

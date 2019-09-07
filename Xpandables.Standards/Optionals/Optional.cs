@@ -32,13 +32,14 @@ namespace System
 #pragma warning restore CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
     {
         private readonly T[] _values;
+        private readonly Exception[] _exceptions;
 
 #pragma warning disable CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         /// <summary>
         /// Provides with an optional without value.
         /// </summary>
         /// <returns>An empty optional.</returns>
-        public static Optional<T> Empty => new Optional<T>(Array.Empty<T>());
+        public static Optional<T> Empty => new Optional<T>(Array.Empty<T>(), Array.Empty<Exception>());
 
         /// <summary>
         /// Provides with an optional that contains a value.
@@ -51,8 +52,22 @@ namespace System
             if (value is null)
                 throw new ArgumentNullException(nameof(value));
 
-            return new Optional<T>(new T[] { value });
+            return new Optional<T>(new T[] { value }, Array.Empty<Exception>());
         }
+
+        /// <summary>
+        /// Provides with an optional that contains an exception.
+        /// </summary>
+        /// <param name="exception">The handled exception.</param>
+        /// <returns>An optional with exception value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
+        public static Optional<T> Exception(Exception exception)
+        {
+            if (exception is null) throw new ArgumentNullException(nameof(exception));
+
+            return new Optional<T>(Array.Empty<T>(), new Exception[] { exception });
+        }
+
 #pragma warning restore CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
 
         /// <summary>
@@ -67,6 +82,10 @@ namespace System
         /// <returns>An System.Collections.IEnumerator for the System.Array.</returns>
         IEnumerator IEnumerable.GetEnumerator() => _values.GetEnumerator();
 
-        protected Optional(T[] values) => _values = values ?? throw new ArgumentNullException(nameof(values));
+        protected Optional(T[] values, Exception[] exceptions)
+        {
+            _values = values ?? throw new ArgumentNullException(nameof(values));
+            _exceptions = exceptions ?? throw new ArgumentNullException(nameof(exceptions));
+        }
     }
 }

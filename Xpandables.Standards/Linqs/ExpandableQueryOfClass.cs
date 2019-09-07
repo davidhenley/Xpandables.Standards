@@ -21,7 +21,6 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -39,7 +38,7 @@ namespace System.Design.Linq
         public ExpandableQueryOfClass(IQueryable<T> inner, Func<Expression, Expression> queryOptimizer)
             : base(inner, queryOptimizer) { }
 
-        public IQueryable<T> Include<TProperty>(Expression<Func<T, TProperty>> navigationPropertyPath)
-            => ((IQueryable<T>)InnerQuery.Include(navigationPropertyPath)).AsExpandable();
+        //public IQueryable<T> Include<TProperty>(Expression<Func<T, TProperty>> navigationPropertyPath)
+        //    => ((IQueryable<T>)InnerQuery.Include(navigationPropertyPath)).AsExpandable();
     }
 }

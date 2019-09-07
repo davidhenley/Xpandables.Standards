@@ -29,6 +29,6 @@ namespace System
         /// <param name="source">data source to be used to build token string.</param>
         /// <returns>An instance of string token if OK or an empty string.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        ExecutionResult<string> Build<T>(T source) where T : class;
+        Optional<string> Build<T>(T source) where T : class;
     }
 }
