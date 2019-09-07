@@ -507,7 +507,7 @@ namespace System
         }
 
         /// <summary>
-        /// Adds the <see cref="ITaskEventHandler{TTaskEvent}"/> to the services.
+        /// Adds the <see cref="IEventHandler{TTaskEvent}"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
@@ -520,7 +520,7 @@ namespace System
 
             services.Scan(scan => scan
                 .FromAssemblies(assemblies)
-                .AddClasses(classes => classes.AssignableTo(typeof(ITaskEventHandler<>))
+                .AddClasses(classes => classes.AssignableTo(typeof(IEventHandler<>))
                     .Where(_ => !_.IsGenericType))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
@@ -551,7 +551,7 @@ namespace System
         }
 
         /// <summary>
-        /// Adds the <see cref="ITaskEventRegister"/> to the services.
+        /// Adds the <see cref="ICorrelationTaskRegister"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
@@ -559,13 +559,13 @@ namespace System
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<TaskEventRegister>();
-            services.AddScoped<ITaskEventRegister>(provider => provider.GetRequiredService<TaskEventRegister>());
+            services.AddScoped<CorrelationTaskRegister>();
+            services.AddScoped<ICorrelationTaskRegister>(provider => provider.GetRequiredService<CorrelationTaskRegister>());
             return services;
         }
 
         /// <summary>
-        /// Adds the <see cref="IAsyncTaskEventRegister"/> to the services.
+        /// Adds the <see cref="IAsyncCorrelationEventRegister"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
@@ -574,12 +574,12 @@ namespace System
             if (services is null) throw new ArgumentNullException(nameof(services));
 
             services.AddScoped<AsyncTaskEventRegister>();
-            services.AddScoped<IAsyncTaskEventRegister>(provider => provider.GetRequiredService<AsyncTaskEventRegister>());
+            services.AddScoped<IAsyncCorrelationEventRegister>(provider => provider.GetRequiredService<AsyncTaskEventRegister>());
             return services;
         }
 
         /// <summary>
-        /// Adds the <see cref="ITaskEventDispatcher"/> to the services.
+        /// Adds the <see cref="IEventDispatcher"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
@@ -587,12 +587,12 @@ namespace System
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<ITaskEventDispatcher, TaskEventDispatcher>();
+            services.AddScoped<IEventDispatcher, Design.TaskEvent.TaskEventDispatcher>();
             return services;
         }
 
         /// <summary>
-        /// Adds the <see cref="IAsyncTaskEventDispatcher"/> to the services.
+        /// Adds the <see cref="IEventDispatcher"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
@@ -600,7 +600,7 @@ namespace System
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<IAsyncTaskEventDispatcher, AsyncTaskEventDispatcher>();
+            services.AddScoped<IEventDispatcher, EventDispatcher>();
             return services;
         }
 

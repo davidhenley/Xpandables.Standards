@@ -18,6 +18,7 @@
 using Newtonsoft.Json.Linq;
 using Serilog.Events;
 using Serilog.Formatting.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Text;
 
@@ -26,6 +27,7 @@ namespace System.Design.Logging
     /// <summary>
     /// The default log entity.
     /// </summary>
+    [Table("Log")]
     public class LogEntity : LogEventBase<LogEntity>
     {
         /// <summary>
@@ -39,6 +41,9 @@ namespace System.Design.Logging
         /// <param name="logEvent">The event source.</param>
         public override LogEntity LoadFrom(LogEvent logEvent)
         {
+            if (logEvent is null)
+                throw new ArgumentNullException(nameof(logEvent));
+
             var json = ConvertLogEventToJson(logEvent);
             var jobject = JObject.Parse(json);
             var properties = jobject["Properties"];

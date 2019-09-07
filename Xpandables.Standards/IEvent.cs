@@ -1,5 +1,5 @@
 ﻿/************************************************************************************************************
- * Copyright (C) 2019 Francis-Black EWANE
+ * Copyright (C) 2018 Francis-Black EWANE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,10 @@
  *
 ************************************************************************************************************/
 
-namespace System.Design.TaskEvent
+namespace System
 {
     /// <summary>
-    /// Defines an event that will be raised after another one or exception and executed in a control flows.
+    /// Defines a marker interface to be used to mark an object to act as a event notification.
     /// </summary>
-    public interface ITaskEventRegister
-    {
-        /// <summary>
-        /// The event that will be post raised.
-        /// </summary>
-        event Action PostEvent;
-
-        /// <summary>
-        /// The event that will be raised on exception.
-        /// </summary>
-        event Action RollbackEvent;
-    }
+    public interface IEvent {  }
 }

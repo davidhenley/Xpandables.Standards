@@ -15,33 +15,35 @@
  *
 ************************************************************************************************************/
 
-namespace System.Design.TaskEvent
+using System.Threading.Tasks;
+
+namespace System
 {
     /// <summary>
-    /// Allows an application author to define a handler for event.
+    /// Allows an application author to define a handler for specific type event.
     /// </summary>
-    public interface ITaskEventHandler
+    public interface IEventHandler : IFluent
     {
         /// <summary>
-        /// Defines the method that should be used when an event is handled.
+        /// Defines the method that should be used when a specific type event is handled.
         /// </summary>
-        /// <param name="taskEvent">The event instance to be handled.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskEvent"/> can not be null.</exception>
-        void Handle(object taskEvent);
+        /// <param name="source">The event instance to be handled.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> can not be null.</exception>
+        Task HandleAsync(object source);
     }
 
     /// <summary>
     /// Allows an application author to define a handler for specific type event.
     /// </summary>
-    /// <typeparam name="TTaskEvent">The event type to be handled.</typeparam>
-    public interface ITaskEventHandler<in TTaskEvent> : ITaskEventHandler
-        where TTaskEvent : class, ITaskEvent
+    /// <typeparam name="T">The event type to be handled.</typeparam>
+    public interface IEventHandler<in T> : IEventHandler
+        where T : class, IEvent
     {
         /// <summary>
         /// Defines the method that should be used when a specific type event is handled.
         /// </summary>
-        /// <param name="taskEvent">The event instance to be handled.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskEvent"/> can not be null.</exception>
-        void Handle(TTaskEvent taskEvent);
+        /// <param name="source">The event instance to be handled.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> can not be null.</exception>
+        Task HandleAsync(T source);
     }
 }

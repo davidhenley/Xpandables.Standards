@@ -17,17 +17,17 @@
 
 using System.Threading.Tasks;
 
-namespace System.Design.TaskEvent
+namespace System
 {
     /// <summary>
-    /// The implementation of <see cref="IAsyncTaskEventRegister"/>.
+    /// The implementation of <see cref="ICorrelationTaskRegister"/>.
     /// This class must be used through a decorator and must be registered as follow : SimpleInjector sample
     /// <code>
     ///     Container.Register(PostEventRegister, LifeStyle.Scoped);
-    ///     Container.Register(typeof(IPostEventRegister), ()=> Container.GetInstance(PostEventRegister));
+    ///     Container.Register(typeof(ICorrelationEventRegister), ()=> Container.GetInstance(CorrelationEventRegister));
     /// </code>
     /// </summary>
-    public sealed class AsyncTaskEventRegister : IAsyncTaskEventRegister
+    public sealed class CorrelationTaskRegister : ICorrelationTaskRegister
     {
         /// <summary>
         /// The event that will be post raised.

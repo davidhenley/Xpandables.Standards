@@ -18,34 +18,34 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.TaskEvent
+namespace System
 {
     /// <summary>
     /// The base interface that allows an application author to implement dispatching.
     /// </summary>
-    public interface IAsyncTaskEventDispatcher
+    public interface IEventDispatcher
     {
         /// <summary>
-        /// Resolves all types that matches the <see cref="ITaskEventHandler{TEvent}"/> and calls their handlers asynchronously.
+        /// Resolves all types that matches the <see cref="IEventHandler{TEvent}"/> and calls their handlers asynchronously.
         /// The operation will wait for all handlers to be completed.
         /// </summary>
-        /// <param name="taskEvent">The event to be dispatched</param>
+        /// <param name="source">The event to be dispatched</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskEvent"/> can not be null</exception>
-        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        Task DispatchAsync(ITaskEvent taskEvent, CancellationToken cancellationToken = default);
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> can not be null</exception>
+        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
+        Task DispatchAsync(IEvent source, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Resolves all types that matches the <see cref="IAsyncTaskEventHandler{TEvent}"/>
+        /// Resolves all types that matches the <see cref="IEventHandler{TEvent}"/>
         /// and calls their handlers asynchronously.
         /// The operation will wait for all handlers to be completed.
         /// </summary>
-        /// <typeparam name="TTaskEvent">The event type</typeparam>
-        /// <param name="taskEvent">The event to be dispatched</param>
+        /// <typeparam name="T">The event type</typeparam>
+        /// <param name="source">The event to be dispatched</param>
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskEvent"/> can not be null</exception>
-        /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        Task DispatchAsync<TTaskEvent>(TTaskEvent taskEvent, CancellationToken cancellationToken = default)
-            where TTaskEvent : class, ITaskEvent;
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> can not be null</exception>
+        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
+        Task DispatchAsync<T>(T source, CancellationToken cancellationToken = default)
+            where T : class, IEvent;
     }
 }

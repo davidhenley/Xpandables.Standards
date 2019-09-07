@@ -15,24 +15,23 @@
  *
 ************************************************************************************************************/
 
-namespace System.Design.Query
+using System.Threading.Tasks;
+
+namespace System
 {
     /// <summary>
-    /// Defines a generic method that a class implements to handle a type-specific query and
-    /// returns a type-specific result.
-    /// The implementation must be thread-safe when working in a multi-threaded environment.
+    /// Defines tasks that will be raised after another one or exception and executed in a control flow.
     /// </summary>
-    /// <typeparam name="TQuery">Type of the query that will be used as argument.</typeparam>
-    /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    public interface IQueryHandler<in TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public interface ICorrelationTaskRegister
     {
         /// <summary>
-        /// Handles the specified query and returns the expected result type.
+        /// The event that will be executed after the main one in the same control flow.
         /// </summary>
-        /// <param name="query">The query to act on.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        TResult Handle(TQuery query);
+        event Func<Task> PostEvent;
+
+        /// <summary>
+        /// The event that will be executed after the main one only on exception.
+        /// </summary>
+        event Func<Task> RollbackEvent;
     }
 }
