@@ -14,15 +14,15 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.0</Version>
-    <AssemblyVersion>3.0.0</AssemblyVersion>
-    <FileVersion>3.0.0</FileVersion>
-    <PackageVersion>3.0.0-preview3.1909060.12</PackageVersion>
+    <Version>1.4.0</Version>
+    <AssemblyVersion>1.4.0</AssemblyVersion>
+    <FileVersion>1.4.0</FileVersion>
+    <PackageVersion>1.4.0</PackageVersion>
     <PackageId>Xpandables.EntityFrameworkCore</PackageId>
     <PackageTags>Database, IDataContext, IAsyncDataContext, EntityFrameworkCore</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Update to netcore 3.0 preview9</PackageReleaseNotes>
+    <PackageReleaseNotes>Update ref.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables.EntityFrameworkCore</AssemblyName>
     <RootNamespace>Xpandables.EntityFrameworkCore</RootNamespace>
