@@ -26,7 +26,7 @@ namespace System.Design.Database
 {
     public abstract partial class DataContext
     {
-        async Task<Optional<T>> IAsyncDataContext.FindAsync<T>(CancellationToken cancellationToken, params object[] keyValues)
+        async Task<Optional<T>> IDataContext.FindAsync<T>(CancellationToken cancellationToken, params object[] keyValues)
              => await FindAsync<T>(keyValues, cancellationToken).ConfigureAwait(false);
         public virtual IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
             where T : Entity
@@ -50,51 +50,49 @@ namespace System.Design.Database
             if (selector is null) throw new ArgumentNullException(nameof(selector));
             return await selector(Set<T>()).LastOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
-        async Task IAsyncDataContext.AddAsync<T>(T entity, CancellationToken cancellationToken)
+        Task IDataContext.AddAsync<T>(T entity, CancellationToken cancellationToken)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
-            await AddAsync(entity, cancellationToken).ConfigureAwait(false);
+            return AddAsync(entity, cancellationToken);
         }
-        async Task IAsyncDataContext.AddRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken)
+        Task IDataContext.AddRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken)
         {
             if (entities is null || !entities.Any())
                 throw new ArgumentNullException(nameof(entities));
 
-            await AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
+            return AddRangeAsync(entities, cancellationToken);
         }
-        public virtual async Task DeleteAsync<T>(T entity, CancellationToken cancellationToken)
+        public virtual Task DeleteAsync<T>(T entity, CancellationToken cancellationToken)
             where T : Entity
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
             Remove(entity);
-            await Task.CompletedTask.ConfigureAwait(false);
+            return Task.CompletedTask;
         }
-        public virtual async Task DeleteRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public virtual Task DeleteRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken)
             where T : Entity
         {
             if (entities is null || !entities.Any())
                 throw new ArgumentNullException(nameof(entities));
 
             RemoveRange(entities);
-            await Task.CompletedTask.ConfigureAwait(false);
+            return Task.CompletedTask;
         }
-        public virtual async Task DeleteAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        public virtual Task DeleteAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
             where T : Entity
         {
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            await Set<T>()
+            return Set<T>()
                 .Where(predicate)
-                .ForEachAsync(entity => Remove(entity), cancellationToken)
-                .ConfigureAwait(false);
+                .ForEachAsync(entity => Remove(entity), cancellationToken);
         }
-        public virtual async Task UpdateAsync<T, TUpdated>(TUpdated updatedEntity, CancellationToken cancellationToken)
+        public virtual Task UpdateAsync<T, TUpdated>(TUpdated updatedEntity, CancellationToken cancellationToken)
             where T : Entity
             where TUpdated : Entity
         {
             if (updatedEntity is null) throw new ArgumentNullException(nameof(updatedEntity));
-            await Set<T>().Where(entity => entity.Id == updatedEntity.Id)
-                 .ForEachAsync(entity => Entry(entity).CurrentValues.SetValues(updatedEntity), cancellationToken)
-                 .ConfigureAwait(false);
+            return Set<T>().Where(entity => entity.Id == updatedEntity.Id)
+                 .ForEachAsync(entity => Entry(entity).CurrentValues.SetValues(updatedEntity), cancellationToken);
         }
         public virtual async Task UpdateRangeAsync<T, TUpdated>(
            IReadOnlyList<TUpdated> updatedEntities,
@@ -110,7 +108,7 @@ namespace System.Design.Database
                     .ForEachAsync(entity => Entry(entity).CurrentValues.SetValues(updatedEntity), cancellationToken)
                     .ConfigureAwait(false);
         }
-        public virtual async Task UpdateAsync<T, TUpdated>(
+        public virtual Task UpdateAsync<T, TUpdated>(
           Expression<Func<T, bool>> predicate,
           Func<T, TUpdated> updater,
           CancellationToken cancellationToken)
@@ -120,9 +118,8 @@ namespace System.Design.Database
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             if (updater is null) throw new ArgumentNullException(nameof(updater));
 
-            await Set<T>().Where(predicate)
-                 .ForEachAsync(entity => Entry(entity).CurrentValues.SetValues(updater(entity)), cancellationToken)
-                 .ConfigureAwait(false);
+            return Set<T>().Where(predicate)
+                 .ForEachAsync(entity => Entry(entity).CurrentValues.SetValues(updater(entity)), cancellationToken);
         }
 
         public async Task PersistAsync(CancellationToken cancellationToken)

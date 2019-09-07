@@ -44,7 +44,7 @@ namespace System
         }
 
         /// <summary>
-        /// Gets the exeception message.
+        /// Gets the exception message.
         /// </summary>
         public string Message { get; }
 
@@ -59,7 +59,7 @@ namespace System
         public Predicate<T> Predicate { get; }
 
         /// <summary>
-        /// Determine whether or not the value matchs the criteria.
+        /// Determine whether or not the value matches the criteria.
         /// </summary>
         public bool IsValid => Predicate.Invoke(Value);
 

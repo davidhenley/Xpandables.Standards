@@ -27,7 +27,7 @@ using System.Reflection;
 
 namespace System.Design.DependencyInjection
 {
-    public static class ServicePatternExtensions
+    public static class PatternServiceCollectionExtensions
     {
         /// <summary>
         /// Adds the <see cref="ICorrelationContext"/> to the services with scoped life time.

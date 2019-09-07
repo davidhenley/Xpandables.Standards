@@ -44,10 +44,11 @@ namespace System.Design.Mediator
             {
                 if (command is null) throw new ArgumentNullException(nameof(command));
 
-                await _serviceProvider.GetServiceExtended<ICommandHandler<TCommand>>()
-                   .Reduce(() => throw new NotImplementedException(
-                       ErrorMessageResources.CommandQueryHandlerMissingImplementation
-                        .StringFormat(nameof(TCommand))))
+                await _serviceProvider
+                    .GetServiceExtended<ICommandHandler<TCommand>>()
+                    .Reduce(() => throw new NotImplementedException(
+                        ErrorMessageResources.CommandQueryHandlerMissingImplementation
+                            .StringFormat(nameof(TCommand))))
                    .MapAsync(handler => handler.HandleAsync(command, cancellationToken))
                    .ConfigureAwait(false);
             }
@@ -72,7 +73,8 @@ namespace System.Design.Mediator
             {
                 if (query is null) throw new ArgumentNullException(nameof(query));
 
-                return await _serviceProvider.GetServiceExtended<IQueryHandler<TQuery, TResult>>()
+                return await _serviceProvider
+                    .GetServiceExtended<IQueryHandler<TQuery, TResult>>()
                     .Reduce(() => throw new NotImplementedException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
@@ -99,8 +101,13 @@ namespace System.Design.Mediator
             {
                 if (query is null) throw new ArgumentNullException(nameof(query));
 
-                var wrapperType = typeof(QueryHandlerWrapper<,>)
-                    .MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
+                var wrapperType = await typeof(QueryHandlerWrapper<,>)
+                    .MakeGenericTypeSafe(new Type[] { query.GetType(), typeof(TResult) })
+                    .WhenException(exception => { throw new InvalidOperationException(
+                        "Building Query wrapper failed.",
+                        exception); })
+                    .ReturnAsync()
+                    .ConfigureAwait(false);
 
                 return await _serviceProvider.GetServiceExtended<IQueryHandlerWrapper<TResult>>(wrapperType)
                     .Reduce(() => throw new NotImplementedException(

@@ -160,10 +160,9 @@ namespace System
                 .AndAsync(second).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<OptionalPair<TValue, TResult>>>
-        AndAsync<TValue, TResult>(
-        this Task<Optional<TValue>> optional,
-        Func<Task<TResult>> second)
+        public static async Task<Optional<OptionalPair<TValue, TResult>>> AndAsync<TValue, TResult>(
+            this Task<Optional<TValue>> optional,
+            Func<Task<TResult>> second)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));

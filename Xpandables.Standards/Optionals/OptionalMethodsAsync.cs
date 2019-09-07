@@ -25,7 +25,7 @@ namespace System
         /// <summary>
         /// Returns the underlying value.
         /// If optional is empty, returns the default type of <typeparamref name="T"/>.
-        /// <para>if <typeparamref name="T"/> is not nullable, be aware of exception.</para>
+        /// <para>if <typeparamref name="T"/> is not null able, be aware of exception.</para>
         /// </summary>
         public async Task<T> ReturnAsync() => await Task.FromResult(Cast<T>()).ConfigureAwait(false);
 

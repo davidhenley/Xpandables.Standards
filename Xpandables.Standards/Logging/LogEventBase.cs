@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using Serilog.Events;
+using System.ComponentModel.DataAnnotations;
 
 namespace System.Design.Logging
 {
@@ -45,11 +46,13 @@ namespace System.Design.Logging
         /// <summary>
         /// Contains the event level.
         /// </summary>
+        [Required, StringLength(128, MinimumLength = 3)]
         public string Level { get; private set; }
 
         /// <summary>
         /// Contains the event message.
         /// </summary>
+        [Required]
         public string Message { get; private set; }
 
         /// <summary>
@@ -60,6 +63,7 @@ namespace System.Design.Logging
         /// <summary>
         /// Contains the event time span.
         /// </summary>
+        [Required]
         public DateTimeOffset TimeSpan { get; private set; }
 
         /// <summary>
