@@ -43,7 +43,8 @@ namespace System
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2235:Mark all non-serializable fields", Justification = "<En attente>")]
+        [Diagnostics.CodeAnalysis.SuppressMessage(
+            "Usage", "CA2235:Mark all non-serializable fields", Justification = "<En attente>")]
         public string Id { get; protected set; }
 
         /// <summary>
