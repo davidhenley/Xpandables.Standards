@@ -237,7 +237,7 @@ namespace System
         /// Implicit returns the <see cref="string"/> value of the display name.
         /// </summary>
         /// <param name="enumeration">current instance.</param>
-        public static implicit operator string([NotNull] EnumerationType enumeration)
+        public static implicit operator string(EnumerationType enumeration)
             => enumeration?.DisplayName ?? string.Empty;
 
 #pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
@@ -245,7 +245,7 @@ namespace System
         /// Implicit returns the <see cref="int"/> value.
         /// </summary>
         /// <param name="enumeration">current instance.</param>
-        public static implicit operator int([NotNull] EnumerationType enumeration) => enumeration?.Value ?? default;
+        public static implicit operator int(EnumerationType enumeration) => enumeration?.Value ?? default;
 #pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
 
         /// <inheritdoc />

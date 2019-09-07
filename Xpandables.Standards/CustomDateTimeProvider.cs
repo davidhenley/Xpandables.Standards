@@ -24,7 +24,7 @@ namespace Xpandables
     {
         public DateTime GetDateTime() => DateTime.UtcNow;
 
-        public ExecutionResult<DateTime> StringToDateTime(
+        public Optional<DateTime> StringToDateTime(
             string source,
             IFormatProvider provider,
             DateTimeStyles styles,
@@ -36,28 +36,28 @@ namespace Xpandables
             try
             {
                 if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
-                    return new ExecutionResult<DateTime>(dateTime);
+                    return dateTime;
 
-                return new ExecutionResult<DateTime>();
+                return Optional<DateTime>.Empty;
             }
             catch (Exception exception) when (exception is ArgumentException)
             {
-                return new ExecutionResult<DateTime>(exception);
+                return Optional<DateTime>.Exception(exception);
             }
         }
 
-        public ExecutionResult<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
+        public Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
         {
             if (format is null) throw new ArgumentNullException(nameof(format));
             if (provider is null) throw new ArgumentNullException(nameof(provider));
 
             try
             {
-                return new ExecutionResult<string>(dateTime.ToString(format, provider));
+                return dateTime.ToString(format, provider);
             }
             catch (Exception exception) when (exception is FormatException || exception is ArgumentOutOfRangeException)
             {
-                return new ExecutionResult<string>(exception);
+                return Optional<string>.Exception(exception);
             }
         }
     }

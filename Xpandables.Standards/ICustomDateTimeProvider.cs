@@ -43,7 +43,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
-        ExecutionResult<DateTime> StringToDateTime(
+        Optional<DateTime> StringToDateTime(
             string source,
             IFormatProvider provider,
             DateTimeStyles styles,
@@ -60,6 +60,6 @@ namespace System
         /// by format and provider.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
-        ExecutionResult<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider);
+        Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider);
     }
 }

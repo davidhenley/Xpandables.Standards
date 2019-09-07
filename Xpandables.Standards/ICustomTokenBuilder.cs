@@ -30,5 +30,14 @@ namespace System
         /// <returns>An instance of string token if OK or an empty string.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         Optional<string> Build<T>(T source) where T : class;
+
+        /// <summary>
+        /// Decodes the token and return the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type to be returned.</typeparam>
+        /// <param name="source">The token string.</param>
+        /// <returns>Ann optional of <typeparamref name="T"/> if OK or an empty type.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        Optional<T> Read<T>(string source) where T : class;
     }
 }

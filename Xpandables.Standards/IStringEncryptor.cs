@@ -33,6 +33,6 @@ namespace System
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
-        ExecutionResult<string> Encrypt(string value, string key);
+        Optional<string> Encrypt(string value, string key);
     }
 }

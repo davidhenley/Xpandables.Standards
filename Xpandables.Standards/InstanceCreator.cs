@@ -100,7 +100,7 @@ namespace System
             }
         }
 
-        protected virtual TDelegate GetLambdaConstructor<TDelegate>([NotNull] Type type, params Type[] parameterTypes)
+        protected virtual TDelegate GetLambdaConstructor<TDelegate>(Type type, params Type[] parameterTypes)
             where TDelegate : Delegate
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
@@ -115,7 +115,7 @@ namespace System
         }
 
         // Get the Constructor which matches the given argument Types.
-        static ConstructorInfo GetConstructorInfo([NotNull] Type type, params Type[] parameterTypes)
+        static ConstructorInfo GetConstructorInfo(Type type, params Type[] parameterTypes)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
 
@@ -135,7 +135,7 @@ namespace System
 
         // Get an Expression representing the constructor call, passing in the constructor parameters.
         static Expression GetConstructorExpression(
-           [NotNull] ConstructorInfo constructorInfo,
+           ConstructorInfo constructorInfo,
            params ParameterExpression[] parameterExpressions)
            => Expression.New(constructorInfo, parameterExpressions);
     }

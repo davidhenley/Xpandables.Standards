@@ -32,15 +32,8 @@ namespace System.Design.Database
     /// When a value is not found, an optional empty value of the expected type will be returned.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    public partial interface IAsyncDataContext : IDisposable
+    public partial interface IDataContext : IDisposable
     {
-        /// <summary>
-        /// Provides with a query-able instance for <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of entity.</typeparam>
-        /// <returns>An <see cref="IQueryable{T}"/>.</returns>
-        IQueryable<T> SetOf<T>() where T : Entity;
-
         /// <summary>
         /// Finds a domain object matching the primary key values specified and returns its value.
         /// If not found, returns an optional empty type value.

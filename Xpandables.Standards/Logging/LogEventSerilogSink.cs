@@ -25,13 +25,13 @@ namespace System.Design.Logging
 {
     /// <summary>
     /// Provides with a custom emitter for the specified log event type.
-    /// <para>Using the <see cref="IAsyncDataContext"/> interface to save the log.</para>
+    /// <para>Using the <see cref="IDataContext"/> interface to save the log.</para>
     /// </summary>
     /// <typeparam name="T">The type of the log event.</typeparam>
     public sealed class LogEventSerilogSink<T> : ILogEventSink
         where T : Entity, ILogEvent<T>, new()
     {
-        private readonly IAsyncDataContext _dataContext;
+        private readonly IDataContext _dataContext;
         private static SpinLock _spinLock = new SpinLock();
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace System.Design.Logging
         /// </summary>
         /// <param name="dataContext">The data context to act on.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="dataContext"/> is null.</exception>
-        public LogEventSerilogSink(IAsyncDataContext dataContext)
+        public LogEventSerilogSink(IDataContext dataContext)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }

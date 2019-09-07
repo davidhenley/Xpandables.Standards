@@ -20,13 +20,13 @@ namespace System.Design.Database
     /// <summary>
     /// Provides with the data context options instance.
     /// </summary>
-    public interface IDataContextOptionsProvider<TDataContextOption>
-        where TDataContextOption : class
+    public interface IDataContextOptionsProvider<TOptions>
+        where TOptions : class
     {
         /// <summary>
         /// Gets the data context options according to the environment.
         /// </summary>
-        /// <returns>An implementation of <typeparamref name="TDataContextOption"/>.</returns>
-        Optional<TDataContextOption> GetDataContextOptions();
+        /// <returns>An implementation of <typeparamref name="TOptions"/>.</returns>
+        Optional<TOptions> GetDataContextOptions();
     }
 }

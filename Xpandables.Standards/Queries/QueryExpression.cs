@@ -15,7 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Design.Linq;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
@@ -34,20 +33,20 @@ namespace System.Design.Query
         /// When implemented in derived class, this method will return the expression
         /// to be used for the clause <see langword="Where"/> in a query.
         /// </summary>
-        protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
+        protected virtual Expression<Func<TSource, bool>> BuildExpression() => _ => true;
 
         [SuppressMessage(
             "Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>")]
         [SuppressMessage(
             "Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
-        public static implicit operator Expression<Func<TSource, bool>>([NotNull] QueryExpression<TSource> criteria)
+        public static implicit operator Expression<Func<TSource, bool>>(QueryExpression<TSource> criteria)
              => criteria.Expression;
 
         [SuppressMessage(
             "Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>")]
         [SuppressMessage(
             "Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
-        public static implicit operator Func<TSource, bool>([NotNull] QueryExpression<TSource> criteria)
+        public static implicit operator Func<TSource, bool>(QueryExpression<TSource> criteria)
             => criteria!.Expression.Compile();
     }
 }

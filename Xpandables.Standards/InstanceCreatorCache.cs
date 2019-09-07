@@ -17,7 +17,6 @@
 ************************************************************************************************************/
 
 using Microsoft.Extensions.Caching.Memory;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace System
@@ -35,7 +34,7 @@ namespace System
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
-        protected override TDelegate GetLambdaConstructor<TDelegate>([NotNull] Type type, params Type[] parameterTypes)
+        protected override TDelegate GetLambdaConstructor<TDelegate>(Type type, params Type[] parameterTypes)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
 
@@ -48,7 +47,7 @@ namespace System
             });
         }
 
-        protected virtual string KeyBuilder([NotNull] Type type, params Type[] parameterTypes)
+        protected virtual string KeyBuilder(Type type, params Type[] parameterTypes)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
 
