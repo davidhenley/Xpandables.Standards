@@ -69,6 +69,18 @@ namespace System
         }
 
         /// <summary>
+        /// Determines whether the current type is an open generic type.
+        /// </summary>
+        /// <param name="type">The type to act on.</param>
+        /// <returns><see langword="true"/> if found, otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        public static bool IsOpenGeneric(this Type type)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            return type.GetTypeInfo().IsGenericTypeDefinition;
+        }
+
+        /// <summary>
         /// Determines whether the current type is a null-able type.
         /// </summary>
         /// <param name="type">The type to act on.</param>
@@ -295,6 +307,30 @@ namespace System
                                             || exception is InvalidOperationException)
             {
                 return Optional<object>.Exception(exception);
+            }
+        }
+
+        /// <summary>
+        /// Substitutes the elements of an array of types for the type parameters of the
+        /// current generic type definition and returns a System.Type object representing
+        /// the resulting constructed type. If error, return an optional with exception.
+        /// </summary>
+        /// <param name="type">The type to act on.</param>
+        /// <param name="typeArguments">An array of types to be substituted for the type parameters of the current generic
+        /// type.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        public static Optional<Type> MakeGenericTypeSafe(this Type type, params Type[] typeArguments)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            try
+            {
+                return type.MakeGenericType(typeArguments);
+            }
+            catch (Exception exception) when (exception is InvalidOperationException
+                                                || exception is ArgumentException
+                                                || exception is NotSupportedException)
+            {
+                return Optional<Type>.Exception(exception);
             }
         }
     }

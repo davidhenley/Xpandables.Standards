@@ -17,6 +17,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Design.Command;
+using System.Design.DependencyInjection;
 using System.Design.Query;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace System.Design.Mediator
             {
                 if (command is null) throw new ArgumentNullException(nameof(command));
 
-                await _serviceProvider.GetService<ICommandHandler<TCommand>>()
+                await _serviceProvider.GetServiceExtended<ICommandHandler<TCommand>>()
                    .Reduce(() => throw new NotImplementedException(
                        ErrorMessageResources.CommandQueryHandlerMissingImplementation
                         .StringFormat(nameof(TCommand))))
@@ -71,7 +72,7 @@ namespace System.Design.Mediator
             {
                 if (query is null) throw new ArgumentNullException(nameof(query));
 
-                return await _serviceProvider.GetService<IQueryHandler<TQuery, TResult>>()
+                return await _serviceProvider.GetServiceExtended<IQueryHandler<TQuery, TResult>>()
                     .Reduce(() => throw new NotImplementedException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
@@ -101,7 +102,7 @@ namespace System.Design.Mediator
                 var wrapperType = typeof(QueryHandlerWrapper<,>)
                     .MakeGenericType(new Type[] { query.GetType(), typeof(TResult) });
 
-                return await _serviceProvider.GetService<IQueryHandlerWrapper<TResult>>(wrapperType)
+                return await _serviceProvider.GetServiceExtended<IQueryHandlerWrapper<TResult>>(wrapperType)
                     .Reduce(() => throw new NotImplementedException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(query.GetType().Name)))

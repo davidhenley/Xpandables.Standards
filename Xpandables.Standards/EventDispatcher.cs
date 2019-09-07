@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Design.DependencyInjection;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace System
             if (source is null) throw new ArgumentNullException(nameof(source));
 
             var tasks = _serviceProvider
-                .GetServices<IEventHandler<T>>()
+                .GetServicesExtended<IEventHandler<T>>()
                 .Select(handler => handler.HandleAsync(source));
 
             return Task.WhenAll(tasks);
@@ -54,7 +55,7 @@ namespace System
             var typeHandler = typeof(IEventHandler<>).MakeGenericType(new Type[] { source.GetType() });
 
             var tasks = _serviceProvider
-                .GetServices<IEventHandler>(typeHandler)
+                .GetServicesExtended<IEventHandler>(typeHandler)
                 .Select(handler => handler.HandleAsync(source));
 
             return Task.WhenAll(tasks);

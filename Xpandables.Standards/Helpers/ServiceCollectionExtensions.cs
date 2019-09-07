@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Design.Command;
@@ -25,313 +26,305 @@ using System.Design.Query;
 using System.Linq;
 using System.Reflection;
 
-namespace System
+namespace System.Design.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the <see cref="ICorrelationContext"/> to the services.
+        /// Ensures that the supplied <typeparamref name="TDecorator"/> decorator is returned, wrapping the
+        /// original registered <typeparamref name="TService"/>, by injecting that service type into the
+        /// constructor of the supplied <typeparamref name="TDecorator"/>. Multiple decorators may be applied
+        /// to the same <typeparamref name="TService"/>. By default, a new <typeparamref name="TDecorator"/>
+        /// instance will be returned on each request (according the
+        /// <see langword="Transient">Transient</see> lifestyle), independently of the lifestyle of the
+        /// wrapped service.
+        /// <para>
+        /// Multiple decorators can be applied to the same service type. The order in which they are registered
+        /// is the order they get applied in. This means that the decorator that gets registered first, gets
+        /// applied first, which means that the next registered decorator, will wrap the first decorator, which
+        /// wraps the original service type.
+        /// </para>
         /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCorrelationContext(this IServiceCollection services)
+        /// <typeparam name="TService">The service type that will be wrapped by the given
+        /// <typeparamref name="TDecorator"/>.</typeparam>
+        /// <typeparam name="TDecorator">The decorator type that will be used to wrap the original service type.
+        /// </typeparam>
+        /// <param name="services">The collection of services to act on.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
+        public static IServiceCollection TryDecorateExtended<TService, TDecorator>(this IServiceCollection services)
+            where TService : class
+            where TDecorator : class, TService
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-
-            services.AddScoped<ICorrelationContext, CorrelationContext>();
-            return services;
+            return services.TryDecorateExtended(typeof(TService), typeof(TDecorator));
         }
 
         /// <summary>
-        /// Adds the <see cref="IConfigurationAccessor"/> to the services.
+        /// Ensures that the supplied <paramref name="decorator"/> function decorator is returned, wrapping the
+        /// original registered <typeparamref name="TService"/>, by injecting that service type into the
+        /// constructor of the supplied <paramref name="decorator"/> function. Multiple decorators may be applied
+        /// to the same <typeparamref name="TService"/>. By default, a new <paramref name="decorator"/> function
+        /// instance will be returned on each request (according the
+        /// <see langword="Transient">Transient</see> lifestyle), independently of the lifestyle of the
+        /// wrapped service.
+        /// <para>
+        /// Multiple decorators can be applied to the same service type. The order in which they are registered
+        /// is the order they get applied in. This means that the decorator that gets registered first, gets
+        /// applied first, which means that the next registered decorator, will wrap the first decorator, which
+        /// wraps the original service type.
+        /// </para>
         /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddConfigurationAccessor(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-
-            services.AddTransient<IConfigurationAccessor, ConfigurationAccessor>();
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the <see cref="IStringEncryptor"/> and <see cref="IStringGenerator"/> to the services.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddStringEncryptorGenerator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-
-            services.AddTransient<IStringEncryptor, StringEncryptor>();
-            services.AddTransient<IStringGenerator, StringGenerator>();
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the <see cref="IProcessor"/> to the services.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddProcessor(
+        /// <typeparam name="TService">The service type that will be wrapped by the given
+        /// <paramref name="decorator"/>.</typeparam>
+        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
+        /// <param name="services">The collection of services to act on.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
+        public static IServiceCollection TryDecorateExtended<TService>(
             this IServiceCollection services,
-            DecorateWith decorateWith = DecorateWith.None)
+            Func<TService, IServiceProvider, TService> decorator)
+            where TService : class
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
+            if (decorator is null) throw new ArgumentNullException(nameof(decorator));
 
-            services.AddScoped<IProcessor, Processor>();
-            if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate<IProcessor, ProcessorValidationDecorator>();
-            if (decorateWith.HasFlag(DecorateWith.Persistence))
-                services.TryDecorate<IProcessor, ProcessorPersistenceDecorator>();
-            if (decorateWith.HasFlag(DecorateWith.Transaction))
-                services.TryDecorate<IProcessor, ProcessorTransactionDecorator>();
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate<IProcessor, ProcessorEventRegisterDecorator>();
-
-            return services;
+            return services.DecorateDescriptors(
+                typeof(TService),
+                serviceDescriptor => serviceDescriptor.DecorateDescriptor(decorator));
         }
 
         /// <summary>
-        /// Adds the <see cref="IDataContext"/> to the services.
+        /// Ensures that the supplied <paramref name="decorator"/> function decorator is returned, wrapping the
+        /// original registered <paramref name="serviceType"/>, by injecting that service type into the
+        /// constructor of the supplied <paramref name="decorator"/> function. Multiple decorators may be applied
+        /// to the same <paramref name="serviceType"/>. By default, a new <paramref name="decorator"/> function
+        /// instance will be returned on each request (according the
+        /// <see langword="Transient">Transient</see> lifestyle), independently of the lifestyle of the
+        /// wrapped service.
+        /// <para>
+        /// Multiple decorators can be applied to the same service type. The order in which they are registered
+        /// is the order they get applied in. This means that the decorator that gets registered first, gets
+        /// applied first, which means that the next registered decorator, will wrap the first decorator, which
+        /// wraps the original service type.
+        /// </para>
         /// </summary>
-        /// <typeparam name="TDataContextProvider">The type of data context provider.</typeparam>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddDataContext<TDataContextProvider>(this IServiceCollection services)
-            where TDataContextProvider : class, IDataContextProvider
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-
-            services.AddScoped<IDataContextProvider, TDataContextProvider>();
-            services.AddScoped(serviceProvider =>
-            {
-                var dataContextProvider = serviceProvider.GetRequiredService<IDataContextProvider>();
-                return dataContextProvider.GetDataContext()
-                    .WhenException(exception => throw new InvalidOperationException(
-                        ErrorMessageResources.DataContextProviderException,
-                        exception))
-                    .Cast<IDataContext>();
-            });
-
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the <see cref="IQueryHandler{TQuery, TResult}"/> to the services.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
-        /// <param name="assemblies">The assemblies to scan for implemented types.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddQueryHandlers(
+        /// <param name="serviceType">The service type that will be wrapped by the given
+        /// <paramref name="decorator"/>.</param>
+        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
+        /// <param name="services">The collection of services to act on.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="serviceType"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
+        public static IServiceCollection TryDecorateExtended(
             this IServiceCollection services,
-            DecorateWith decorateWith = DecorateWith.None,
-            params Assembly[] assemblies)
+            Type serviceType,
+            Func<object, IServiceProvider, object> decorator)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            if (assemblies is null || !assemblies.Any()) throw new ArgumentNullException(nameof(assemblies));
+            if (decorator is null) throw new ArgumentNullException(nameof(decorator));
 
-            services.AddTransient(typeof(QueryHandlerWrapper<,>));
-            services.Scan(scan => scan
-                .FromAssemblies(assemblies)
-                .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>))
-                    .Where(_ => !_.IsGenericType))
-                    .AsImplementedInterfaces()
-                    .WithTransientLifetime());
-
-            if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
-            if (decorateWith.HasFlag(DecorateWith.Persistence))
-                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
-            if (decorateWith.HasFlag(DecorateWith.Transaction))
-                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
-
-            return services;
+            return services.DecorateDescriptors(
+                serviceType,
+                serviceDescriptor => serviceDescriptor.DecorateDescriptor(decorator));
         }
 
         /// <summary>
-        /// Adds <see cref="QueryHandlerValidationDecorator{TQuery, TResult}"/> decorator.
+        /// Ensures that the supplied <paramref name="decorator"/> function decorator is returned, wrapping the
+        /// original registered <typeparamref name="TService"/>, by injecting that service type into the
+        /// constructor of the supplied <paramref name="decorator"/> function. Multiple decorators may be applied
+        /// to the same <typeparamref name="TService"/>. By default, a new <paramref name="decorator"/> function
+        /// instance will be returned on each request (according the
+        /// <see langword="Transient">Transient</see> lifestyle), independently of the lifestyle of the
+        /// wrapped service.
+        /// <para>
+        /// Multiple decorators can be applied to the same service type. The order in which they are registered
+        /// is the order they get applied in. This means that the decorator that gets registered first, gets
+        /// applied first, which means that the next registered decorator, will wrap the first decorator, which
+        /// wraps the original service type.
+        /// </para>
         /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddQueryValidationDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds <see cref="QueryHandlerPersistenceDecorator{TQuery, TResult}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddQueryPersistenceDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds <see cref="QueryHandlerTransactionDecorator{TQuery, TResult}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddQueryTransactionDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds <see cref="QueryHandlerEventRegisterDecorator{TQuery, TResult}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddQueryEventRegisterDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the <see cref="ICommandHandler{TCommand}"/> to the services.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
-        /// <param name="assemblies">The assemblies to scan for implemented types.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddCommandHandlers(
+        /// <typeparam name="TService">The service type that will be wrapped by the given
+        /// <paramref name="decorator"/>.</typeparam>
+        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
+        /// <param name="services">The collection of services to act on.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
+        public static IServiceCollection TryDecorateExtended<TService>(
             this IServiceCollection services,
-            DecorateWith decorateWith = DecorateWith.None,
-            params Assembly[] assemblies)
+            Func<TService, TService> decorator)
+            where TService : class
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            if (assemblies is null || !assemblies.Any()) throw new ArgumentNullException(nameof(assemblies));
+            if (decorator is null) throw new ArgumentNullException(nameof(decorator));
 
-            services.Scan(scan => scan
-                .FromAssemblies(assemblies)
-                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>))
-                    .Where(_ => !_.IsGenericType))
-                    .AsImplementedInterfaces()
-                    .WithTransientLifetime());
-
-            if (decorateWith.HasFlag(DecorateWith.Validation))
-                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
-            if (decorateWith.HasFlag(DecorateWith.Persistence))
-                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
-            if (decorateWith.HasFlag(DecorateWith.Transaction))
-                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
-                services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
-
-            return services;
+            return services.DecorateDescriptors(
+                typeof(TService),
+                serviceDescriptor => serviceDescriptor.DecorateDescriptor(decorator));
         }
 
         /// <summary>
-        /// Adds <see cref="CommandHandlerValidationDecorator{TCommand}"/> decorator.
+        /// Ensures that the supplied <paramref name="decorator"/> function decorator is returned, wrapping the
+        /// original registered <paramref name="serviceType"/>, by injecting that service type into the
+        /// constructor of the supplied <paramref name="decorator"/> function. Multiple decorators may be applied
+        /// to the same <paramref name="serviceType"/>. By default, a new <paramref name="decorator"/> function
+        /// instance will be returned on each request (according the
+        /// <see langword="Transient">Transient</see> lifestyle), independently of the lifestyle of the
+        /// wrapped service.
+        /// <para>
+        /// Multiple decorators can be applied to the same service type. The order in which they are registered
+        /// is the order they get applied in. This means that the decorator that gets registered first, gets
+        /// applied first, which means that the next registered decorator, will wrap the first decorator, which
+        /// wraps the original service type.
+        /// </para>
         /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCommandValidatorDecorator(this IServiceCollection services)
+        /// <param name="serviceType">The service type that will be wrapped by the given
+        /// <paramref name="decorator"/>.</param>
+        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
+        /// <param name="services">The collection of services to act on.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="serviceType"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
+        public static IServiceCollection TryDecorateExtended(
+            this IServiceCollection services,
+            Type serviceType,
+            Func<object, object> decorator)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
-            return services;
+            if (serviceType is null) throw new ArgumentNullException(nameof(serviceType));
+            if (decorator is null) throw new ArgumentNullException(nameof(decorator));
+
+            return services.DecorateDescriptors(
+                serviceType,
+                serviceDescriptor => serviceDescriptor.DecorateDescriptor(decorator));
         }
+
 
         /// <summary>
-        /// Adds <see cref="CommandHandlerPersistenceDecorator{TCommand}"/> decorator.
+        /// Ensures that the supplied <paramref name="decoratorType"/> decorator is returned, wrapping the
+        /// original registered <paramref name="serviceType"/>, by injecting that service type into the
+        /// constructor of the supplied <paramref name="decoratorType"/>. Multiple decorators may be applied
+        /// to the same <paramref name="serviceType"/>. By default, a new <paramref name="decoratorType"/>
+        /// instance will be returned on each request (according the
+        /// <see langword="Transient">Transient</see> lifestyle), independently of the lifestyle of the
+        /// wrapped service.
+        /// <para>
+        /// Multiple decorators can be applied to the same service type. The order in which they are registered
+        /// is the order they get applied in. This means that the decorator that gets registered first, gets
+        /// applied first, which means that the next registered decorator, will wrap the first decorator, which
+        /// wraps the original service type.
+        /// </para>
         /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCommandPersistenceDecorator(this IServiceCollection services)
+        /// <param name="serviceType">The service type that will be wrapped by the given decorator.</param>
+        /// <param name="decoratorType">The decorator type that will be used to wrap the original service type.</param>
+        /// <param name="services">The collection of services to act on.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="serviceType"/> argument is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If the <paramref name="decoratorType"/> argument is <c>null</c>.</exception>
+        public static IServiceCollection TryDecorateExtended(
+            this IServiceCollection services,
+            Type serviceType,
+            Type decoratorType)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
+            if (serviceType is null) throw new ArgumentNullException(nameof(serviceType));
+            if (decoratorType is null) throw new ArgumentNullException(nameof(decoratorType));
+
+            return serviceType.IsOpenGeneric() && decoratorType.IsOpenGeneric()
+                ? services.DecorateOpenGenerics(serviceType, decoratorType)
+                : services.DecorateDescriptors(
+                    serviceType,
+                    serviceDescriptor => serviceDescriptor.DecorateDescriptor(decoratorType));
+        }
+
+
+        private static IServiceCollection DecorateOpenGenerics(
+            this IServiceCollection services,
+            Type serviceType,
+            Type decoratorType)
+        {
+            var serviceArguments = services.GetArgumentTypes(serviceType);
+
+            serviceArguments
+                .Map(arguments =>
+                {
+                    foreach (var argument in arguments)
+                    {
+                        var closedServiceType = serviceType.MakeGenericTypeSafe(argument);
+                        var closedDecoratorType = decoratorType.MakeGenericTypeSafe(argument);
+                        var closedServiceDecoratorType = closedServiceType.And(() => closedDecoratorType);
+
+                        closedServiceDecoratorType
+                            .Map(serviceDecoratorType =>
+                                services.DecorateDescriptors(
+                                    serviceDecoratorType.Left,
+                                    descriptor => descriptor.DecorateDescriptor(serviceDecoratorType.Right)));
+                    }
+                });
+
             return services;
         }
 
-        /// <summary>
-        /// Adds <see cref="CommandHandlerTransactionDecorator{TCommand}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCommandTransactionDecorator(this IServiceCollection services)
+        private static IServiceCollection DecorateDescriptors(
+            this IServiceCollection services,
+            Type serviceType,
+            Func<ServiceDescriptor, ServiceDescriptor> decorator)
         {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
+            var serviceDescriptors = services.GetServiceDescriptors(serviceType);
+
+            serviceDescriptors
+                .Map(descriptors =>
+                {
+                    foreach (var descriptor in descriptors)
+                    {
+                        var index = services.IndexOf(descriptor);
+                        services[index] = decorator(descriptor);
+                    }
+                });
+
             return services;
         }
 
-        /// <summary>
-        /// Adds <see cref="CommandHandlerEventRegisterDecorator{TCommand}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCommandEventRegisterDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
-            return services;
-        }
+        private static Optional<ICollection<Type[]>> GetArgumentTypes(
+            this IServiceCollection services,
+            Type serviceType)
+            => services
+                .Where(x => !x.ServiceType.IsGenericTypeDefinition)
+                .Where(x => IsSameGenericType(x.ServiceType, serviceType))
+                .Select(x => x.ServiceType.GenericTypeArguments)
+                .ToArray();
 
-        /// <summary>
-        /// Adds the <see cref="ICorrelationTaskRegister"/> to the services.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCorrelationTaskRegister(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
+        private static bool IsSameGenericType(Type t1, Type t2)
+            => t1.IsGenericType
+                && t2.IsGenericType
+                && t1.GetGenericTypeDefinition() == t2.GetGenericTypeDefinition();
 
-            services.AddScoped<CorrelationTaskRegister>();
-            services.AddScoped<ICorrelationTaskRegister>(provider => provider.GetRequiredService<CorrelationTaskRegister>());
-            return services;
-        }
+        private static Optional<ICollection<ServiceDescriptor>> GetServiceDescriptors(
+            this IServiceCollection services,
+            Type serviceType)
+            => services.Where(service => service.ServiceType == serviceType).ToArray();
 
-        /// <summary>
-        /// Adds the <see cref="ICustomValidator{TArgument}"/> to the services.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <param name="assemblies">The assemblies to scan for implemented types.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddValidators(this IServiceCollection services, params Assembly[] assemblies)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            if (assemblies is null || !assemblies.Any()) throw new ArgumentNullException(nameof(assemblies));
+        private static ServiceDescriptor DecorateDescriptor(
+            this ServiceDescriptor descriptor,
+            Type decoratorType)
+            => descriptor.WithFactory(
+                provider => provider.CreateInstance(
+                    decoratorType,
+                    provider.GetInstance(descriptor).Return()).Return());
 
-            services.AddTransient(typeof(ICustomCompositeValidator<>), typeof(CustomCompositeValidator<>));
-            services.Scan(scan => scan
-                .FromAssemblies(assemblies)
-                .AddClasses(classes => classes.AssignableTo(typeof(ICustomValidator<>))
-                    .Where(_ => !_.IsGenericType))
-                    .AsImplementedInterfaces()
-                    .WithTransientLifetime());
+        private static ServiceDescriptor DecorateDescriptor<TService>(
+            this ServiceDescriptor descriptor,
+            Func<TService, IServiceProvider, TService> decorator)
+            where TService : class
+            => descriptor.WithFactory(
+                provider => decorator(
+                    provider.GetInstance(descriptor).Cast<TService>(),
+                    provider)!);
 
-            return services;
-        }
-    }
-
-    [Flags]
-    public enum DecorateWith
-    {
-        None,
-        Persistence,
-        EventRegister,
-        Transaction,
-        Validation,
-        Logging
+        private static ServiceDescriptor DecorateDescriptor<TService>(
+            this ServiceDescriptor descriptor,
+            Func<TService, TService> decorator)
+            where TService : class
+            => descriptor.WithFactory(
+                provider => decorator(provider.GetInstance(descriptor).Cast<TService>())!);
     }
 }

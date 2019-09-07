@@ -17,6 +17,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Design.Command;
+using System.Design.DependencyInjection;
 using System.Design.Query;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ namespace System.Design.Mediator
         private void DoValidation<T>(T argument)
             where T : class
         {
-            var validator = _serviceProvider.GetService<ICustomCompositeValidator<T>>();
+            var validator = _serviceProvider.GetServiceExtended<ICustomCompositeValidator<T>>();
             validator.Map(val => val.Validate(argument));
         }
     }
