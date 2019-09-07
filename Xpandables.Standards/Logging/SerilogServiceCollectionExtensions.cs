@@ -21,12 +21,12 @@ using Serilog.Configuration;
 using System.Design.Database;
 using System.Diagnostics;
 
-namespace System.Design.TaskEvent
+namespace System.Design.Logging
 {
     /// <summary>
     /// Provides method to register <see cref="Serilog"/> logger.
     /// </summary>
-    public static class SerilogExtensions
+    public static class SerilogServiceCollectionExtensions
     {
         /// <summary>
         /// Adds the logger using the default <see cref="LogEntity"/> event.

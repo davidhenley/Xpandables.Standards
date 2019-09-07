@@ -21,7 +21,7 @@ using Serilog.Formatting.Json;
 using System.IO;
 using System.Text;
 
-namespace System.Design.TaskEvent
+namespace System.Design.Logging
 {
     /// <summary>
     /// The default log entity.

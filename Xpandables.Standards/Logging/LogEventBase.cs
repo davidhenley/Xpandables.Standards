@@ -17,99 +17,123 @@
 
 using Serilog.Events;
 
-namespace System.Design.TaskEvent
+namespace System.Design.Logging
 {
     /// <summary>
-    /// Provides with the base description for an event log using <see cref="Serilog"/>.
+    /// Helper class to implement <see cref="ILogEvent{T}"/>.
+    /// <para>You must derive from this class to add custom behavior to the event log.</para>
     /// </summary>
-    public interface ILogEvent
+    /// <typeparam name="T">The type of derived class.</typeparam>
+    public abstract class LogEventBase<T> : Entity, ILogEvent<T>
+        where T : LogEventBase<T>
     {
-        /// <summary>
-        /// Contains the event identifier.
-        /// </summary>
-        string Id { get; }
+        protected LogEventBase()
+        {
+            Exception = string.Empty;
+            Level = string.Empty;
+            Message = string.Empty;
+            MessageTemplate = string.Empty;
+            TimeSpan = new DateTimeOffset(DateTime.Now);
+            Properties = string.Empty;
+        }
 
         /// <summary>
         /// Contains the handled exception.
         /// </summary>
-        string Exception { get; }
+        public string Exception { get; private set; }
 
         /// <summary>
         /// Contains the event level.
         /// </summary>
-        string Level { get; }
+        public string Level { get; private set; }
 
         /// <summary>
         /// Contains the event message.
         /// </summary>
-        string Message { get; }
+        public string Message { get; private set; }
 
         /// <summary>
         /// Contains the event message template.
         /// </summary>
-        string MessageTemplate { get; }
+        public string MessageTemplate { get; private set; }
 
         /// <summary>
         /// Contains the event time span.
         /// </summary>
-        DateTimeOffset TimeSpan { get; }
+        public DateTimeOffset TimeSpan { get; private set; }
 
         /// <summary>
         /// Contains the properties in Json format.
         /// </summary>
-        string Properties { get; }
-    }
+        public string Properties { get; private set; }
 
-    /// <summary>
-    /// Provides with the base description for an event log using <see cref="Serilog"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of the log event class.</typeparam>
-    public interface ILogEvent<T> : ILogEvent
-        where T : class, ILogEvent<T>
-    {
         /// <summary>
         /// Adds a message to the underlying instance.
         /// </summary>
         /// <param name="message">The event message.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="message"/> is null.</exception>
-        T WithMessage(string message);
+        public T WithMessage(string message)
+        {
+            Message = message ?? throw new ArgumentNullException(nameof(message));
+            return (T)this;
+        }
 
         /// <summary>
         /// Adds a message template to the underlying instance.
         /// </summary>
         /// <param name="messageTemplate">the event message template.</param>
-        T WithMessageTemplate(string? messageTemplate);
+        public T WithMessageTemplate(string? messageTemplate)
+        {
+            MessageTemplate = messageTemplate ?? string.Empty;
+            return (T)this;
+        }
 
         /// <summary>
         /// Adds a time span to the underlying instance.
         /// </summary>
         /// <param name="dateTimeOffset">The event time span.</param>
-        T WithTimeSpan(DateTimeOffset dateTimeOffset);
+        public T WithTimeSpan(DateTimeOffset dateTimeOffset)
+        {
+            TimeSpan = dateTimeOffset;
+            return (T)this;
+        }
 
         /// <summary>
         /// Adds an exception to the underlying instance.
         /// </summary>
         /// <param name="exception">The event exception.</param>
-        T WithException(Exception? exception);
+        public T WithException(Exception? exception)
+        {
+            Exception = exception?.ToString() ?? string.Empty;
+            return (T)this;
+        }
 
         /// <summary>
         /// Adds a level to the underlying instance.
         /// </summary>
         /// <param name="level">The event level.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="level"/> is null.</exception>
-        T WithLevel(string level);
+        public T WithLevel(string level)
+        {
+            Level = level ?? throw new ArgumentNullException(nameof(level));
+            return (T)this;
+        }
 
         /// <summary>
         /// Adds a Json object to the underlying instance.
         /// </summary>
         /// <param name="properties">The Json properties</param>
         /// <exception cref="ArgumentNullException">The <paramref name="properties"/> is null.</exception>
-        T WithProperties(string properties);
+        public T WithProperties(string properties)
+        {
+            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+            return (T)this;
+        }
 
         /// <summary>
         /// Loads the underlying instance from the event.
         /// </summary>
         /// <param name="logEvent">The event source.</param>
-        T LoadFrom(LogEvent logEvent);
+        public abstract T LoadFrom(LogEvent logEvent);
     }
 }

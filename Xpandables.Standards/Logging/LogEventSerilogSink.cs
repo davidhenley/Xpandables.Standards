@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Design.Database;
 using System.Threading;
 
-namespace System.Design.TaskEvent
+namespace System.Design.Logging
 {
     /// <summary>
     /// Provides with a custom emitter for the specified log event type.
