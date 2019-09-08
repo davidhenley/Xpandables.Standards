@@ -15,10 +15,9 @@
  *
 ************************************************************************************************************/
 
-using System;
 using System.Globalization;
 
-namespace Xpandables
+namespace System
 {
     public class CustomDateTimeProvider : ICustomDateTimeProvider
     {
