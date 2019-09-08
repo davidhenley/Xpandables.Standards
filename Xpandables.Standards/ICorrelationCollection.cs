@@ -22,8 +22,8 @@ namespace System
     /// <summary>
     /// Provides a collection of objects that need to be shared across asynchronous control flows.
     /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
     public interface ICorrelationCollection<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         /// <summary>

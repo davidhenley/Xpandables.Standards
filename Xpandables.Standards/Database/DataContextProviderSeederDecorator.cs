@@ -21,12 +21,12 @@ namespace System.Design.Database
     /// This class allows us to add seed support to data context.
     /// <para>This decorator will always call the <see cref="IDataContextSeeder"/> implementation to seed database.</para>
     /// </summary>
-    public sealed class DataContextProviderSeeder : IDataContextProvider
+    public sealed class DataContextProviderSeederDecorator : IDataContextProvider
     {
         private readonly IDataContextProvider _decoratee;
         private readonly IDataContextSeeder _seeder;
 
-        public DataContextProviderSeeder(
+        public DataContextProviderSeederDecorator(
             IDataContextProvider decoratedDataContextProducer,
             IDataContextSeeder dataContextSeeder)
         {

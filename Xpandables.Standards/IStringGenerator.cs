@@ -37,6 +37,6 @@ namespace System
         /// <returns>A new string of the specified length with random characters.</returns>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="length"/> is lower or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="lookupCharacters"/> is null.</exception>
-        string Generate(int length, string lookupCharacters);
+        Optional<string> Generate(int length, string lookupCharacters);
     }
 }

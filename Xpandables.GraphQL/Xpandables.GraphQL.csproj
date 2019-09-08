@@ -8,8 +8,8 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <Authors>Francis-Black EWANE</Authors>
-    <Product>Xpandables EntityFrameworkCore @ 2019</Product>
-    <Description>Xpandables references for EntityFrameworkCore.</Description>
+    <Product>Xpandables.GraphQL @ 2019</Product>
+    <Description>Contains some useful implementations for GraphQl .Net.</Description>
     <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
@@ -18,14 +18,14 @@
     <AssemblyVersion>1.4.1</AssemblyVersion>
     <FileVersion>1.4.1</FileVersion>
     <PackageVersion>1.4.1</PackageVersion>
-    <PackageId>Xpandables.EntityFrameworkCore</PackageId>
-    <PackageTags>Database, IDataContext, EntityFrameworkCore</PackageTags>
+    <PackageId>Xpandables.GraphQL</PackageId>
+    <PackageTags>GraphQl, Database, EntityFramework</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Update ref.</PackageReleaseNotes>
+    <PackageReleaseNotes>Automatic build the object graph of a dbContext. See Xpandables.GraphQL.Api for example.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AssemblyName>Xpandables.EntityFrameworkCore</AssemblyName>
-    <RootNamespace>Xpandables.EntityFrameworkCore</RootNamespace>
+    <AssemblyName>Xpandables.GraphQL</AssemblyName>
+    <RootNamespace>Xpandables.GraphQL</RootNamespace>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NeutralLanguage>en-GB</NeutralLanguage>
@@ -35,7 +35,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DocumentationFile>bin\x64\Debug\netstandard2.1\Xpandables.EntityFrameworkCore.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\netstandard2.0\Xpandables.GraphQL.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <NoWarn>1701;1702;CS1591</NoWarn>
   </PropertyGroup>
@@ -44,21 +44,24 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DocumentationFile>bin\x64\Release\netstandard2.1\Xpandables.EntityFrameworkCore.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Release\netstandard2.0\Xpandables.GraphQL.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591</NoWarn>
+    <NoWarn>1701;1702;CS1591;</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Xpandables.Standards\Xpandables.Standards.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="Xpandables.png" Pack="true" Visible="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+    <PackageReference Include="GraphQL" Version="2.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.6" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xpandables.EntityFrameworkCore\Xpandables.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
 
 </Project>
