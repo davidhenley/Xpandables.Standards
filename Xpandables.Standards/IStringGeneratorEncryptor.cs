@@ -15,10 +15,9 @@
  *
 ************************************************************************************************************/
 
-using System;
 using System.Security.Cryptography;
 
-namespace Xpandables
+namespace System
 {
     /// <summary>
     /// Provides with a string generator and encryptor.

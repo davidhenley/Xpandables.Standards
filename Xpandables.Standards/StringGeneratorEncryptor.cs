@@ -15,9 +15,7 @@
  *
 ************************************************************************************************************/
 
-using System;
-
-namespace Xpandables
+namespace System
 {
     /// <summary>
     /// The default implementation for <see cref="IStringGeneratorEncryptor"/>.
