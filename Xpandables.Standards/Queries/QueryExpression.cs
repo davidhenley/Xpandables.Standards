@@ -27,7 +27,7 @@ namespace System.Design.Query
     public class QueryExpression<TSource> : IQueryExpression<TSource>
         where TSource : class
     {
-        public Expression<Func<TSource, bool>> Expression => BuildExpression();
+        public Expression<Func<TSource, bool>> Expression() => BuildExpression();
 
         /// <summary>
         /// When implemented in derived class, this method will return the expression
@@ -39,14 +39,14 @@ namespace System.Design.Query
         public static implicit operator Expression<Func<TSource, bool>>(QueryExpression<TSource> criteria)
 #pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
 #pragma warning disable CA1062 // Valider les arguments de méthodes publiques
-             => criteria.Expression;
+             => criteria.Expression();
 #pragma warning restore CA1062 // Valider les arguments de méthodes publiques
 
 #pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         public static implicit operator Func<TSource, bool>(QueryExpression<TSource> criteria)
 #pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
 #pragma warning disable CA1062 // Valider les arguments de méthodes publiques
-            => criteria.Expression.Compile();
+            => criteria.Expression().Compile();
 #pragma warning restore CA1062 // Valider les arguments de méthodes publiques
     }
 }

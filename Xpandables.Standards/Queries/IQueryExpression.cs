@@ -31,6 +31,6 @@ namespace System.Design.Query
         /// <summary>
         /// Gets the expression tree for the underlying instance.
         /// </summary>
-        Expression<Func<TSource, bool>> Expression { get; }
+        Expression<Func<TSource, bool>> Expression();
     }
 }
