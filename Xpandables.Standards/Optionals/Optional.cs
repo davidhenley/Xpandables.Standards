@@ -23,69 +23,103 @@ namespace System
     /// <summary>
     /// Describes an object that contains a value or not of a specific type.
     /// You can make unconditional calls to its contents without testing whether the content is there or not.
+    /// It can also contain an exception.
+    /// The enumerator will only return the available value.
     /// </summary>
     /// <typeparam name="T">The Type of the value.</typeparam>
-#pragma warning disable CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
-#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
-    public partial class Optional<T> : IEnumerable<T>
-#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
-#pragma warning restore CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
+    public sealed partial class Optional<T> : IEnumerable<T>
     {
-        private readonly T[] _values;
-        private readonly Exception[] _exceptions;
+        private readonly T[] Values;
+        private readonly Exception[] Exceptions;
 
-#pragma warning disable CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         /// <summary>
-        /// Provides with an optional without value.
+        /// Gets the underlying value if exists.
         /// </summary>
-        /// <returns>An empty optional.</returns>
-        public static Optional<T> Empty => new Optional<T>(Array.Empty<T>(), Array.Empty<Exception>());
+        internal T InternalValue => IsValue() ? Values[0] : default;
+
+#nullable disable
+        /// <summary>
+        /// Gets the underlying exception if exists.
+        /// </summary>
+        internal Exception InternalException => IsException() ? Exceptions[0] : default;
+#nullable enable
 
         /// <summary>
-        /// Provides with an optional that contains a value.
+        /// Determines whether the instance contains a value or not.
+        /// If so, returns <see langword="true"/>, otherwise returns <see langword="false"/>.
+        /// </summary>
+        internal bool IsValue() => Values.Length > 0;
+
+        /// <summary>
+        /// Determines whether the instance contains an exception or not.
+        /// If so, returns <see langword="true"/>, otherwise returns <see langword="false"/>.
+        /// </summary>
+        internal bool IsException() => Exceptions.Length > 0;
+
+        /// <summary>
+        /// Determines whether the instance is empty (no value no exception) or not.
+        /// If so, returns <see langword="true"/>, otherwise returns <see langword="false"/>.
+        /// </summary>
+        internal bool IsEmpty() => !IsValue() && !IsException();
+
+        /// <summary>
+        /// Provides with an optional of the specific type that is empty.
+        /// </summary>
+        /// <returns>An optional with no value nor exception.</returns>
+        public static Optional<T> Empty() => new Optional<T>();
+
+        /// <summary>
+        /// Provides with an optional that contains a value of specific type.
         /// </summary>
         /// <param name="value">The value to be used for optional.</param>
         /// <returns>An optional with a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         public static Optional<T> Some(T value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-
-            return new Optional<T>(new T[] { value }, Array.Empty<Exception>());
+            if (value is null) throw new ArgumentNullException(nameof(value));
+            return new Optional<T>(new T[] { value });
         }
 
         /// <summary>
-        /// Provides with an optional that contains an exception.
+        /// Provides with an optional of specific type that contains the specified exception.
         /// </summary>
-        /// <param name="exception">The handled exception.</param>
+        /// <param name="exception">The exception to store.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
         public static Optional<T> Exception(Exception exception)
         {
             if (exception is null) throw new ArgumentNullException(nameof(exception));
-
-            return new Optional<T>(Array.Empty<T>(), new Exception[] { exception });
+            return new Optional<T>(new Exception[] { exception });
         }
-
-#pragma warning restore CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
 
         /// <summary>
         /// Returns an enumerator that iterates through the values.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the values.</returns>
-        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_values).GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)Values).GetEnumerator();
 
         /// <summary>
         /// Returns an System.Collections.IEnumerator for the System.Array.
         /// </summary>
         /// <returns>An System.Collections.IEnumerator for the System.Array.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => _values.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Values.GetEnumerator();
 
-        protected Optional(T[] values, Exception[] exceptions)
+        private Optional(Exception[] exceptions)
         {
-            _values = values ?? throw new ArgumentNullException(nameof(values));
-            _exceptions = exceptions ?? throw new ArgumentNullException(nameof(exceptions));
+            Values = Array.Empty<T>();
+            Exceptions = exceptions ?? throw new ArgumentNullException(nameof(exceptions));
+        }
+
+        private Optional(T[] values)
+        {
+            Values = values ?? throw new ArgumentNullException(nameof(values));
+            Exceptions = Array.Empty<Exception>();
+        }
+
+        private Optional()
+        {
+            Values = Array.Empty<T>();
+            Exceptions = Array.Empty<Exception>();
         }
     }
 }

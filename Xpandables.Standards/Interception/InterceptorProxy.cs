@@ -114,7 +114,7 @@ namespace System.Interception
                 invocation.Proceed();
 
             if (invocation.Exception.Any())
-                ExceptionDispatchInfo.Capture(invocation.Exception).Throw();
+                ExceptionDispatchInfo.Capture(invocation.Exception.InternalValue).Throw();
 
             return invocation.ReturnValue.Cast<object>();
         }

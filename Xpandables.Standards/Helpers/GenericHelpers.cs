@@ -150,8 +150,7 @@ namespace System
             }
             catch (OverflowException exception)
             {
-                Diagnostics.Debug.WriteLine(exception);
-                return Optional<TEnum>.Empty;
+                return Optional<TEnum>.Exception(exception);
             }
         }
 
@@ -171,8 +170,7 @@ namespace System
             }
             catch (OverflowException exception)
             {
-                Diagnostics.Debug.WriteLine(exception);
-                return Optional<TEnum>.Empty;
+                return Optional<TEnum>.Exception(exception);
             }
         }
     }

@@ -24,6 +24,6 @@ namespace System.Http
     /// </summary>
     public sealed class StringConstraintMap : IOutboundParameterTransformer
     {
-        public string TransformOutbound(object value) => value.ToOptional().Cast<string>();
+        public string TransformOutbound(object value) => value.AsOptional().Cast<string>();
     }
 }

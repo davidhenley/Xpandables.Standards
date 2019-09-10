@@ -12,7 +12,7 @@ namespace Xpandables.GraphQL.Api
                 .EnableSensitiveDataLogging()
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll)
                 .UseInMemoryDatabase(nameof(TestContext))
-                .ToOptional()
+                .AsOptional()
                 .Map(options => new TestContext(options.Options))
                 .CastOptional<IDataContext>();
         }

@@ -15,17 +15,11 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace System
 {
-#pragma warning disable CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
-#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
     public partial class Optional<T>
-#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
-#pragma warning restore CA1716 // Les identificateurs ne doivent pas correspondre à des mots clés
     {
         public static bool operator ==(in Optional<T> a, in Optional<T> b) => a?.Equals(b) == true;
 
@@ -38,20 +32,22 @@ namespace System
         public static bool operator ==(in T a, in Optional<T> b) => b?.Equals(a) == true;
 
         public static bool operator !=(in T a, in Optional<T> b) => !(b?.Equals(a) == true);
+#nullable disable
+        public static implicit operator T(Optional<T> optional)
+            => optional is null ? (default) : optional.IsValue() ? optional.InternalValue : default;
 
-#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
-        public static implicit operator T(Optional<T> optional) => optional.Any() ? optional.Single() : default;
+        public static implicit operator Exception(Optional<T> optional)
+            => optional is null ? (default) : optional.IsException() ? optional.InternalException : default;
 
-        public static implicit operator Optional<T>(Optional<Optional<T>> doubleOptional)
-            => doubleOptional.Any() && doubleOptional.Single().Any()
-                    ? doubleOptional.Single()
-                    : Empty;
+        public static implicit operator Optional<T>(T value) => value is null ? Empty() : Some(value);
 
-        public static implicit operator Optional<T>(T value) => value.ToOptional();
+        public static implicit operator Task<Optional<T>>(Optional<T> optional)
+            => optional is null ? Empty() : Task.FromResult(optional);
 
-        public static implicit operator Task<Optional<T>>(Optional<T> optional) => Task.FromResult(optional);
-#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
+        public static implicit operator Optional<T>(Optional<Optional<T>> optional)
+            => optional is null ? (default) : optional.InternalValue;
 
+#nullable enable
         public static bool operator <(Optional<T> left, Optional<T> right)
         {
             return left is null ? !(right is null) : left.CompareTo(right) < 0;

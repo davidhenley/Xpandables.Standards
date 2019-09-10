@@ -15,8 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace System
@@ -27,72 +25,92 @@ namespace System
     public static partial class OptionalHelpers
     {
         /// <summary>
+        /// Returns an optional that contains the value if that value matches the predicate.
+        /// Otherwise returns an empty optional.
+        /// </summary>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <param name="source">The value to act on.</param>
+        /// <param name="predicate">The predicate to check.</param>
+        /// <returns>An optional of <typeparamref name="T"/> value.</returns>
+        public static Optional<T> When<T>(this T source, bool predicate)
+            => predicate ? source.AsOptional() : Optional<T>.Empty();
+
+        /// <summary>
+        /// Returns an optional that contains the value if that value matches the predicate.
+        /// Otherwise returns an empty optional.
+        /// </summary>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <param name="source">The value to act on.</param>
+        /// <param name="predicate">The predicate to check.</param>
+        /// <returns>An optional of <typeparamref name="T"/> value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        public static Optional<T> When<T>(this T source, Predicate<T> predicate)
+        {
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            return predicate(source) ? source.AsOptional() : Optional<T>.Empty();
+        }
+
+        /// <summary>
         /// Converts the specified value to an optional instance.
         /// </summary>
-        /// <typeparam name="TValue">The Type of the value.</typeparam>
+        /// <typeparam name="T">The Type of the value.</typeparam>
         /// <param name="value">The value to act on.</param>
         /// <returns>An optional instance.</returns>
-        public static Optional<TValue> ToOptional<TValue>(this TValue value)
+        public static Optional<T> AsOptional<T>(this T value)
         {
-            if (value is null)
-                return Optional<TValue>.Empty;
-
-            return Optional<TValue>.Some(value);
+            if (value is null) return Optional<T>.Empty();
+            return Optional<T>.Some(value);
         }
 
         /// <summary>
         /// Converts the specified value to an optional pair instance.
         /// if one of the value is null, returns an empty optional.
         /// </summary>
-        /// <typeparam name="TValue">The Type of the value.</typeparam>
-        /// <typeparam name="TResult">The type of the right value.</typeparam>
+        /// <typeparam name="T">The Type of the value.</typeparam>
+        /// <typeparam name="U">The type of the right value.</typeparam>
         /// <param name="value">The value to act on.</param>
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
-        public static Optional<OptionalPair<TValue, TResult>> ToOptionalPair<TValue, TResult>(
-            this TValue value, TResult right)
+        public static Optional<(T Left, U Right)> AsOptional<T, U>(this T value, U right)
         {
             if (!(value is null) && !(right is null))
-                return new OptionalPair<TValue, TResult>(value, right);
+                return Optional<(T Left, U Right)>.Some((value, right));
 
-            return Optional<OptionalPair<TValue, TResult>>.Empty;
+            return Optional<(T Left, U Right)>.Empty();
         }
 
         /// <summary>
         /// Converts the specified optional to an optional pair instance.
         /// if one of the value is null, returns an empty optional.
         /// </summary>
-        /// <typeparam name="TValue">The Type of the value.</typeparam>
-        /// <typeparam name="TResult">The type of the right value.</typeparam>
+        /// <typeparam name="T">The Type of the value.</typeparam>
+        /// <typeparam name="U">The type of the right value.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
-        public static Optional<OptionalPair<TValue, TResult>> ToOptionalPair<TValue, TResult>(
-            this Optional<TValue> optional, TResult right)
+        public static Optional<(T Left, U Right)> AsOptional<T, U>(this Optional<T> optional, U right)
         {
-            if (!(optional is null) && optional.Any() && !(right is null))
-                return new OptionalPair<TValue, TResult>(optional, right);
+            if (!(optional is null) && optional.IsValue() && !(right is null))
+                return Optional<(T Left, U Right)>.Some((optional.InternalValue, right));
 
-            return Optional<OptionalPair<TValue, TResult>>.Empty;
+            return Optional<(T Left, U Right)>.Empty();
         }
 
         /// <summary>
         /// Converts the specified object to an optional instance.
         /// </summary>
-        /// <typeparam name="TResult">The type of the expected result.</typeparam>
+        /// <typeparam name="T">The type of the expected result.</typeparam>
         /// <param name="source">The object to be converted.</param>
         /// <returns>An optional instance.</returns>
-        public static Optional<TResult> ToOptional<TResult>(this object source)
+        public static Optional<T> AsOptional<T>(this object source)
         {
-            if (source is TResult result)
-                return Optional<TResult>.Some(result);
-
-            return Optional<TResult>.Empty;
+            if (source is T result) return Optional<T>.Some(result);
+            return Optional<T>.Empty();
         }
 
-        public static async Task MapAsync<TValue, TResult>(
-            this Task<Optional<TValue>> optional,
-            Func<TValue, Task<TResult>> some)
+        public static async Task MapAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<T, Task<U>> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -101,9 +119,9 @@ namespace System
                 .MapAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task MapAsync<TValue>(
-            this Task<Optional<TValue>> optional,
-            Func<TValue, Task> some)
+        public static async Task MapAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<T, Task> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -112,10 +130,22 @@ namespace System
                 .MapAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<OptionalPair<TValue, TResult>>>
-            AndAsync<TValue, TResult>(
-            this Task<Optional<TValue>> optional,
-            Func<Task<Optional<TResult>>> second)
+        public static async Task<Optional<(T Left, U Right)>>
+            AndOptionalAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<Task<Optional<U>>> second)
+        {
+            if (optional is null)
+                throw new ArgumentNullException(nameof(optional));
+
+            return await (await optional.ConfigureAwait(false))
+                .AndOptionalAsync(second).ConfigureAwait(false);
+        }
+
+        public static async Task<Optional<(T Left, U Right)>>
+           AndAsync<T, U>(
+           this Task<Optional<T>> optional,
+           Func<T, Task<U>> second)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -124,10 +154,9 @@ namespace System
                 .AndAsync(second).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<OptionalPair<TValue, TResult>>>
-          AndAsync<TValue, TResult>(
-          this Task<Optional<TValue>> optional,
-          Func<TValue, Task<Optional<TResult>>> second)
+        public static async Task<Optional<(T Left, U Right)>> AndAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<Task<U>> second)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -136,44 +165,9 @@ namespace System
                 .AndAsync(second).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<OptionalPair<TValue, TResult>>>
-          AndAsync<TValue, TResult>(
-          this Task<Optional<TValue>> optional,
-          Func<Optional<TValue>, Task<Optional<TResult>>> second)
-        {
-            if (optional is null)
-                throw new ArgumentNullException(nameof(optional));
-
-            return await (await optional.ConfigureAwait(false))
-                .AndAsync(second).ConfigureAwait(false);
-        }
-
-        public static async Task<Optional<OptionalPair<TValue, TResult>>>
-           AndAsync<TValue, TResult>(
-           this Task<Optional<TValue>> optional,
-           Func<TValue, Task<TResult>> second)
-        {
-            if (optional is null)
-                throw new ArgumentNullException(nameof(optional));
-
-            return await (await optional.ConfigureAwait(false))
-                .AndAsync(second).ConfigureAwait(false);
-        }
-
-        public static async Task<Optional<OptionalPair<TValue, TResult>>> AndAsync<TValue, TResult>(
-            this Task<Optional<TValue>> optional,
-            Func<Task<TResult>> second)
-        {
-            if (optional is null)
-                throw new ArgumentNullException(nameof(optional));
-
-            return await (await optional.ConfigureAwait(false))
-                .AndAsync(second).ConfigureAwait(false);
-        }
-
-        public static async Task<Optional<TResult>> MapOptionalAsync<TValue, TResult>(
-            this Task<Optional<TValue>> optional,
-            Func<TValue, Task<Optional<TResult>>> some)
+        public static async Task<Optional<U>> MapOptionalAsync<T, U>(
+            this Task<Optional<T>> optional,
+            Func<T, Task<Optional<U>>> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -182,10 +176,10 @@ namespace System
                 .MapOptionalAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<TResult>> WhenAsync<TValue, TResult>(
-            this Task<Optional<TValue>> optional,
-            Predicate<TValue> predicate,
-            Func<TValue, Task<TResult>> some)
+        public static async Task<Optional<T>> WhenAsync<T>(
+            this Task<Optional<T>> optional,
+            Predicate<T> predicate,
+            Func<T, Task<T>> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -194,10 +188,10 @@ namespace System
                 .WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
-        public static async Task WhenAsync<TValue>(
-            this Task<Optional<TValue>> optional,
-            Predicate<TValue> predicate,
-            Func<TValue, Task> some)
+        public static async Task WhenAsync<T>(
+            this Task<Optional<T>> optional,
+            Predicate<T> predicate,
+            Func<T, Task> some)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -206,9 +200,9 @@ namespace System
                 .WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<TValue>> ReduceAsync<TValue>(
-            this Task<Optional<TValue>> optional,
-            Func<Task<TValue>> empty)
+        public static async Task<Optional<T>> ReduceAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<Task<T>> empty)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -217,9 +211,9 @@ namespace System
                 .ReduceAsync(empty).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<TValue>> ReduceOptionalAsync<TValue>(
-            this Task<Optional<TValue>> optional,
-            Func<Task<Optional<TValue>>> empty)
+        public static async Task<Optional<T>> ReduceOptionalAsync<T>(
+            this Task<Optional<T>> optional,
+            Func<Task<Optional<T>>> empty)
         {
             if (optional is null)
                 throw new ArgumentNullException(nameof(optional));
@@ -228,8 +222,8 @@ namespace System
                 .ReduceOptionalAsync(empty).ConfigureAwait(false);
         }
 
-        public static async Task ReduceAsync<TValue>(
-            this Task<Optional<TValue>> optional,
+        public static async Task ReduceAsync<T>(
+            this Task<Optional<T>> optional,
             Func<Task> action)
         {
             if (optional is null)
@@ -237,59 +231,6 @@ namespace System
 
             await (await optional.ConfigureAwait(false))
                 .ReduceAsync(action).ConfigureAwait(false);
-        }
-
-        public static void ForEach<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)
-           where TSource : IEnumerable<TElement>
-        {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
-            if (some is null) throw new ArgumentNullException(nameof(some));
-
-            if (optional.Any())
-                optional.Single()
-                    .ToList()
-                    .ForEach(some);
-        }
-
-        public static Optional<TSource> ForEach<TSource, TElement>(
-            this Optional<TSource> optional,
-            Func<TElement, TElement> some)
-            where TSource : IEnumerable<TElement>
-        {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
-            if (some is null) throw new ArgumentNullException(nameof(some));
-
-            if (optional.Any())
-            {
-                var result = new List<TElement>();
-                foreach (var element in optional.Single())
-                    result.Add(some(element));
-
-                return result.ToOptional<TSource>();
-            }
-
-            return optional;
-        }
-
-        public static Optional<TResult> ForEach<TSource, TResult, TSourceElement, TResultElement>(
-            this Optional<TSource> optional,
-            Func<TSourceElement, TResultElement> some)
-            where TSource : IEnumerable<TSourceElement>
-            where TResult : IEnumerable<TResultElement>
-        {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
-            if (some is null) throw new ArgumentNullException(nameof(some));
-
-            if (optional.Any())
-            {
-                var result = new List<TResultElement>();
-                foreach (var element in optional.Single())
-                    result.Add(some(element));
-
-                return result.ToOptional<TResult>();
-            }
-
-            return Enumerable.Empty<TResultElement>().ToOptional<TResult>();
         }
     }
 }

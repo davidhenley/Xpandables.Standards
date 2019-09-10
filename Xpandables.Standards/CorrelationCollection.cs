@@ -42,7 +42,7 @@ namespace System
             get
             {
                 if (key is null)
-                    return Optional<TValue>.Empty;
+                    return Optional<TValue>.Empty();
 
                 return Items.Value.TryGetValue(key, out var found) ? found : default;
             }
@@ -50,7 +50,7 @@ namespace System
             {
                 if (key is null) return;
                 if (value is null)
-                    value = Optional<TValue>.Empty;
+                    value = Optional<TValue>.Empty();
 
                 Items.Value.AddOrUpdate(key, value.Cast<TValue>(), (_, __) => value.Cast<TValue>());
             }

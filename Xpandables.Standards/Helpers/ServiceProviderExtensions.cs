@@ -38,7 +38,7 @@ namespace System.Design.DependencyInjection
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
             return serviceProvider.GetService(typeof(TService))
-                .ToOptional<TService>();
+                .AsOptional<TService>();
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace System.Design.DependencyInjection
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
             return serviceProvider.GetService(serviceType)
-                .ToOptional<TService>();
+                .AsOptional<TService>();
         }
 
         /// <summary>

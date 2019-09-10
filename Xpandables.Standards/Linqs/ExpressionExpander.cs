@@ -39,7 +39,7 @@ namespace System.Design.Linq
 
         internal ExpressionExpander()
         {
-            _replaceVars = Optional<Dictionary<ParameterExpression, Expression>>.Empty;
+            _replaceVars = Optional<Dictionary<ParameterExpression, Expression>>.Empty();
         }
 
         private ExpressionExpander(Dictionary<ParameterExpression, Expression> replaceVars)

@@ -41,7 +41,7 @@ namespace System.Design.Linq
             var expression = defaultExpression ? (f => true) : (Expression<Func<T, bool>>)(f => false);
 
             DefaultExpression = Optional<Expression<Func<T, bool>>>.Some(expression);
-            _predicate = Optional<Expression<Func<T, bool>>>.Empty;
+            _predicate = Optional<Expression<Func<T, bool>>>.Empty();
         }
 
         internal ExpressionStarter(Expression<Func<T, bool>> expression)
@@ -106,14 +106,14 @@ namespace System.Design.Linq
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator Expression<Func<T, bool>>(ExpressionStarter<T> right)
-            => right.ToOptional().MapOptional(value => value.Predicate);
+            => right.AsOptional().MapOptional(value => value.Predicate);
 
         /// <summary>
         /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator Func<T, bool>(ExpressionStarter<T> right)
-            => right.ToOptional().MapOptional<Func<T, bool>>(value => value.Predicate.Single().Compile());
+            => right.AsOptional().MapOptional<Func<T, bool>>(value => value.Predicate.Single().Compile());
 
         /// <summary>
         /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.

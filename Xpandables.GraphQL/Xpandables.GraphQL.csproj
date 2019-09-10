@@ -14,15 +14,15 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>1.4.1</Version>
-    <AssemblyVersion>1.4.1</AssemblyVersion>
-    <FileVersion>1.4.1</FileVersion>
-    <PackageVersion>1.4.1</PackageVersion>
+    <Version>1.4.2</Version>
+    <AssemblyVersion>1.4.2</AssemblyVersion>
+    <FileVersion>1.4.2</FileVersion>
+    <PackageVersion>1.4.2</PackageVersion>
     <PackageId>Xpandables.GraphQL</PackageId>
     <PackageTags>GraphQl, Database, EntityFramework</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Automatic build the object graph of a dbContext. See Xpandables.GraphQL.Api for example.</PackageReleaseNotes>
+    <PackageReleaseNotes>update ref.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables.GraphQL</AssemblyName>
     <RootNamespace>Xpandables.GraphQL</RootNamespace>

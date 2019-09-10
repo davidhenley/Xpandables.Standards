@@ -30,16 +30,22 @@ namespace System
         /// <returns>An <see cref="int"/> that indicates the order of the optionals being compared.</returns>
         public int CompareTo(Optional<T> other)
         {
-            if (this.Any() && !other.Any()) return 1;
-            if (!this.Any() && other.Any()) return -1;
-
-            return Comparer<T>.Default.Compare(this.Single(), other.Single());
+            if (other is null) return 1;
+            if (!IsEmpty() && other.IsEmpty()) return 1;
+            if (IsValue() && other.IsValue())
+                return Comparer<T>.Default.Compare(InternalValue, other.InternalValue);
+            if (IsException() && other.IsException())
+                return Comparer<Exception>.Default.Compare(InternalException, other.InternalException);
+            if (IsValue() && other.IsException()) return 1;
+            if (IsException() && other.IsValue())
+                return -1;
+            return 0;
         }
 
         public int CompareTo(T other)
         {
-            if (this.Any() && other is null) return 1;
-            return !this.Any() && !(other is null) ? -1 : Comparer<T>.Default.Compare(this.Single(), other);
+            if (IsValue() && other is null) return 1;
+            return !IsValue() && !(other is null) ? -1 : Comparer<T>.Default.Compare(InternalValue, other);
         }
 
         /// <summary>
@@ -48,9 +54,16 @@ namespace System
         /// and the underlying values are equal.
         /// </summary>
         /// <param name="other">Option to compare with</param>
-        public bool Equals(Optional<T> other) =>
-            (!this.Any() && !other.Any()) || (this.Any() && other.Any()
-            && EqualityComparer<T>.Default.Equals(this.Single(), other.Single()));
+        public bool Equals(Optional<T> other)
+        {
+            if (other is null) return false;
+            if (IsEmpty() && other.IsEmpty()) return true;
+            if (IsValue() && other.IsValue())
+                return EqualityComparer<T>.Default.Equals(InternalValue, other.InternalValue);
+            if (IsException() && other.IsException())
+                return EqualityComparer<Exception>.Default.Equals(InternalException, other.InternalException);
+            return false;
+        }
 
         /// <summary>
         /// Compares <see cref="Optional{T}"/> with the value of type <typeparamref name="T"/>.
@@ -58,7 +71,8 @@ namespace System
         /// and encapsulated value is equal to <paramref name="other"/> value.
         /// </summary>
         /// <param name="other">Option to compare with</param>
-        public bool Equals(T other) => this.Any() && EqualityComparer<T>.Default.Equals(this.Single(), other);
+        public bool Equals(T other)
+            => IsValue() && EqualityComparer<T>.Default.Equals(InternalValue, other);
 
         /// <summary>
         /// Compares the <see cref="Optional{T}"/> with other object.
@@ -73,9 +87,11 @@ namespace System
         public override int GetHashCode()
         {
             var hash = 17;
-            if (this.Any())
 #nullable disable
-                return this.Single().GetHashCode() ^ 31;
+            if (IsValue())
+                return InternalValue.GetHashCode() ^ 31;
+            if (IsException())
+                return InternalException.GetHashCode() ^ 31;
 #nullable enable
             return hash ^ 29;
         }
@@ -83,7 +99,8 @@ namespace System
         /// <summary>
         /// Creates a string representation of the <see cref="Optional{T}"/>.
         /// </summary>
-        public override string ToString() => this.Any() ? $"{this.Single()}" : string.Empty;
+        public override string ToString()
+            => IsValue() ? $"{InternalValue}" : IsException() ? $"{InternalException}" : string.Empty;
 
         /// <summary>
         /// Formats the value of the current instance using the specified format.
@@ -92,8 +109,10 @@ namespace System
         /// <param name="formatProvider"></param>
         /// <returns></returns>
         public string ToString(string format, IFormatProvider formatProvider)
-            => this.Any()
-                ? string.Format(formatProvider, "{0:" + format + "}", this.Single())
-                : string.Empty;
+            => IsValue()
+                ? string.Format(formatProvider, "{0:" + format + "}", InternalValue)
+                : IsException()
+                    ? string.Format(formatProvider, "{0:" + format + "}", InternalException)
+                    : string.Empty;
     }
 }

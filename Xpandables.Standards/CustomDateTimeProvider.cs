@@ -37,7 +37,7 @@ namespace System
                 if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
                     return dateTime;
 
-                return Optional<DateTime>.Empty;
+                return Optional<DateTime>.Empty();
             }
             catch (Exception exception) when (exception is ArgumentException)
             {

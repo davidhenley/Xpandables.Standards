@@ -115,7 +115,7 @@ namespace System
                 return ((EnumerationType)value).DisplayName;
 
             return value is string valueString && destinationType == typeof(string)
-                ? EnumerationType.FromDisplayName(EnumType, valueString).ToOptional().Cast<EnumerationType>().DisplayName
+                ? EnumerationType.FromDisplayName(EnumType, valueString).AsOptional().Cast<EnumerationType>().DisplayName
                 : base.ConvertTo(context, culture, value, destinationType);
         }
     }

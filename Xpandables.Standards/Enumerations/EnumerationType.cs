@@ -181,7 +181,7 @@ namespace System
         /// <returns>The description string. If not found, returns the enumeration as string.</returns>
         public string GetDescriptionAttributeValue()
             => GetType().GetCustomAttribute<DescriptionAttribute>()
-                .ToOptional()
+                .AsOptional()
                 .Map(attr => attr.Description)
                 .Reduce(() => DisplayName);
 
