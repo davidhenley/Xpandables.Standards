@@ -108,23 +108,16 @@ public Optional<User> TryFindUserByName(string name)
   
   // You can also use Optional<User>.Exception(exception) in case of exception.
 }
-// This code 'Map(user => user.PasswordIsValid(password, passwordService))' will be executed only if userRepo contains a value.
-// PasswordIsValid returns the current user instance or throws an exception.
-// Reduce(()=> throw ...) will be executed only if userRepo is empty.
+
 ```
 
-Use of [EnumerationType]https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Enumerations), a helper class to implement custom enumeration.
+Use of [EnumerationType](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Enumerations),
+a helper class to implement custom enumeration.
 
 ```C#
 public abstract class Enumeration :
   IEqualityComparer<EnumerationType>, IEquatable<EnumerationType>, IComparable<EnumerationType>
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="EnumerationType"/> with the specified value and display name.
-    /// </summary>
-    /// <param name="displayName">The enumeration display name.</param>
-    /// <param name="value">The enumeration value.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="displayName"/> is null.</exception>
     protected EnumerationType(string displayName, int value)
     {
         Value = value;
@@ -146,8 +139,10 @@ public abstract class Enumeration :
 
 # Xpandables.GraphQL
 
-A starting point to generate GraphQL schema without *ObjectGraphType* implementation. Use of [GraphQL.Net](https://github.com/graphql-dotnet/graphql-dotnet).
+A starting point to generate GraphQL schema without *ObjectGraphType* implementation.
+Use of [GraphQL.Net](https://github.com/graphql-dotnet/graphql-dotnet).
 
-A working example can be found [here](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.GraphQL.Api).
+A working example can be found
+[here](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.GraphQL.Api).
 
 Feel free to fork this project, make your own changes and create a pull request.
