@@ -90,6 +90,7 @@ public Optional<User> TryFindUser(string userName, string password)
 {
   return repo
     .TryFindUserByName(userName)
+    .WhenException(...action)
     .When(user => user.IsPasswordValid(password), _ => throw an exception for example...)
     .Reduce(()=> throw an exception / return another value....);
 }
