@@ -133,7 +133,8 @@ public abstract class Enumeration :
         where TEnumeration : Enumeration ...        
 }
 
-// You can use the EnumerationTypeConverter to convert "Enumeration" objects to and from string representations.
+// You can use the EnumerationTypeConverter to convert "EnumerationType" objects to
+and from string representations.
 
 ```
 
