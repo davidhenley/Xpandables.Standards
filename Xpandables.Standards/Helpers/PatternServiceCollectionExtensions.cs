@@ -370,11 +370,11 @@ namespace System.Design.DependencyInjection
     [Flags]
     public enum DecorateWith
     {
-        None,
-        Persistence,
-        EventRegister,
-        Transaction,
-        Validation,
-        Logging
+        None = 0x0,
+        Persistence = 0x1,
+        EventRegister = 0x2,
+        Transaction = 0x4,
+        Validation = 0x8,
+        Logging = 0x16
     }
 }
