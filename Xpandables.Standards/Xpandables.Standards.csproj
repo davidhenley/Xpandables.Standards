@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>1.4.9</Version>
-    <AssemblyVersion>1.4.9</AssemblyVersion>
-    <FileVersion>1.4.9</FileVersion>
-    <PackageVersion>1.4.9</PackageVersion>
+    <Version>1.4.13</Version>
+    <AssemblyVersion>1.4.13</AssemblyVersion>
+    <FileVersion>1.4.13</FileVersion>
+    <PackageVersion>1.4.13</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IMediator, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Database, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>

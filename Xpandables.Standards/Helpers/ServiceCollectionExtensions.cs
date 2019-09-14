@@ -17,14 +17,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Configuration;
-using System.Design.Command;
-using System.Design.Database;
-using System.Design.Mediator;
-using System.Design.Query;
 using System.Linq;
-using System.Reflection;
 
 namespace System.Design.DependencyInjection
 {
@@ -251,7 +244,7 @@ namespace System.Design.DependencyInjection
                     {
                         var closedServiceType = serviceType.MakeGenericTypeSafe(argument);
                         var closedDecoratorType = decoratorType.MakeGenericTypeSafe(argument);
-                        var closedServiceDecoratorType = closedServiceType.And(() => closedDecoratorType);
+                        var closedServiceDecoratorType = closedServiceType.AndOptional(() => closedDecoratorType);
 
                         closedServiceDecoratorType
                             .Map(serviceDecoratorType =>
@@ -288,8 +281,7 @@ namespace System.Design.DependencyInjection
             this IServiceCollection services,
             Type serviceType)
             => services
-                .Where(x => !x.ServiceType.IsGenericTypeDefinition)
-                .Where(x => IsSameGenericType(x.ServiceType, serviceType))
+                .Where(x => !x.ServiceType.IsGenericTypeDefinition && IsSameGenericType(x.ServiceType, serviceType))
                 .Select(x => x.ServiceType.GenericTypeArguments)
                 .ToArray();
 
@@ -309,7 +301,7 @@ namespace System.Design.DependencyInjection
             => descriptor.WithFactory(
                 provider => provider.CreateInstance(
                     decoratorType,
-                    provider.GetInstance(descriptor).Return()).Return());
+                    new object[] { provider.GetInstance(descriptor) }));
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
             this ServiceDescriptor descriptor,

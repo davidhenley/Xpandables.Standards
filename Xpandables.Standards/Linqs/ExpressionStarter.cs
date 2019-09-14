@@ -38,7 +38,7 @@ namespace System.Design.Linq
 
         internal ExpressionStarter(bool defaultExpression)
         {
-            var expression = defaultExpression ? (f => true) : (Expression<Func<T, bool>>)(f => false);
+            var expression = defaultExpression ? (_ => true) : (Expression<Func<T, bool>>)(_ => false);
 
             DefaultExpression = Optional<Expression<Func<T, bool>>>.Some(expression);
             _predicate = Optional<Expression<Func<T, bool>>>.Empty();
@@ -80,7 +80,7 @@ namespace System.Design.Linq
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
 
             if (IsStarted)
-                return _predicate = _predicate.Single().Or(expr2);
+                return _predicate = _predicate.InternalValue.Or(expr2);
 
             return Start(expr2);
         }
@@ -91,7 +91,7 @@ namespace System.Design.Linq
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
 
             if (IsStarted)
-                return _predicate = _predicate.Single().And(expr2);
+                return _predicate = _predicate.InternalValue.And(expr2);
 
             return Start(expr2);
         }
@@ -102,52 +102,43 @@ namespace System.Design.Linq
 
 #pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         /// <summary>
-        /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
+        /// Allows this object to be implicitly converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator Expression<Func<T, bool>>(ExpressionStarter<T> right)
             => right.AsOptional().MapOptional(value => value.Predicate);
 
         /// <summary>
-        /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
+        /// Allows this object to be implicitly converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator Func<T, bool>(ExpressionStarter<T> right)
             => right.AsOptional().MapOptional<Func<T, bool>>(value => value.Predicate.Single().Compile());
 
         /// <summary>
-        /// Allows this object to be implicitely converted to an Expression{Func{T, bool}}.
+        /// Allows this object to be implicitly converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator ExpressionStarter<T>(Expression<Func<T, bool>> right)
             => new ExpressionStarter<T>(right);
 
 #pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
-        /// <summary></summary>
-        public Func<T, bool> Compile() { return Predicate.Single().Compile(); }
+        public Func<T, bool> Compile() { return Predicate.InternalValue.Compile(); }
 
-        /// <summary></summary>
-        public Expression Body => Predicate.Single().Body;
+        public Expression Body => Predicate.InternalValue.Body;
 
-        /// <summary></summary>
-        public ExpressionType NodeType => Predicate.Single().NodeType;
+        public ExpressionType NodeType => Predicate.InternalValue.NodeType;
 
-        /// <summary></summary>
-        public ReadOnlyCollection<ParameterExpression> Parameters => Predicate.Single().Parameters;
+        public ReadOnlyCollection<ParameterExpression> Parameters => Predicate.InternalValue.Parameters;
 
-        /// <summary></summary>
-        public Type Type => Predicate.Single().Type;
+        public Type Type => Predicate.InternalValue.Type;
 
-        /// <summary></summary>
-        public string Name => Predicate.Single().Name;
+        public string Name => Predicate.InternalValue.Name;
 
-        /// <summary></summary>
-        public Type ReturnType => Predicate.Single().ReturnType;
+        public Type ReturnType => Predicate.InternalValue.ReturnType;
 
-        /// <summary></summary>
-        public bool TailCall => Predicate.Single().TailCall;
+        public bool TailCall => Predicate.InternalValue.TailCall;
 
-        /// <summary></summary>
-        public virtual bool CanReduce => Predicate.Single().CanReduce;
+        public virtual bool CanReduce => Predicate.InternalValue.CanReduce;
     }
 }
