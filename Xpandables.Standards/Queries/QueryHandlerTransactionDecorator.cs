@@ -27,13 +27,17 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public sealed class QueryHandlerTransactionDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class QueryHandlerTransactionDecorator<TQuery, TResult> :
+        ObjectDescriptor<QueryHandlerTransactionDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>, ITransactionDecorator
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
         private readonly IAttributeAccessor _attributeAccessor;
 
-        public QueryHandlerTransactionDecorator(IQueryHandler<TQuery, TResult> decoratee, IAttributeAccessor attributeAccessor)
+        public QueryHandlerTransactionDecorator(
+            IQueryHandler<TQuery, TResult> decoratee,
+            IAttributeAccessor attributeAccessor)
+            : base(decoratee)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(nameof(attributeAccessor));
@@ -43,13 +47,15 @@ namespace System.Design.Query
         {
             var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
 
-            if (attribute.Any())
+            if (attribute.IsValue())
             {
-                using var scope = attribute.Single().GetTransactionScope();
-                var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
-                scope.Complete();
+                using (var scope = attribute.Single().GetTransactionScope())
+                {
+                    var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
+                    scope.Complete();
 
-                return result;
+                    return result;
+                }
             }
             else
             {

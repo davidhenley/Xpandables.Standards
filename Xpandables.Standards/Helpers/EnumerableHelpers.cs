@@ -36,11 +36,9 @@ namespace System.Collections.Generic
         /// <exception cref="ArgumentException">The <paramref name="source"/> is an enumerable.</exception>
         public static IEnumerable<T> ToEnumerable<T>(this T source)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (EqualityComparer<T>.Default.Equals(source, default)) throw new ArgumentNullException(nameof(source));
             if (source.GetType().IsAssignableFrom(typeof(IEnumerable)))
-#pragma warning disable CA1303 // Ne pas passer de littéraux en paramètres localisés
-                throw new ArgumentException("The current instance is already an enumerable.");
-#pragma warning restore CA1303 // Ne pas passer de littéraux en paramètres localisés
+                throw new ArgumentException(ErrorMessageResources.ToEnumerableArgument);
 
             yield return source;
         }

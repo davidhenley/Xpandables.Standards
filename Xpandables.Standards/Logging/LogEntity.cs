@@ -51,16 +51,16 @@ namespace System.Design.Logging
             return
                 WithException(logEvent.Exception)
                 .WithLevel(logEvent.Level.ToString())
-                .WithProperties(properties!.ToString())
+                .WithProperties(properties.ToString())
                 .WithMessage(logEvent.RenderMessage())
                 .WithMessageTemplate(logEvent.MessageTemplate?.ToString())
                 .WithTimeSpan(logEvent.Timestamp);
 
-            static string ConvertLogEventToJson(LogEvent logEvent)
+            string ConvertLogEventToJson(LogEvent log)
             {
                 var stringBuilder = new StringBuilder();
                 using (var writer = new StringWriter(stringBuilder))
-                    new JsonFormatter().Format(logEvent, writer);
+                    new JsonFormatter().Format(log, writer);
 
                 return stringBuilder.ToString();
             }

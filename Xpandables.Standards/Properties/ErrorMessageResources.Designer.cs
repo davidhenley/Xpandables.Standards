@@ -221,5 +221,14 @@ namespace System {
                 return ResourceManager.GetString("StringHelperFormattingFailed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The current instance is already an enumerable..
+        /// </summary>
+        public static string ToEnumerableArgument {
+            get {
+                return ResourceManager.GetString("ToEnumerableArgument", resourceCulture);
+            }
+        }
     }
 }

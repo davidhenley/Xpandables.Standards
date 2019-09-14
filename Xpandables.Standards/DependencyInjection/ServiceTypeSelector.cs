@@ -45,7 +45,7 @@ namespace System.Design.DependencyInjection
 
         private List<ISelector> Selectors { get; } = new List<ISelector>();
 
-        private RegistrationStrategy? RegistrationStrategy { get; set; }
+        private RegistrationStrategy RegistrationStrategy { get; set; }
 
         public ILifetimeSelector AsSelf()
         {
@@ -106,7 +106,7 @@ namespace System.Design.DependencyInjection
             return AsMatchingInterface(null);
         }
 
-        public ILifetimeSelector AsMatchingInterface(Action<TypeInfo, IImplementationTypeFilter>? action)
+        public ILifetimeSelector AsMatchingInterface(Action<TypeInfo, IImplementationTypeFilter> action)
         {
             return AsTypeInfo(t => t.FindMatchingInterface(action));
         }

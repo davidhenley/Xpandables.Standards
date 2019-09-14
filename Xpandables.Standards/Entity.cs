@@ -33,7 +33,11 @@ namespace System
         /// <summary>
         /// Initializes the Id key.
         /// </summary>
-        protected Entity() => Id = DoKeyGenerator();
+        protected Entity()
+        {
+            Id = DoKeyGenerator();
+            RowVersion = Array.Empty<byte>();
+        }
 
         protected string DoKeyGenerator() => KeyGenerator();
 
@@ -43,8 +47,6 @@ namespace System
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Diagnostics.CodeAnalysis.SuppressMessage(
-            "Usage", "CA2235:Mark all non-serializable fields", Justification = "<En attente>")]
         public string Id { get; protected set; }
 
         /// <summary>
@@ -60,10 +62,16 @@ namespace System
         public bool IsDeleted { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the creation date of the underlying instance.
+        /// Gets the creation date of the underlying instance.
         /// </summary>
         [field: NonSerialized, DataType(DataType.DateTime)]
         public DateTime CreatedOn { get; protected set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the row version for the underlying instance to handle concurrency.
+        /// </summary>
+        [Timestamp, ConcurrencyCheck]
+        public byte[] RowVersion { get; protected set; }
 
         /// <summary>
         /// Returns the unique signature of string type for an instance.
@@ -73,13 +81,14 @@ namespace System
         /// <returns>A string value as identifier.</returns>
         protected virtual string KeyGenerator()
         {
-            using var rnd = RandomNumberGenerator.Create();
+            using (var rnd = RandomNumberGenerator.Create())
+            {
+                var salt = new byte[32];
+                var guid = Guid.NewGuid().ToString();
+                rnd.GetBytes(salt);
 
-            var salt = new byte[32];
-            var guid = Guid.NewGuid().ToString();
-            rnd.GetBytes(salt);
-
-            return $"{guid}{BitConverter.ToString(salt)}";
+                return guid + BitConverter.ToString(salt);
+            }
         }
 
         /// <summary>

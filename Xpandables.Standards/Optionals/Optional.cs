@@ -37,12 +37,10 @@ namespace System
         /// </summary>
         internal T InternalValue => IsValue() ? Values[0] : default;
 
-#nullable disable
         /// <summary>
         /// Gets the underlying exception if exists.
         /// </summary>
         internal Exception InternalException => IsException() ? Exceptions[0] : default;
-#nullable enable
 
         /// <summary>
         /// Determines whether the instance contains a value or not.
@@ -76,7 +74,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         public static Optional<T> Some(T value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (EqualityComparer<T>.Default.Equals(value, default)) throw new ArgumentNullException(nameof(value));
             return new Optional<T>(new T[] { value });
         }
 

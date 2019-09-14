@@ -17,11 +17,9 @@
 
 namespace System
 {
-#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
     /// <summary>
     /// Provides a collection of objects that need to be shared across asynchronous control flows.
     /// This interface must be used or injected as a singleton dependency.
     /// </summary>
     public interface ICorrelationContext : ICorrelationCollection<string, object> { }
-#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
 }

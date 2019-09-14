@@ -16,7 +16,6 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace System
 {
@@ -44,8 +43,10 @@ namespace System
 
         public int CompareTo(T other)
         {
-            if (IsValue() && other is null) return 1;
-            return !IsValue() && !(other is null) ? -1 : Comparer<T>.Default.Compare(InternalValue, other);
+            if (IsValue() && EqualityComparer<T>.Default.Equals(other, default)) return 1;
+            return !IsValue() && !EqualityComparer<T>.Default.Equals(other, default)
+                ? -1
+                : Comparer<T>.Default.Compare(InternalValue, other);
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace System
         /// <param name="other">Option to compare with</param>
         public bool Equals(Optional<T> other)
         {
-            if (other is null) return false;
+            if (other == null) return false;
             if (IsEmpty() && other.IsEmpty()) return true;
             if (IsValue() && other.IsValue())
                 return EqualityComparer<T>.Default.Equals(InternalValue, other.InternalValue);
@@ -87,12 +88,10 @@ namespace System
         public override int GetHashCode()
         {
             var hash = 17;
-#nullable disable
             if (IsValue())
                 return InternalValue.GetHashCode() ^ 31;
             if (IsException())
                 return InternalException.GetHashCode() ^ 31;
-#nullable enable
             return hash ^ 29;
         }
 

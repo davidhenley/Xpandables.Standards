@@ -30,9 +30,10 @@ namespace System
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
-            var key = stringGenerator.Generate(12, source);
-            return stringEncryptor.Encrypt(value, key)
-                    .Map(result => ValueEncrypted.CreateWith(key, result));
+            return stringGenerator
+                .Generate(12, source)
+                .MapOptional(key => stringEncryptor.Encrypt(value, key).And(key))
+                .Map(pair => ValueEncrypted.CreateWith(pair.Right, pair.Left));
         }
 
         public bool Equals(ValueEncrypted encrypted, string value)

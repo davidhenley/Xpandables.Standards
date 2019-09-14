@@ -74,7 +74,7 @@ namespace System
             if (left is null ^ right is null)
                 return false;
 
-            return left?.Equals(right!) != false;
+            return left?.Equals(right) != false;
         }
 
         /// <summary>

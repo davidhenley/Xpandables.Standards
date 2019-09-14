@@ -15,28 +15,21 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-
 namespace System
 {
     /// <summary>
-    /// Provides information about the implementation.
+    /// Allows an application author to access a type-specific <see cref="Attribute"/> from a specified type.
     /// </summary>
-    public interface IDescriptor : IFluent
+    public interface IAttributeAccessor
     {
         /// <summary>
-        /// Contains the name of the underlying instance.
+        /// Returns the found attribute of type <typeparamref name="TAttribute"/> from the specified type.
+        /// Otherwise returns an empty / exception optional.
         /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Contains a description of the underlying instance.
-        /// </summary>
-        string Description { get; }
-
-        /// <summary>
-        /// Contains a collection of key/values pairs of the underlying instance.
-        /// </summary>
-        IReadOnlyDictionary<string, object> Properties { get; }
+        /// <param name="type">The type to act on.</param>
+        /// <returns>An optional instance that may be contains the found attribute.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        Optional<TAttribute> GetAttribute<TAttribute>(Type type)
+            where TAttribute : Attribute;
     }
 }

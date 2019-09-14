@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace System
@@ -32,14 +33,15 @@ namespace System
         public static bool operator ==(in T a, in Optional<T> b) => b?.Equals(a) == true;
 
         public static bool operator !=(in T a, in Optional<T> b) => !(b?.Equals(a) == true);
-#nullable disable
+
         public static implicit operator T(Optional<T> optional)
             => optional is null ? (default) : optional.IsValue() ? optional.InternalValue : default;
 
         public static implicit operator Exception(Optional<T> optional)
             => optional is null ? (default) : optional.IsException() ? optional.InternalException : default;
 
-        public static implicit operator Optional<T>(T value) => value is null ? Empty() : Some(value);
+        public static implicit operator Optional<T>(T value)
+            => EqualityComparer<T>.Default.Equals(value, default) ? Empty() : Some(value);
 
         public static implicit operator Task<Optional<T>>(Optional<T> optional)
             => optional is null ? Empty() : Task.FromResult(optional);
@@ -47,7 +49,6 @@ namespace System
         public static implicit operator Optional<T>(Optional<Optional<T>> optional)
             => optional is null ? (default) : optional.InternalValue;
 
-#nullable enable
         public static bool operator <(Optional<T> left, Optional<T> right)
         {
             return left is null ? !(right is null) : left.CompareTo(right) < 0;

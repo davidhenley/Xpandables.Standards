@@ -32,11 +32,13 @@ namespace System
 
             try
             {
-                using var cryptoManaged = new SHA512Managed();
-                var data = Text.Encoding.UTF8.GetBytes(value);
-                var hash = cryptoManaged.ComputeHash(data);
-                var result = BitConverter.ToString(hash).Replace("-", string.Empty);
-                return result;
+                using (var cryptoManaged = new SHA512Managed())
+                {
+                    var data = Text.Encoding.UTF8.GetBytes(value);
+                    var hash = cryptoManaged.ComputeHash(data);
+                    var result = BitConverter.ToString(hash).Replace("-", string.Empty);
+                    return result;
+                }
             }
             catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
             {

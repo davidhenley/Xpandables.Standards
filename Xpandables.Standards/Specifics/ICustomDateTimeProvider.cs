@@ -21,7 +21,6 @@ namespace System
 {
     /// <summary>
     /// Allows an application author to provide runtime date time according to the context.
-    /// <para>Contains default implementation.</para>
     /// </summary>
     public interface ICustomDateTimeProvider
     {
@@ -33,7 +32,7 @@ namespace System
 
         /// <summary>
         /// Converts string date time to <see cref="DateTime"/> type.
-        /// If error, returns an empty optional.
+        /// If error, returns an exception optional.
         /// </summary>
         /// <param name="source">A string containing a date and time to convert.</param>
         /// <param name="provider">An object that supplies culture-specific format information about string.</param>
@@ -52,6 +51,7 @@ namespace System
         /// <summary>
         /// Converts the value of the current System.DateTime object to its equivalent string
         /// representation using the specified format and culture-specific format information.
+        /// If error, returns an exception
         /// </summary>
         /// <param name="dateTime">The date time to be converted.</param>
         /// <param name="format">A standard or custom date and time format string.</param>

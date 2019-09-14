@@ -177,7 +177,9 @@ namespace System.Design.DependencyInjection
         /// <param name="typeInfo"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static IEnumerable<Type> FindMatchingInterface(this TypeInfo typeInfo, Action<TypeInfo, IImplementationTypeFilter>? action)
+        public static IEnumerable<Type> FindMatchingInterface(
+            this TypeInfo typeInfo,
+            Action<TypeInfo, IImplementationTypeFilter> action)
         {
             var matchingInterfaceName = $"I{typeInfo.Name}";
 

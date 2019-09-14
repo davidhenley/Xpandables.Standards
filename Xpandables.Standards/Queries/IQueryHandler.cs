@@ -27,7 +27,8 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of the query that will be used as argument.</typeparam>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    public interface IQueryHandler<in TQuery, TResult> where TQuery : class, IQuery<TResult>
+    public interface IQueryHandler<in TQuery, TResult> : IObjectDescriptor
+        where TQuery : class, IQuery<TResult>
     {
         /// <summary>
         /// Asynchronously handles the specified query and returns the expected result type.

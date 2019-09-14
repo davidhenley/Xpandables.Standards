@@ -63,8 +63,8 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
         public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Task<U> right)
         {
-            if (right is null) throw new ArgumentNullException(nameof(right));
-            return IsValue() && !(await right.ConfigureAwait(false) is null)
+            if (right == null) throw new ArgumentNullException(nameof(right));
+            return IsValue() && !(await right.ConfigureAwait(false) == null)
                            ? (Optional<(T Left, U Right)>)(InternalValue, await right.ConfigureAwait(false))
                            : Optional<(T Left, U Right)>.Empty();
         }
@@ -78,7 +78,7 @@ namespace System
         /// <returns>An optional pair.</returns>
         public async Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Task<Optional<U>> right)
         {
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            if (right == null) throw new ArgumentNullException(nameof(right));
             return IsValue() && (await right.ConfigureAwait(false)).IsValue()
                            ? (Optional<(T Left, U Right)>)(InternalValue, (await right.ConfigureAwait(false)).InternalValue)
                            : Optional<(T Left, U Right)>.Empty();
@@ -93,7 +93,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         public async Task<Optional<T>> MapAsync(Func<Task<T>> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some().ConfigureAwait(false);
             return this;
         }
@@ -108,7 +108,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         public async Task<Optional<U>> MapAsync<U>(Func<T, Task<U>> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
             return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
         }
@@ -123,7 +123,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         public async Task<Optional<U>> MapOptionalAsync<U>(Func<T, Task<Optional<U>>> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
             return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
         }
@@ -135,7 +135,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         public async Task MapAsync(Func<T, Task> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) await some(InternalValue).ConfigureAwait(false);
         }
 
@@ -146,7 +146,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         public Task MapOptionalAsync(Func<Optional<T>, Task> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (some == null) throw new ArgumentNullException(nameof(some));
             return some(this);
         }
 
@@ -160,7 +160,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
         public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Func<Task<U>> right)
         {
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            if (right == null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return (default, default);
 
             return (await right().ConfigureAwait(false)) is U result
@@ -178,7 +178,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
         public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Func<T, Task<U>> right)
         {
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            if (right == null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return (default, default);
 
             return (await right(InternalValue).ConfigureAwait(false)) is U result
@@ -196,7 +196,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
         public async Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Func<Task<Optional<U>>> right)
         {
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            if (right == null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return (default, default);
 
             return (await right().ConfigureAwait(false)) is U result
@@ -217,12 +217,11 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
         public async Task<Optional<T>> WhenAsync(Predicate<T> predicate, Func<Task<T>> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (some == null) throw new ArgumentNullException(nameof(some));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (IsValue())
-                if (predicate(InternalValue))
-                    return await some().ConfigureAwait(false);
+            if (IsValue() && predicate(InternalValue))
+                return await some().ConfigureAwait(false);
 
             return this;
         }
@@ -238,7 +237,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
         public async Task<Optional<T>> WhenAsync(Predicate<T> predicate, Func<T, Task<T>> some)
         {
-            if (some is null) throw new ArgumentNullException(nameof(some));
+            if (some == null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
             if (IsValue() && predicate(InternalValue))

@@ -285,7 +285,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            throw error!;
+            throw error;
         }
 
         private static bool IsSameGenericType(Type t1, Type t2)
@@ -297,7 +297,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Type serviceType,
             Type decoratorType,
-            out Exception? error)
+            out Exception error)
         {
             var arguments = services
                 .Where(x => !x.ServiceType.IsGenericTypeDefinition)
@@ -336,13 +336,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            throw error!;
+            throw error;
         }
 
         private static bool TryDecorateDescriptors(
             this IServiceCollection services,
             Type serviceType,
-            out Exception? error,
+            out Exception error,
             Func<ServiceDescriptor, ServiceDescriptor> decorator)
         {
             if (!services.TryGetDescriptors(serviceType, out var descriptors))
@@ -376,7 +376,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<TService, IServiceProvider, TService> decorator)
         {
             // TODO: Annotate TService with notnull when preview 8 is out.
-            return descriptor.WithFactory(provider => decorator((TService)provider.GetInstance(descriptor), provider)!);
+            return descriptor.WithFactory(provider => decorator((TService)provider.GetInstance(descriptor), provider));
         }
 
         private static ServiceDescriptor Decorate<TService>(
@@ -384,7 +384,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<TService, TService> decorator)
         {
             // TODO: Annotate TService with notnull when preview 8 is out.
-            return descriptor.WithFactory(provider => decorator((TService)provider.GetInstance(descriptor))!);
+            return descriptor.WithFactory(provider => decorator((TService)provider.GetInstance(descriptor)));
         }
 
         private static ServiceDescriptor Decorate(this ServiceDescriptor descriptor, Type decoratorType)

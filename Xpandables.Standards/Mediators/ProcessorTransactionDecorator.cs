@@ -44,13 +44,15 @@ namespace System.Design.Mediator
             if (query is null) throw new ArgumentNullException(nameof(query));
 
             var transactionAttribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(query.GetType());
-            if (transactionAttribute.Any())
+            if (transactionAttribute.IsValue())
             {
-                using var scope = transactionAttribute.Single().GetTransactionScope();
-                var result = await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
-                scope.Complete();
+                using (var scope = transactionAttribute.Single().GetTransactionScope())
+                {
+                    var result = await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
+                    scope.Complete();
 
-                return result;
+                    return result;
+                }
             }
 
             return await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
@@ -62,12 +64,13 @@ namespace System.Design.Mediator
             if (command is null) throw new ArgumentNullException(nameof(command));
 
             var transactionAttribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TCommand));
-            if (transactionAttribute.Any())
+            if (transactionAttribute.IsValue())
             {
-                using var scope = transactionAttribute.Single().GetTransactionScope();
-                await _decoratee.HandleCommandAsync(command, cancellationToken).ConfigureAwait(false);
-
-                scope.Complete();
+                using (var scope = transactionAttribute.Single().GetTransactionScope())
+                {
+                    await _decoratee.HandleCommandAsync(command, cancellationToken).ConfigureAwait(false);
+                    scope.Complete();
+                }
             }
             else
             {
@@ -82,14 +85,16 @@ namespace System.Design.Mediator
             if (query is null) throw new ArgumentNullException(nameof(query));
 
             var transactionAttribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
-            if (transactionAttribute.Any())
+            if (transactionAttribute.IsValue())
             {
-                using var scope = transactionAttribute.Single().GetTransactionScope();
-                var result = await _decoratee
-                    .HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);
-                scope.Complete();
+                using (var scope = transactionAttribute.Single().GetTransactionScope())
+                {
+                    var result = await _decoratee
+                          .HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);
+                    scope.Complete();
 
-                return result;
+                    return result;
+                }
             }
 
             return await _decoratee.HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);

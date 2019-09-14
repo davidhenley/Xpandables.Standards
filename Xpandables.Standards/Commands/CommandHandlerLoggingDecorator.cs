@@ -15,48 +15,52 @@
  *
 ************************************************************************************************************/
 
-using System.Linq;
+using System;
+using System.Design.Command;
+using System.Design.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Command
+namespace Xpandables.Commands
 {
     /// <summary>
-    /// This class allows the application author to add transaction support to all of the commands.
-    /// The command must be decorated with the <see cref="SupportTransactionAttribute"/>.
+    /// This class allows the application author to add logging support to command.
     /// </summary>
-    /// <typeparam name="TCommand">Type of the command to apply transaction.</typeparam>
-    public sealed class CommandHandlerTransactionDecorator<TCommand> :
-        ObjectDescriptor<CommandHandlerTransactionDecorator<TCommand>>, ICommandHandler<TCommand>
-        where TCommand : class, ICommand, ITransactionDecorator
+    /// <typeparam name="TCommand">Type of command.</typeparam>
+    public sealed class CommandHandlerLoggingDecorator<TCommand> :
+        ObjectDescriptor<CommandHandlerLoggingDecorator<TCommand>>, ICommandHandler<TCommand>
+        where TCommand : class, ICommand, ILoggingDecorator
     {
         private readonly ICommandHandler<TCommand> _decoratee;
-        private readonly IAttributeAccessor _attributeAccessor;
+        private readonly ILoggerWrapper _loggerWrapper;
 
-        public CommandHandlerTransactionDecorator(
+        public CommandHandlerLoggingDecorator(
             ICommandHandler<TCommand> decoratee,
-            IAttributeAccessor attributeAccessor)
+            ILoggerWrapper loggerWrapper)
             : base(decoratee)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(nameof(attributeAccessor));
+            _loggerWrapper = loggerWrapper ?? throw new ArgumentNullException(nameof(loggerWrapper));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
-            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TCommand));
-
-            if (attribute.IsValue())
-            {
-                using (var scope = attribute.Single().GetTransactionScope())
-                {
-                    await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
-                    scope.Complete();
-                }
-            }
-            else
+            var ex = Optional<Exception>.Empty();
+            _loggerWrapper.OnEntry<TCommand>(this, command);
+            try
             {
                 await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
+                _loggerWrapper.OnSuccess<TCommand, object>(this, command, Optional<object>.Empty());
+            }
+            catch (Exception exception)
+            {
+                ex = exception;
+                _loggerWrapper.OnException(this, exception);
+                throw;
+            }
+            finally
+            {
+                _loggerWrapper.OnExit<TCommand, object>(this, command, Optional<object>.Empty(), ex);
             }
         }
     }

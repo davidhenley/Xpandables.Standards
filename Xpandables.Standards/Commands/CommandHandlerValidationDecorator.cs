@@ -25,8 +25,9 @@ namespace System.Design.Command
     /// This class allows the application author to add validation support before a command is handled.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command.</typeparam>
-    public sealed class CommandHandlerValidationDecorator<TCommand> : ICommandHandler<TCommand>
-        where TCommand : class, ICommand
+    public sealed class CommandHandlerValidationDecorator<TCommand> :
+        ObjectDescriptor<CommandHandlerValidationDecorator<TCommand>>, ICommandHandler<TCommand>
+        where TCommand : class, ICommand, IValidationDecorator
     {
         private readonly ICommandHandler<TCommand> _decoratee;
         private readonly ICustomCompositeValidator<TCommand> _validator;
@@ -34,6 +35,7 @@ namespace System.Design.Command
         public CommandHandlerValidationDecorator(
             ICommandHandler<TCommand> decoratee,
             ICustomCompositeValidator<TCommand> validator)
+            : base(decoratee)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));

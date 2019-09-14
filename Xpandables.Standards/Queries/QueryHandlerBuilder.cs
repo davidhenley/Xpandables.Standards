@@ -25,7 +25,8 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of argument to act on.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class QueryHandlerBuilder<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    public sealed class QueryHandlerBuilder<TQuery, TResult> :
+        ObjectDescriptor<QueryHandlerBuilder<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
         private readonly Func<IQuery<TResult>, CancellationToken, Task<TResult>> _handler;

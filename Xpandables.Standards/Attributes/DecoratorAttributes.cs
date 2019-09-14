@@ -15,20 +15,30 @@
  *
 ************************************************************************************************************/
 
-using System.Reflection;
-
 namespace System
 {
     /// <summary>
-    /// The default implementation of <see cref="IAttributeAccessor"/>.
+    /// A marker interface to allow validation decorator.
     /// </summary>
-    public class AttributeAccessor : IAttributeAccessor
-    {
-        public Optional<TAttribute> GetAttribute<TAttribute>(Type type)
-            where TAttribute : Attribute
-        {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            return type.GetCustomAttribute<TAttribute>();
-        }
-    }
+    public interface IValidationDecorator { }
+
+    /// <summary>
+    /// A marker interface to allow transaction decorator.
+    /// </summary>
+    public interface ITransactionDecorator { }
+
+    /// <summary>
+    /// A marker interface to allow persistence decorator.
+    /// </summary>
+    public interface IPersistenceDecorator { }
+
+    /// <summary>
+    /// A marker interface to allow validation decorator.
+    /// </summary>
+    public interface ILoggingDecorator { }
+
+    /// <summary>
+    /// A marker interface to allow validation decorator.
+    /// </summary>
+    public interface IEventRegisterDecorator { }
 }

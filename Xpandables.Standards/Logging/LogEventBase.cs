@@ -86,7 +86,7 @@ namespace System.Design.Logging
         /// Adds a message template to the underlying instance.
         /// </summary>
         /// <param name="messageTemplate">the event message template.</param>
-        public T WithMessageTemplate(string? messageTemplate)
+        public T WithMessageTemplate(string messageTemplate)
         {
             MessageTemplate = messageTemplate ?? string.Empty;
             return (T)this;
@@ -106,7 +106,7 @@ namespace System.Design.Logging
         /// Adds an exception to the underlying instance.
         /// </summary>
         /// <param name="exception">The event exception.</param>
-        public T WithException(Exception? exception)
+        public T WithException(Exception exception)
         {
             Exception = exception?.ToString() ?? string.Empty;
             return (T)this;

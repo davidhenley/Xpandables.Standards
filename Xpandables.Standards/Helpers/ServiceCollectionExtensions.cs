@@ -318,13 +318,13 @@ namespace System.Design.DependencyInjection
             => descriptor.WithFactory(
                 provider => decorator(
                     provider.GetInstance(descriptor).Cast<TService>(),
-                    provider)!);
+                    provider));
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
             this ServiceDescriptor descriptor,
             Func<TService, TService> decorator)
             where TService : class
             => descriptor.WithFactory(
-                provider => decorator(provider.GetInstance(descriptor).Cast<TService>())!);
+                provider => decorator(provider.GetInstance(descriptor).Cast<TService>()));
     }
 }

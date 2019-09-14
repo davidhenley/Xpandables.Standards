@@ -171,4 +171,7 @@
   <data name="StringHelperFormattingFailed" xml:space="preserve">
     <value>Formatting string failed. See inner exception.</value>
   </data>
+  <data name="ToEnumerableArgument" xml:space="preserve">
+    <value>The current instance is already an enumerable.</value>
+  </data>
 </root>

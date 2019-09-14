@@ -19,6 +19,9 @@ using System.Globalization;
 
 namespace System
 {
+    /// <summary>
+    /// Provides runtime date time according to the context, implements <see cref="ICustomDateTimeProvider"/>.
+    /// </summary>
     public class CustomDateTimeProvider : ICustomDateTimeProvider
     {
         public DateTime GetDateTime() => DateTime.UtcNow;
@@ -54,7 +57,8 @@ namespace System
             {
                 return dateTime.ToString(format, provider);
             }
-            catch (Exception exception) when (exception is FormatException || exception is ArgumentOutOfRangeException)
+            catch (Exception exception) when (exception is FormatException
+                                            || exception is ArgumentOutOfRangeException)
             {
                 return Optional<string>.Exception(exception);
             }

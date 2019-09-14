@@ -17,14 +17,10 @@
 
 namespace System
 {
-#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
     /// <summary>
-    /// The correlation context provider.
+    /// Provides a collection of objects that need to be shared across asynchronous control flows.
+    /// See <see cref="ICorrelationCollection{TKey, TValue}"/>.
     /// </summary>
-    public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext
-#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
-    {
-        public CorrelationContext() : base() { }
-    }
+    public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext { }
 
 }

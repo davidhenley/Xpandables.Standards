@@ -26,8 +26,9 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class QueryHandlerValidationDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class QueryHandlerValidationDecorator<TQuery, TResult> :
+        ObjectDescriptor<QueryHandlerValidationDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>, IValidationDecorator
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
         private readonly ICustomCompositeValidator<TQuery> _validator;
@@ -35,6 +36,7 @@ namespace System.Design.Query
         public QueryHandlerValidationDecorator(
             IQueryHandler<TQuery, TResult> decoratee,
             ICustomCompositeValidator<TQuery> validator)
+            : base(decoratee)
         {
             _decoratee = decoratee;
             _validator = validator;

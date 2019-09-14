@@ -27,16 +27,20 @@ namespace System.Design.Command
     /// after a command execution.</para>
     /// </summary>
     /// <typeparam name="TCommand">Type of command.</typeparam>
-    public sealed class CommandHandlerPersistenceDecorator<TCommand> : ICommandHandler<TCommand>
-        where TCommand : class, ICommand
+    public sealed class CommandHandlerPersistenceDecorator<TCommand> :
+        ObjectDescriptor<CommandHandlerPersistenceDecorator<TCommand>>, ICommandHandler<TCommand>
+        where TCommand : class, ICommand, IPersistenceDecorator
     {
         private readonly IDataContext _dataContext;
         private readonly ICommandHandler<TCommand> _decoratee;
 
-        public CommandHandlerPersistenceDecorator(IDataContext dataContext, ICommandHandler<TCommand> decoratedHandler)
+        public CommandHandlerPersistenceDecorator(
+            IDataContext dataContext,
+            ICommandHandler<TCommand> decoratee)
+            : base(decoratee)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            _decoratee = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)

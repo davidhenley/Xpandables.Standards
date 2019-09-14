@@ -18,12 +18,13 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace System
 {
     /// <summary>
-    /// The correlation collection implementation.
+    /// The correlation collection implementation of <see cref="ICorrelationCollection{TKey, TValue}"/>.
     /// </summary>
     public class CorrelationCollection<TKey, TValue> : ICorrelationCollection<TKey, TValue>
     {
@@ -41,16 +42,18 @@ namespace System
         {
             get
             {
-                if (key is null)
+                if (EqualityComparer<TKey>.Default.Equals(key, default))
                     return Optional<TValue>.Empty();
 
                 return Items.Value.TryGetValue(key, out var found) ? found : default;
             }
             set
             {
-                if (key is null) return;
-                if (value is null)
+                if (EqualityComparer<TKey>.Default.Equals(key, default)) return;
+                if (EqualityComparer<TValue>.Default.Equals(value, default))
                     value = Optional<TValue>.Empty();
+
+                Diagnostics.Contracts.Contract.Assume(!(value is null));
 
                 Items.Value.AddOrUpdate(key, value.Cast<TValue>(), (_, __) => value.Cast<TValue>());
             }

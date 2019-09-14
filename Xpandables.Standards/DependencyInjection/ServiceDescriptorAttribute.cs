@@ -33,15 +33,15 @@ namespace System.Design.DependencyInjection
     {
         public ServiceDescriptorAttribute() : this(null) { }
 
-        public ServiceDescriptorAttribute(Type? serviceType) : this(serviceType, ServiceLifetime.Transient) { }
+        public ServiceDescriptorAttribute(Type serviceType) : this(serviceType, ServiceLifetime.Transient) { }
 
-        public ServiceDescriptorAttribute(Type? serviceType, ServiceLifetime lifetime)
+        public ServiceDescriptorAttribute(Type serviceType, ServiceLifetime lifetime)
         {
             ServiceType = serviceType;
             Lifetime = lifetime;
         }
 
-        public Type? ServiceType { get; }
+        public Type ServiceType { get; }
 
         public ServiceLifetime Lifetime { get; }
 

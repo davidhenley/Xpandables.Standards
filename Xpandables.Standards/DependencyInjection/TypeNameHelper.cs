@@ -23,7 +23,7 @@ using System.Text;
 
 namespace Microsoft.Extensions.Internal
 {
-    internal class TypeNameHelper
+    internal static class TypeNameHelper
     {
         private static readonly Dictionary<Type, string> _builtInTypeNames = new Dictionary<Type, string>
         {

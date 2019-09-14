@@ -15,10 +15,9 @@
  *
 ************************************************************************************************************/
 
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Xpandables
+namespace System
 {
     /// <summary>
     /// Escapes special characters from the decorated property.

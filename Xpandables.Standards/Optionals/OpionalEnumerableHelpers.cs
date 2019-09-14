@@ -138,7 +138,7 @@ namespace System
             this IDictionary<TKey, TValue> dictionary,
             TKey key)
         {
-            if (key is null) throw new ArgumentNullException(nameof(key));
+            if (EqualityComparer<TKey>.Default.Equals(key, default)) throw new ArgumentNullException(nameof(key));
             if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
             return dictionary.TryGetValue(key, out var value)
@@ -156,7 +156,7 @@ namespace System
             this ILookup<TKey, TValue> lookup,
             TKey key)
         {
-            if (key is null) throw new ArgumentNullException(nameof(key));
+            if (EqualityComparer<TKey>.Default.Equals(key, default)) throw new ArgumentNullException(nameof(key));
             if (lookup is null) throw new ArgumentNullException(nameof(lookup));
 
             return lookup.Contains(key)

@@ -204,11 +204,11 @@ namespace System
         /// Returns type from its string name.
         /// </summary>
         /// <param name="typeName">The name of the type to find.</param>
-        /// <returns>if found, returns the type ortherwise an empty result.</returns>
+        /// <returns>if found, returns the type otherwise an empty result.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
         public static Optional<Type> TypeFromString(this string typeName)
         {
-            if (typeName is null) throw new ArgumentNullException(nameof(typeName));
+            if (string.IsNullOrWhiteSpace(typeName)) throw new ArgumentNullException(nameof(typeName));
 
             try
             {
@@ -230,13 +230,13 @@ namespace System
         /// </summary>
         /// <param name="typeName">The name of the type to find.</param>
         /// <param name="assemblyName">The assembly to act on.</param>
-        /// <returns>if found, returns the type ortherwise an empty result.</returns>
+        /// <returns>if found, returns the type otherwise an empty result.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="typeName"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblyName"/> is null.</exception>
         public static Optional<Type> TypeFromString(this string typeName, string assemblyName)
         {
-            if (assemblyName is null) throw new ArgumentNullException(nameof(assemblyName));
-            if (typeName is null) throw new ArgumentNullException(nameof(typeName));
+            if (string.IsNullOrWhiteSpace(assemblyName)) throw new ArgumentNullException(nameof(assemblyName));
+            if (string.IsNullOrWhiteSpace(typeName)) throw new ArgumentNullException(nameof(typeName));
 
             var resultFromType = TypeFromString(typeName);
             if (resultFromType.Any()) return resultFromType;
@@ -255,7 +255,7 @@ namespace System
             var exception = default(Exception);
             resultFromAss.WhenException(ex => exception = ex);
 
-            return Optional<Type>.Exception(exception!);
+            return Optional<Type>.Exception(exception);
         }
 
         /// <summary>
@@ -286,12 +286,12 @@ namespace System
             this Type type,
             string memberName,
             BindingFlags invokeAttr,
-             Binder? binder,
+             Binder binder,
             object target,
-             object[]? args)
+             object[] args)
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            if (memberName is null) throw new ArgumentNullException(nameof(memberName));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (string.IsNullOrWhiteSpace(memberName)) throw new ArgumentNullException(nameof(memberName));
 
             try
             {
@@ -321,7 +321,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         public static Optional<Type> MakeGenericTypeSafe(this Type type, params Type[] typeArguments)
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (type == null) throw new ArgumentNullException(nameof(type));
             try
             {
                 return type.MakeGenericType(typeArguments);

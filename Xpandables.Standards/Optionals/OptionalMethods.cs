@@ -15,6 +15,8 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
+
 namespace System
 {
     public partial class Optional<T>
@@ -92,7 +94,7 @@ namespace System
         /// <param name="right">The value to be used.</param>
         /// <returns>An optional pair.</returns>
         public Optional<(T Left, U Right)> And<U>(U right)
-            => IsValue() && !(right is null)
+            => IsValue() && !EqualityComparer<U>.Default.Equals(right, default)
                 ? (Optional<(T Left, U Right)>)(InternalValue, right)
                 : Optional<(T Left, U Right)>.Empty();
 

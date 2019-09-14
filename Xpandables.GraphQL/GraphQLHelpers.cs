@@ -31,7 +31,6 @@ namespace System.GraphQL
             catch (ArgumentOutOfRangeException)
             {
                 if (TypeDescriptor.GetConverter(type) is TypeConverter converter
-                    && converter.CanConvertFrom(typeof(string))
                     && converter.CanConvertTo(typeof(string)))
                 {
                     return typeof(string).GetGraphTypeFromType(isNullable);

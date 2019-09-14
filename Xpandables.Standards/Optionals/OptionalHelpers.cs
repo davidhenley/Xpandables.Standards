@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace System
@@ -58,7 +59,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         public static Optional<T> AsOptional<T>(this T value)
         {
-            if (value is null) return Optional<T>.Empty();
+            if (EqualityComparer<T>.Default.Equals(value, default)) return Optional<T>.Empty();
             return Optional<T>.Some(value);
         }
 
@@ -73,8 +74,11 @@ namespace System
         /// <returns>An optional pair instance.</returns>
         public static Optional<(T Left, U Right)> AsOptional<T, U>(this T value, U right)
         {
-            if (!(value is null) && !(right is null))
+            if (!EqualityComparer<T>.Default.Equals(value, default)
+                && !EqualityComparer<U>.Default.Equals(right, default))
+            {
                 return Optional<(T Left, U Right)>.Some((value, right));
+            }
 
             return Optional<(T Left, U Right)>.Empty();
         }
@@ -90,7 +94,7 @@ namespace System
         /// <returns>An optional pair instance.</returns>
         public static Optional<(T Left, U Right)> AsOptional<T, U>(this Optional<T> optional, U right)
         {
-            if (!(optional is null) && optional.IsValue() && !(right is null))
+            if (!(optional is null) && optional.IsValue() && !EqualityComparer<U>.Default.Equals(right, default))
                 return Optional<(T Left, U Right)>.Some((optional.InternalValue, right));
 
             return Optional<(T Left, U Right)>.Empty();

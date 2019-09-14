@@ -15,43 +15,28 @@
  *
 ************************************************************************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
-namespace Xpandables
+namespace System
 {
     /// <summary>
-    /// Helper class to implement the <see cref="IDescriptor"/>.
+    /// Provides information about an object.
     /// </summary>
-    public abstract class Descriptor : IDescriptor
+    public interface IObjectDescriptor : IFluent
     {
-        /// <summary>
-        /// Initializes a new instance of <see cref="Descriptor"/> with the name provided.
-        /// </summary>
-        /// <param name="name">The descriptor name.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="name"/> is null.</exception>
-        protected Descriptor(string name)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Description = string.Empty;
-            Properties = ImmutableDictionary<string, object>.Empty;
-        }
-
         /// <summary>
         /// Contains the name of the underlying instance.
         /// </summary>
-        public string Name { get; }
+        string Name { get; }
 
         /// <summary>
         /// Contains a description of the underlying instance.
         /// </summary>
-        public string Description { get; }
+        string Description { get; }
 
         /// <summary>
-        /// Contains a collection of key/values pairs of the underlying instance.
+        /// Contains a collection of key/values pairs information about the underlying instance.
         /// </summary>
-        public IReadOnlyDictionary<string, object> Properties { get; }
-
+        IReadOnlyDictionary<string, object> Properties { get; }
     }
 }

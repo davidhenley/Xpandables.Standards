@@ -78,7 +78,7 @@ namespace System.Design.Logging
         /// Adds a message template to the underlying instance.
         /// </summary>
         /// <param name="messageTemplate">the event message template.</param>
-        T WithMessageTemplate(string? messageTemplate);
+        T WithMessageTemplate(string messageTemplate);
 
         /// <summary>
         /// Adds a time span to the underlying instance.
@@ -90,7 +90,7 @@ namespace System.Design.Logging
         /// Adds an exception to the underlying instance.
         /// </summary>
         /// <param name="exception">The event exception.</param>
-        T WithException(Exception? exception);
+        T WithException(Exception exception);
 
         /// <summary>
         /// Adds a level to the underlying instance.

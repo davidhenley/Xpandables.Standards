@@ -56,8 +56,8 @@ namespace System.Interception
         /// </summary>
         public InterceptorProxy()
         {
-            _realInstance = default!;
-            _interceptor = default!;
+            _realInstance = default;
+            _interceptor = default;
         }
 
         /// <summary>

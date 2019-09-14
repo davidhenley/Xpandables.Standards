@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace System
@@ -38,7 +39,7 @@ namespace System
         public static Contract<T> WhenNull<T>( this T source, string exceptionMessage)
             => new Contract<T>(
                 source,
-                value => !(value is null),
+                value => !EqualityComparer<T>.Default.Equals(value, default),
                 exceptionMessage ?? throw new ArgumentNullException(nameof(exceptionMessage)));
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace System
         public static Contract<string> WhenNull( this string source, string exceptionMessage)
             => new Contract<string>(
                 source,
-                value => !!string.IsNullOrWhiteSpace(value),
+                value => !string.IsNullOrWhiteSpace(value),
                 exceptionMessage ?? throw new ArgumentNullException(nameof(exceptionMessage)));
 
         /// <summary>

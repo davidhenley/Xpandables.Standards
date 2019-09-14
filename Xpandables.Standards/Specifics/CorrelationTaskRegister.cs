@@ -21,10 +21,10 @@ namespace System
 {
     /// <summary>
     /// The implementation of <see cref="ICorrelationTaskRegister"/>.
-    /// This class must be used through a decorator and must be registered as follow : SimpleInjector sample
+    /// This class must be used through a decorator and must be registered as follow :
     /// <code>
-    ///     Container.Register(PostEventRegister, LifeStyle.Scoped);
-    ///     Container.Register(typeof(ICorrelationEventRegister), ()=> Container.GetInstance(CorrelationEventRegister));
+    ///     services.AddScoped{CorrelationTaskRegister};
+    ///     services.AddScoped{ICorrelationTaskRegister}(provider=>provider.GetService{CorrelationTaskRegister}());
     /// </code>
     /// </summary>
     public sealed class CorrelationTaskRegister : ICorrelationTaskRegister

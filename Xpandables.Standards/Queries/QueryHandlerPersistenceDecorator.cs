@@ -28,13 +28,17 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public sealed class QueryHandlerPersistenceDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
-        where TQuery : class, IQuery<TResult>
+    public sealed class QueryHandlerPersistenceDecorator<TQuery, TResult> :
+        ObjectDescriptor<QueryHandlerPersistenceDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+        where TQuery : class, IQuery<TResult>, IPersistenceDecorator
     {
         private readonly IDataContext _dataContext;
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
 
-        public QueryHandlerPersistenceDecorator(IDataContext dataContext, IQueryHandler<TQuery, TResult> decoratee)
+        public QueryHandlerPersistenceDecorator(
+            IDataContext dataContext,
+            IQueryHandler<TQuery, TResult> decoratee)
+            : base(decoratee)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));

@@ -20,19 +20,31 @@ using System.Reflection;
 namespace System
 {
     /// <summary>
-    /// Allows an application author to access the <see cref="Attribute"/> from a specific type.
-    /// <para>Contains default implementation.</para>
+    /// Provides with a method to access a specific type attribute. It implements the <see cref="IAttributeAccessor"/>.
     /// </summary>
-    public interface IAttributeAccessor
+    public class AttributeAccessor : IAttributeAccessor
     {
         /// <summary>
-        /// Returns the found attribute of type <typeparamref name="TAttribute"/> from the type.
-        /// Otherwise returns an empty optional.
+        /// Returns the found attribute of type <typeparamref name="TAttribute"/> from the specified type.
+        /// Otherwise returns an empty / exception optional.
         /// </summary>
         /// <param name="type">The type to act on.</param>
         /// <returns>An optional instance that may be contains the found attribute.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        Optional<TAttribute> GetAttribute<TAttribute>(Type type)
-            where TAttribute : Attribute;
+        public Optional<TAttribute> GetAttribute<TAttribute>(Type type)
+            where TAttribute : Attribute
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            try
+            {
+                return type.GetCustomAttribute<TAttribute>();
+            }
+            catch (Exception exception) when (exception is NotSupportedException
+                                            || exception is AmbiguousMatchException
+                                            || exception is TypeLoadException)
+            {
+                return Optional<TAttribute>.Exception(exception);
+            }
+        }
     }
 }

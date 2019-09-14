@@ -28,17 +28,19 @@ namespace System
     {
         /// <summary>
         /// Sets the correlated object by its key. If key already exist, it'll be updated.
-        /// Gets the correlated object by its key and returns a value when found.
+        /// Gets the correlated object by its key and returns a value when found, otherwise returns an empty optional.
         /// </summary>
         /// <param name="key">The key of the correlated object.</param>
-        /// <returns>A object from the ambient correlation list of objects.</returns>
+        /// <returns>An optional with value from the ambient correlation list of objects.</returns>
         Optional<TValue> this[TKey key] { set; get; }
 
         /// <summary>
         /// Gets the correlated object by its key and returns a value when found.
+        /// Otherwise returns an empty optional.
         /// </summary>
         /// <param name="key">The key of the correlated object.</param>
-        /// <returns>A object from the ambient correlation list of objects.</returns>
+        /// <returns>An optional with value from the ambient correlation list of objects if found,
+        /// otherwise an empty optional.</returns>
         Optional<TValue> GetValue(TKey key);
 
         /// <summary>

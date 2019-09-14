@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
@@ -46,7 +47,7 @@ namespace System
         public Optional<object> Create<TParam>(Type type, TParam param)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
-            if (param is null) throw new ArgumentNullException(nameof(param));
+            if (EqualityComparer<TParam>.Default.Equals(param, default)) throw new ArgumentNullException(nameof(param));
 
             try
             {
@@ -61,9 +62,9 @@ namespace System
 
         public Optional<object> Create<TParam1, TParam2>(Type type, TParam1 param1, TParam2 param2)
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            if (param1 is null) throw new ArgumentNullException(nameof(param1));
-            if (param2 is null) throw new ArgumentNullException(nameof(param2));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (EqualityComparer<TParam1>.Default.Equals(param1, default)) throw new ArgumentNullException(nameof(param1));
+            if (EqualityComparer<TParam2>.Default.Equals(param2, default)) throw new ArgumentNullException(nameof(param2));
 
             try
             {
@@ -81,10 +82,10 @@ namespace System
 
         public Optional<object> Create<TParam1, TParam2, TParam3>(Type type, TParam1 param1, TParam2 param2, TParam3 param3)
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            if (param1 is null) throw new ArgumentNullException(nameof(param1));
-            if (param2 is null) throw new ArgumentNullException(nameof(param2));
-            if (param3 is null) throw new ArgumentNullException(nameof(param3));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (EqualityComparer<TParam1>.Default.Equals(param1, default)) throw new ArgumentNullException(nameof(param1));
+            if (EqualityComparer<TParam2>.Default.Equals(param2, default)) throw new ArgumentNullException(nameof(param2));
+            if (EqualityComparer<TParam3>.Default.Equals(param3, default)) throw new ArgumentNullException(nameof(param3));
 
             try
             {
@@ -103,7 +104,7 @@ namespace System
         protected virtual TDelegate GetLambdaConstructor<TDelegate>(Type type, params Type[] parameterTypes)
             where TDelegate : Delegate
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             var constructor = GetConstructorInfo(type, parameterTypes);
             var parameterExpression = GetParameterExpression(parameterTypes);
@@ -115,9 +116,9 @@ namespace System
         }
 
         // Get the Constructor which matches the given argument Types.
-        static ConstructorInfo GetConstructorInfo(Type type, params Type[] parameterTypes)
+        private static ConstructorInfo GetConstructorInfo(Type type, params Type[] parameterTypes)
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             return type.GetConstructor(
                 BindingFlags.Instance | BindingFlags.Public,
@@ -128,13 +129,13 @@ namespace System
         }
 
         // Get a set of Expressions representing the parameters which will be passed to the constructor.
-        static ParameterExpression[] GetParameterExpression(params Type[] parameterTypes)
+        private static ParameterExpression[] GetParameterExpression(params Type[] parameterTypes)
             => parameterTypes
                 .Select((type, index) => Expression.Parameter(type, $"param{index + 1}"))
                 .ToArray();
 
         // Get an Expression representing the constructor call, passing in the constructor parameters.
-        static Expression GetConstructorExpression(
+        private static Expression GetConstructorExpression(
            ConstructorInfo constructorInfo,
            params ParameterExpression[] parameterExpressions)
            => Expression.New(constructorInfo, parameterExpressions);
