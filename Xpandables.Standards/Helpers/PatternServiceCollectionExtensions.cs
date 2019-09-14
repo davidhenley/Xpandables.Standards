@@ -20,10 +20,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Design.Command;
 using System.Design.Database;
+using System.Design.Logging;
 using System.Design.Mediator;
 using System.Design.Query;
 using System.Linq;
 using System.Reflection;
+using Xpandables.Commands;
 
 namespace System.Design.DependencyInjection
 {
@@ -80,13 +82,13 @@ namespace System.Design.DependencyInjection
             if (services is null) throw new ArgumentNullException(nameof(services));
 
             services.AddScoped<IProcessor, Processor>();
-            if (decorateWith.HasFlag(DecorateWith.Validation))
+            if ((decorateWith & DecorateWith.Validation) != 0)
                 services.TryDecorateExtended<IProcessor, ProcessorValidationDecorator>();
-            if (decorateWith.HasFlag(DecorateWith.Persistence))
+            if ((decorateWith & DecorateWith.Persistence) != 0)
                 services.TryDecorateExtended<IProcessor, ProcessorPersistenceDecorator>();
-            if (decorateWith.HasFlag(DecorateWith.Transaction))
+            if ((decorateWith & DecorateWith.Transaction) != 0)
                 services.TryDecorateExtended<IProcessor, ProcessorTransactionDecorator>();
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+            if ((decorateWith & DecorateWith.EventRegister) != 0)
                 services.TryDecorateExtended<IProcessor, ProcessorEventRegisterDecorator>();
 
             return services;
@@ -131,7 +133,7 @@ namespace System.Design.DependencyInjection
             params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            if (assemblies is null || !assemblies.Any()) throw new ArgumentNullException(nameof(assemblies));
+            if (assemblies?.Any() != true) throw new ArgumentNullException(nameof(assemblies));
 
             services.AddTransient(typeof(QueryHandlerWrapper<,>));
             services.Scan(scan => scan
@@ -141,14 +143,16 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if (decorateWith.HasFlag(DecorateWith.Validation))
+            if ((decorateWith & DecorateWith.Validation) != 0)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
-            if (decorateWith.HasFlag(DecorateWith.Persistence))
+            if ((decorateWith & DecorateWith.Persistence) != 0)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
-            if (decorateWith.HasFlag(DecorateWith.Transaction))
+            if ((decorateWith & DecorateWith.Transaction) != 0)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+            if ((decorateWith & DecorateWith.EventRegister) != 0)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
+            if ((decorateWith & DecorateWith.Logging) != 0)
+                services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerLoggingDecorator<,>));
 
             return services;
         }
@@ -202,6 +206,18 @@ namespace System.Design.DependencyInjection
         }
 
         /// <summary>
+        /// Adds <see cref="QueryHandlerLoggingDecorator{TQuery, TResult}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddQueryLoggingDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerLoggingDecorator<,>));
+            return services;
+        }
+
+        /// <summary>
         /// Adds the <see cref="ICommandHandler{TCommand}"/> to the services with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
@@ -215,7 +231,7 @@ namespace System.Design.DependencyInjection
             params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            if (assemblies is null || !assemblies.Any()) throw new ArgumentNullException(nameof(assemblies));
+            if (assemblies?.Any() != true) throw new ArgumentNullException(nameof(assemblies));
 
             services.Scan(scan => scan
                 .FromAssemblies(assemblies)
@@ -224,14 +240,16 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if (decorateWith.HasFlag(DecorateWith.Validation))
+            if ((decorateWith & DecorateWith.Validation) != 0)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
-            if (decorateWith.HasFlag(DecorateWith.Persistence))
+            if ((decorateWith & DecorateWith.Persistence) != 0)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
-            if (decorateWith.HasFlag(DecorateWith.Transaction))
+            if ((decorateWith & DecorateWith.Transaction) != 0)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
-            if (decorateWith.HasFlag(DecorateWith.EventRegister))
+            if ((decorateWith & DecorateWith.EventRegister) != 0)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
+            if ((decorateWith & DecorateWith.Logging) != 0)
+                services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerLoggingDecorator<>));
 
             return services;
         }
@@ -285,6 +303,18 @@ namespace System.Design.DependencyInjection
         }
 
         /// <summary>
+        /// Adds <see cref="CommandHandlerLoggingDecorator{TCommand}"/> decorator.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddCommandLoggingDecorator(this IServiceCollection services)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerLoggingDecorator<>));
+            return services;
+        }
+
+        /// <summary>
         /// Adds the <see cref="ICorrelationTaskRegister"/> to the services.
         /// </summary>
         /// <param name="services">The collection of services.</param>
@@ -308,7 +338,7 @@ namespace System.Design.DependencyInjection
         public static IServiceCollection AddValidators(this IServiceCollection services, params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            if (assemblies is null || !assemblies.Any()) throw new ArgumentNullException(nameof(assemblies));
+            if (assemblies?.Any() != true) throw new ArgumentNullException(nameof(assemblies));
 
             services.AddTransient(typeof(ICustomCompositeValidator<>), typeof(CustomCompositeValidator<>));
             services.Scan(scan => scan
@@ -317,6 +347,21 @@ namespace System.Design.DependencyInjection
                     .Where(_ => !_.IsGenericType))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the logger wrapper to the services with scoped life time.
+        /// </summary>
+        /// <typeparam name="TLoggerWrapper">The type of the logger to be registered.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddLoggerWrapper<TLoggerWrapper>(this IServiceCollection services)
+            where TLoggerWrapper : class, ILoggerWrapper
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.AddScoped<ILoggerWrapper, TLoggerWrapper>();
 
             return services;
         }

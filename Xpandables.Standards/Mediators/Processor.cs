@@ -46,7 +46,7 @@ namespace System.Design.Mediator
 
                 await _serviceProvider
                     .GetServiceExtended<ICommandHandler<TCommand>>()
-                    .Reduce(() => throw new NotImplementedException(
+                    .Reduce(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TCommand))))
                    .MapAsync(handler => handler.HandleAsync(command, cancellationToken))
@@ -75,7 +75,7 @@ namespace System.Design.Mediator
 
                 return await _serviceProvider
                     .GetServiceExtended<IQueryHandler<TQuery, TResult>>()
-                    .Reduce(() => throw new NotImplementedException(
+                    .Reduce(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
                     .MapAsync(handler => handler.HandleAsync(query, cancellationToken))
@@ -110,7 +110,7 @@ namespace System.Design.Mediator
                     .ConfigureAwait(false);
 
                 return await _serviceProvider.GetServiceExtended<IQueryHandlerWrapper<TResult>>(wrapperType)
-                    .Reduce(() => throw new NotImplementedException(
+                    .Reduce(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(query.GetType().Name)))
                     .MapAsync(handler => handler.HandleAsync(query, cancellationToken))

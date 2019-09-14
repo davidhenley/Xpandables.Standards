@@ -29,7 +29,7 @@ namespace System.Design.Database.Common
         {
             if (providerType is null) throw new ArgumentNullException(nameof(providerType));
 
-            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty;
+            const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty;
 
             return providerType.ProviderFactoryTypeName
                 .TypeFromString(providerType.DisplayName)
