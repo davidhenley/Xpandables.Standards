@@ -33,12 +33,12 @@ namespace System
     public interface IPersistenceDecorator { }
 
     /// <summary>
-    /// A marker interface to allow validation decorator.
+    /// A marker interface to allow logging decorator.
     /// </summary>
     public interface ILoggingDecorator { }
 
     /// <summary>
-    /// A marker interface to allow validation decorator.
+    /// A marker interface to allow event register decorator.
     /// </summary>
     public interface IEventRegisterDecorator { }
 }

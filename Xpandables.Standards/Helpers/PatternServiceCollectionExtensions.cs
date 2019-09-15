@@ -82,13 +82,13 @@ namespace System.Design.DependencyInjection
             if (services is null) throw new ArgumentNullException(nameof(services));
 
             services.AddScoped<IProcessor, Processor>();
-            if ((decorateWith & DecorateWith.Validation) != 0)
+            if ((decorateWith & DecorateWith.Validation) == DecorateWith.Validation)
                 services.TryDecorateExtended<IProcessor, ProcessorValidationDecorator>();
-            if ((decorateWith & DecorateWith.Persistence) != 0)
+            if ((decorateWith & DecorateWith.Persistence) == DecorateWith.Persistence)
                 services.TryDecorateExtended<IProcessor, ProcessorPersistenceDecorator>();
-            if ((decorateWith & DecorateWith.Transaction) != 0)
+            if ((decorateWith & DecorateWith.Transaction) == DecorateWith.Transaction)
                 services.TryDecorateExtended<IProcessor, ProcessorTransactionDecorator>();
-            if ((decorateWith & DecorateWith.EventRegister) != 0)
+            if ((decorateWith & DecorateWith.EventRegister) == DecorateWith.EventRegister)
                 services.TryDecorateExtended<IProcessor, ProcessorEventRegisterDecorator>();
 
             return services;
@@ -143,15 +143,15 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if ((decorateWith & DecorateWith.Validation) != 0)
+            if ((decorateWith & DecorateWith.Validation) == DecorateWith.Validation)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
-            if ((decorateWith & DecorateWith.Persistence) != 0)
+            if ((decorateWith & DecorateWith.Persistence) == DecorateWith.Persistence)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
-            if ((decorateWith & DecorateWith.Transaction) != 0)
+            if ((decorateWith & DecorateWith.Transaction) == DecorateWith.Transaction)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
-            if ((decorateWith & DecorateWith.EventRegister) != 0)
+            if ((decorateWith & DecorateWith.EventRegister) == DecorateWith.EventRegister)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
-            if ((decorateWith & DecorateWith.Logging) != 0)
+            if ((decorateWith & DecorateWith.Logging) == DecorateWith.Logging)
                 services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerLoggingDecorator<,>));
 
             return services;
@@ -240,15 +240,15 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if ((decorateWith & DecorateWith.Validation) != 0)
+            if ((decorateWith & DecorateWith.Validation) == DecorateWith.Validation)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
-            if ((decorateWith & DecorateWith.Persistence) != 0)
+            if ((decorateWith & DecorateWith.Persistence) == DecorateWith.Persistence)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
-            if ((decorateWith & DecorateWith.Transaction) != 0)
+            if ((decorateWith & DecorateWith.Transaction) == DecorateWith.Transaction)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
-            if ((decorateWith & DecorateWith.EventRegister) != 0)
+            if ((decorateWith & DecorateWith.EventRegister) == DecorateWith.EventRegister)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
-            if ((decorateWith & DecorateWith.Logging) != 0)
+            if ((decorateWith & DecorateWith.Logging) == DecorateWith.Logging)
                 services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerLoggingDecorator<>));
 
             return services;
@@ -370,11 +370,11 @@ namespace System.Design.DependencyInjection
     [Flags]
     public enum DecorateWith
     {
-        None = 0x0,
-        Persistence = 0x1,
-        EventRegister = 0x2,
-        Transaction = 0x4,
-        Validation = 0x8,
-        Logging = 0x16
+        None = 0,
+        Persistence = 1,
+        EventRegister = 2,
+        Transaction = 4,
+        Validation = 8,
+        Logging = 16
     }
 }

@@ -225,9 +225,9 @@ namespace System
             if (right is null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return (default, default);
 
-            return right() is U result
+            return right().InternalValue is U result
                 ? Optional<(T Left, U Right)>.Some((InternalValue, result))
-                : right() is Exception exception
+                : right().InternalException is Exception exception
                     ? Optional<(T Left, U Right)>.Exception(exception)
                     : Optional<(T Left, U Right)>.Empty();
         }

@@ -199,9 +199,9 @@ namespace System
             if (right == null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return (default, default);
 
-            return (await right().ConfigureAwait(false)) is U result
+            return (await right().ConfigureAwait(false)).InternalValue is U result
                 ? Optional<(T Left, U Right)>.Some((InternalValue, result))
-                : (await right().ConfigureAwait(false)) is Exception exception
+                : (await right().ConfigureAwait(false)).InternalException is Exception exception
                     ? Optional<(T Left, U Right)>.Exception(exception)
                     : Optional<(T Left, U Right)>.Empty();
         }
