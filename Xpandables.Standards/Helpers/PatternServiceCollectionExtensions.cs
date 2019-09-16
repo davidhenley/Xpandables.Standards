@@ -23,6 +23,7 @@ using System.Design.Database;
 using System.Design.Logging;
 using System.Design.Mediator;
 using System.Design.Query;
+using System.Http;
 using System.Linq;
 using System.Reflection;
 using Xpandables.Commands;
@@ -52,6 +53,45 @@ namespace System.Design.DependencyInjection
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddTransient<IConfigurationAccessor, ConfigurationAccessor>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the specified Http request header values accessor.
+        /// </summary>
+        /// <typeparam name="THttpRequestHeaderValuesAccessor">The type of http request header.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddHttpRequestHeaderValuesAccessor<THttpRequestHeaderValuesAccessor>(
+            this IServiceCollection services)
+            where THttpRequestHeaderValuesAccessor : class, IHttpRequestHeaderValuesAccessor
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.AddScoped<IHttpRequestHeaderValuesAccessor, THttpRequestHeaderValuesAccessor>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the default Http request token accessor.
+        /// The type implements the <see cref="IHttpRequestTokenAccessor"/>.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddHttpRequestTokenAccessor(this IServiceCollection services)
+            => services.AddHttpRequestTokenAccessor<HttpRequestTokenAccessor>();
+
+        /// <summary>
+        /// Adds the specified Http request token accessor.
+        /// </summary>
+        /// <typeparam name="THttpRequestTokenAccessor">The type of http request token.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddHttpRequestTokenAccessor<THttpRequestTokenAccessor>(
+            this IServiceCollection services)
+            where THttpRequestTokenAccessor : class, IHttpRequestTokenAccessor
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.AddScoped<IHttpRequestTokenAccessor, THttpRequestTokenAccessor>();
             return services;
         }
 

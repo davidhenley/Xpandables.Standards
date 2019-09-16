@@ -13,15 +13,15 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>1.4.19</Version>
-    <AssemblyVersion>1.4.19</AssemblyVersion>
-    <FileVersion>1.4.19</FileVersion>
-    <PackageVersion>1.4.19</PackageVersion>
+    <Version>1.4.20</Version>
+    <AssemblyVersion>1.4.20</AssemblyVersion>
+    <FileVersion>1.4.20</FileVersion>
+    <PackageVersion>1.4.20</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IMediator, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Database, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Fix bitwise.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix Optional return and value check.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables</AssemblyName>
     <RootNamespace>Xpandables</RootNamespace>
