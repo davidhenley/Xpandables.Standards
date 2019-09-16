@@ -23,16 +23,22 @@ namespace System
     public class StringGeneratorEncryptor : IStringGeneratorEncryptor
     {
         private const string source = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,;!(-è_çàà)=@%µ£¨//?§/.?";
-        private static readonly IStringGenerator stringGenerator = new StringGenerator();
-        private static readonly IStringEncryptor stringEncryptor = new StringEncryptor();
+        private readonly IStringGenerator _stringGenerator;
+        private readonly IStringEncryptor _stringEncryptor;
+
+        public StringGeneratorEncryptor(IStringGenerator stringGenerator, IStringEncryptor stringEncryptor)
+        {
+            _stringGenerator = stringGenerator ?? throw new ArgumentNullException(nameof(stringGenerator));
+            _stringEncryptor = stringEncryptor ?? throw new ArgumentNullException(nameof(stringEncryptor));
+        }
 
         public Optional<ValueEncrypted> Encrypt(string value)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
-            return stringGenerator
+            return _stringGenerator
                 .Generate(12, source)
-                .MapOptional(key => stringEncryptor.Encrypt(value, key).And(key))
+                .MapOptional(key => _stringEncryptor.Encrypt(value, key).And(key))
                 .Map(pair => ValueEncrypted.CreateWith(pair.Right, pair.Left));
         }
 
@@ -41,7 +47,7 @@ namespace System
             if (encrypted is null) throw new ArgumentNullException(nameof(encrypted));
             if (value is null) throw new ArgumentNullException(nameof(value));
 
-            string password = stringEncryptor.Encrypt(value, encrypted.Key);
+            string password = _stringEncryptor.Encrypt(value, encrypted.Key);
             return password == encrypted.Value;
         }
     }

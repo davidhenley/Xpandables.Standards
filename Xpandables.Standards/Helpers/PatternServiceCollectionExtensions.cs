@@ -96,8 +96,8 @@ namespace System.Design.DependencyInjection
         }
 
         /// <summary>
-        /// Adds the <see cref="IStringEncryptor"/> and <see cref="IStringGenerator"/> to the services
-        /// with transient life time.
+        /// Adds the <see cref="IStringEncryptor"/>, <see cref="IStringGenerator"/> and
+        /// <see cref="IStringGeneratorEncryptor"/> to the services with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
@@ -106,6 +106,7 @@ namespace System.Design.DependencyInjection
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddTransient<IStringEncryptor, StringEncryptor>();
             services.AddTransient<IStringGenerator, StringGenerator>();
+            services.AddTransient<IStringGeneratorEncryptor, StringGeneratorEncryptor>();
             return services;
         }
 
