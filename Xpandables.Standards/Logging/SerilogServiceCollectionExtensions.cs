@@ -54,6 +54,7 @@ namespace System.Design.Logging
             where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
+            services.AddScoped<LogEventSerilogSink<TLogEvent>>();
             services.AddScoped(provider => CreateLoggerConfiguration<TLogEvent>(provider));
 
             AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
