@@ -73,7 +73,7 @@ namespace System.Design.Linq
             Dictionary<ParameterExpression, Expression> replaceVars =
                 _replaceVars
                     .Map(dict => new Dictionary<ParameterExpression, Expression>(dict))
-                    .Reduce(() => new Dictionary<ParameterExpression, Expression>());
+                    .WhenEmpty(() => new Dictionary<ParameterExpression, Expression>());
 
             try
             {
@@ -107,7 +107,7 @@ namespace System.Design.Linq
                     Dictionary<ParameterExpression, Expression> replaceVars =
                       _replaceVars
                           .Map(dict => new Dictionary<ParameterExpression, Expression>(dict))
-                          .Reduce(() => new Dictionary<ParameterExpression, Expression>());
+                          .WhenEmpty(() => new Dictionary<ParameterExpression, Expression>());
 
                     try
                     {

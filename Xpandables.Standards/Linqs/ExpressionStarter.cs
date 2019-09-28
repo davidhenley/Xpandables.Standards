@@ -49,7 +49,7 @@ namespace System.Design.Linq
             => _predicate = expression;
 
         /// <summary>The actual Predicate. It can only be set by calling Start.</summary>
-        private Optional<Expression<Func<T, bool>>> Predicate => _predicate.ReduceOptional(() => DefaultExpression);
+        private Optional<Expression<Func<T, bool>>> Predicate => _predicate.WhenEmptyOptional(() => DefaultExpression);
 
         // => (IsStarted || !UseDefaultExpression) ? _predicate : DefaultExpression;
 
@@ -98,7 +98,7 @@ namespace System.Design.Linq
 
         /// <summary> Show predicate string </summary>
         public override string ToString()
-            => Predicate.Map(value => value.ToString()).Reduce(() => string.Empty);
+            => Predicate.Map(value => value.ToString()).WhenEmpty(() => string.Empty);
 
 #pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         /// <summary>

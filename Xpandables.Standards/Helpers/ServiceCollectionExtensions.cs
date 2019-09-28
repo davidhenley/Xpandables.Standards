@@ -218,9 +218,9 @@ namespace System.Design.DependencyInjection
             Type serviceType,
             Type decoratorType)
         {
-            //if (services == null) throw new ArgumentNullException(nameof(services));
-            //if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
-            //if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
 
             return serviceType.IsOpenGeneric() && decoratorType.IsOpenGeneric()
                 ? services.DecorateOpenGenerics(serviceType, decoratorType)
@@ -301,7 +301,7 @@ namespace System.Design.DependencyInjection
             => descriptor.WithFactory(
                 provider => provider.CreateInstance(
                     decoratorType,
-                    new object[] { provider.GetInstance(descriptor).Return() }).Return());
+                    new object[] { provider.GetInstance(descriptor).InternalValue }).InternalValue);
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
             this ServiceDescriptor descriptor,

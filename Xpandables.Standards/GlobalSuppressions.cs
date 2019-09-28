@@ -99,3 +99,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>", Scope = "type", Target = "~T:System.IPersistenceDecorator")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>", Scope = "type", Target = "~T:System.ITransactionDecorator")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>", Scope = "type", Target = "~T:System.IValidationDecorator")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques", Justification = "<En attente>", Scope = "member", Target = "~M:System.Optional`1.Error(System.Exception)~System.Optional`1")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées", Justification = "<En attente>", Scope = "member", Target = "~M:System.Optional`1.op_Implicit(System.Exception)~System.Optional`1")]

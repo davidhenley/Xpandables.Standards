@@ -154,7 +154,7 @@ namespace System.Design.DependencyInjection
                     .WhenException(exception => throw new InvalidOperationException(
                         ErrorMessageResources.DataContextProviderException,
                         exception))
-                    .Return();
+                    .Cast<IDataContext>();
             });
 
             return services;

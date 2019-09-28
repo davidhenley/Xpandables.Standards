@@ -46,7 +46,7 @@ namespace System.Design.Mediator
 
                 await _serviceProvider
                     .GetServiceExtended<ICommandHandler<TCommand>>()
-                    .Reduce(() => throw new ArgumentException(
+                    .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TCommand))))
                    .MapAsync(handler => handler.HandleAsync(command, cancellationToken))
@@ -75,7 +75,7 @@ namespace System.Design.Mediator
 
                 return await _serviceProvider
                     .GetServiceExtended<IQueryHandler<TQuery, TResult>>()
-                    .Reduce(() => throw new ArgumentException(
+                    .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
                     .MapAsync(handler => handler.HandleAsync(query, cancellationToken))
@@ -101,16 +101,14 @@ namespace System.Design.Mediator
             {
                 if (query is null) throw new ArgumentNullException(nameof(query));
 
-                var wrapperType = await typeof(QueryHandlerWrapper<,>)
+                Type wrapperType = typeof(QueryHandlerWrapper<,>)
                     .MakeGenericTypeSafe(new Type[] { query.GetType(), typeof(TResult) })
                     .WhenException(exception => { throw new InvalidOperationException(
                         "Building Query wrapper failed.",
-                        exception); })
-                    .ReturnAsync()
-                    .ConfigureAwait(false);
+                        exception); });
 
                 return await _serviceProvider.GetServiceExtended<IQueryHandlerWrapper<TResult>>(wrapperType)
-                    .Reduce(() => throw new ArgumentException(
+                    .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(query.GetType().Name)))
                     .MapAsync(handler => handler.HandleAsync(query, cancellationToken))

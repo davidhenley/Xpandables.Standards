@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace System
@@ -26,10 +27,7 @@ namespace System
         /// if not, returns the default type of value.
         /// </summary>
         /// <typeparam name="U">The type to cast the value to.</typeparam>
-        public async Task<U> CastAsync<U>()
-            => IsValue() && InternalValue is U target
-                ? await Task.FromResult(target).ConfigureAwait(false)
-                : default;
+        public async Task<U> CastAsync<U>() => await Task.FromResult(Cast<U>()).ConfigureAwait(false);
 
         /// <summary>
         /// Casts the element of optional to the specified type and returns an optional with the new value.
@@ -39,23 +37,48 @@ namespace System
         public async Task<Optional<U>> CastOptionalAsync<U>() => await CastAsync<U>().ConfigureAwait(false);
 
         /// <summary>
-        /// Returns the underlying value.
-        /// If optional is empty, returns the default type of <typeparamref name="T"/>.
-        /// <para>C#8.0 If <typeparamref name="T"/> is not nullable, be aware of <see cref="NullReferenceException"/>.</para>
+        /// Converts the current instance to an empty one.
         /// </summary>
-        public async Task<T> ReturnAsync() => await Task.FromResult(InternalValue).ConfigureAwait(false);
+        /// <returns>An empty optional.</returns>
+        public async Task<Optional<T>> ToEmptyAsync() => await Task.FromResult(Empty()).ConfigureAwait(false);
 
         /// <summary>
-        /// Returns the underlying exception.
-        /// If optional does not contain an exception, returns the default type of exception.
-        /// <para>C#8.0 If nullable is enable, be aware of <see cref="NullReferenceException"/>.</para>
+        /// Converts the current instance to an empty of the specific type.
         /// </summary>
-        public async Task<Exception> ReturnExceptionAsync()
-            => await Task.FromResult(InternalException).ConfigureAwait(false);
+        /// <typeparam name="U">The type to store.</typeparam>
+        /// <returns>An empty optional of the specific type.</returns>
+        public async Task<Optional<U>> ToEmptyAsync<U>() => await Task.FromResult(Optional<U>.Empty()).ConfigureAwait(false);
+
+        /// <summary>
+        /// Converts the current instance to an optional with the specified value.
+        /// </summary>
+        /// <param name="value">The value to be used.</param>
+        /// <returns>An optional that contains a value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
+        public async Task<Optional<T>> ToSomeAsync(T value) => await Task.FromResult(Some(value)).ConfigureAwait(false);
+
+        /// <summary>
+        /// Converts the current instance to an optional of the specified type with value.
+        /// </summary>
+        /// <param name="value">The value to be used.</param>
+        /// <returns>An optional that contains a value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
+        public async Task<Optional<U>> ToSomeAsync<U>(U value)
+            => await Task.FromResult(Optional<U>.Some(value)).ConfigureAwait(false);
+
+        /// <summary>
+        /// Converts the current instance to an optional with exception.
+        /// </summary>
+        /// <param name="exception">The exception to be used.</param>
+        /// <returns>An optional with exception value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
+        public async Task<Optional<T>> ToExceptionAsync(Exception exception)
+            => await Task.FromResult(Exception(exception)).ConfigureAwait(false);
 
         /// <summary>
         /// Converts the optional to optional pair.
         /// If one of the value is null, returns an empty optional.
+        /// If the left is an exception, returns an optional with exception.
         /// </summary>
         /// <typeparam name="U">The type of the right side.</typeparam>
         /// <param name="right">The value to be used.</param>
@@ -64,14 +87,14 @@ namespace System
         public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Task<U> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
-            return IsValue() && !(await right.ConfigureAwait(false) == null)
-                           ? (Optional<(T Left, U Right)>)(InternalValue, await right.ConfigureAwait(false))
-                           : Optional<(T Left, U Right)>.Empty();
+            var result = await right.ConfigureAwait(false);
+            return And(result);
         }
 
         /// <summary>
         /// Converts the optional to optional pair.
         /// If one of the optional is empty, returns an empty optional.
+        /// If one of the optional is exception, returns an optional with exception.
         /// </summary>
         /// <typeparam name="U">The type of the right side.</typeparam>
         /// <param name="right">The optional to be used.</param>
@@ -79,16 +102,15 @@ namespace System
         public async Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Task<Optional<U>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
-            return IsValue() && (await right.ConfigureAwait(false)).IsValue()
-                           ? (Optional<(T Left, U Right)>)(InternalValue, (await right.ConfigureAwait(false)).InternalValue)
-                           : Optional<(T Left, U Right)>.Empty();
+            var result = await right.ConfigureAwait(false);
+            return AndOptional(result);
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional contains a value and returns an optional with value or empty if the function returns null.
+        /// Creates a new optional that is the result of calling the given function.
+        /// The delegate get called only if the instance contains a value, otherwise returns the current instance.
         /// </summary>
-        /// <param name="some">The function to transform the element.</param>
+        /// <param name="some">The function to call.</param>
         /// <returns>An optional of <typeparamref name="T"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         public async Task<Optional<T>> MapAsync(Func<Task<T>> some)
@@ -99,8 +121,9 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional contains a value and returns an optional with value or empty if the function returns null.
+        /// Creates a new optional that is the result of applying the given function to the element.
+        /// The delegate get called only if the instance contains a value,
+        /// otherwise returns an empty optional of <typeparamref name="U"/>.
         /// </summary>
         /// <typeparam name="U">The type of the result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
@@ -114,8 +137,9 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional contains a value and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function to the element.
+        /// The delegate get called only if the instance contains a value,
+        /// otherwise returns an empty optional of <typeparamref name="U"/>.
         /// </summary>
         /// <typeparam name="U">The type of the result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
@@ -140,7 +164,7 @@ namespace System
         }
 
         /// <summary>
-        /// Applies the function to the element.
+        /// Applies the function to the current instance.
         /// </summary>
         /// <param name="some">The function to apply to the element.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
@@ -161,7 +185,8 @@ namespace System
         public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Func<Task<U>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
-            if (!IsValue()) return (default, default);
+            if (!IsValue()) return Optional<(T Left, U Right)>.Empty();
+            if (IsException()) return Optional<(T Left, U Right)>.Exception(InternalException);
 
             return (await right().ConfigureAwait(false)) is U result
                 ? Optional<(T Left, U Right)>.Some((InternalValue, result))
@@ -179,7 +204,8 @@ namespace System
         public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Func<T, Task<U>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
-            if (!IsValue()) return (default, default);
+            if (!IsValue()) return Optional<(T Left, U Right)>.Empty();
+            if (IsException()) return Optional<(T Left, U Right)>.Exception(InternalException);
 
             return (await right(InternalValue).ConfigureAwait(false)) is U result
                 ? Optional<(T Left, U Right)>.Some((InternalValue, result))
@@ -194,24 +220,18 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public async Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Func<Task<Optional<U>>> right)
+        public Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Func<Task<Optional<U>>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
-            if (!IsValue()) return (default, default);
-
-            return (await right().ConfigureAwait(false)).InternalValue is U result
-                ? Optional<(T Left, U Right)>.Some((InternalValue, result))
-                : (await right().ConfigureAwait(false)).InternalException is Exception exception
-                    ? Optional<(T Left, U Right)>.Exception(exception)
-                    : Optional<(T Left, U Right)>.Empty();
+            return AndOptionalAsync(right());
         }
 
         /// <summary>
         /// Applies the function to the element only if the optional contains a value and matches the predicate.
         /// Otherwise returns the current optional.
         /// </summary>
-        /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
@@ -230,8 +250,8 @@ namespace System
         /// Applies the function to the element only if the optional contains a value and matches the predicate.
         /// Otherwise returns the current optional.
         /// </summary>
-        /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
@@ -249,8 +269,8 @@ namespace System
         /// <summary>
         /// Applies the function to the element only if the optional contains a value and matches the predicate.
         /// </summary>
-        /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
@@ -264,13 +284,13 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional is empty and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<T>> ReduceAsync(Func<Task<T>> empty)
+        public async Task<Optional<T>> WhenEmptyAsync(Func<Task<T>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
@@ -278,13 +298,13 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional is empty and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<T>> ReduceOptionalAsync(Func<Task<Optional<T>>> empty)
+        public async Task<Optional<T>> WhenEmptyOptionalAsync(Func<Task<Optional<T>>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
@@ -296,15 +316,15 @@ namespace System
         /// </summary>
         /// <param name="action">The empty map.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public async Task ReduceAsync(Func<Task> action)
+        public async Task WhenEmptyAsync(Func<Task> action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (!IsValue()) await action().ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional is exception and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function when exception.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
         /// </summary>
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
@@ -317,8 +337,8 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional is exception and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function when exception.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
         /// </summary>
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
@@ -331,8 +351,8 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional is exception and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function when exception.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
         /// </summary>
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
@@ -345,8 +365,8 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function to the element
-        /// if the optional is exception and returns an optional with value or empty if the function returns null.
+        /// Creates a new value that is the result of applying the given function.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
         /// </summary>
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
@@ -359,7 +379,8 @@ namespace System
         }
 
         /// <summary>
-        /// Applies the function to the given function to the element only if the optional is exception.
+        /// Applies the function only if the optional is exception.
+        /// The delegate get called only if the instance is an exception.
         /// </summary>
         /// <param name="action">The delegate to be executed.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>

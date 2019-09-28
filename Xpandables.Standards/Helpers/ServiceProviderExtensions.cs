@@ -37,8 +37,7 @@ namespace System.Design.DependencyInjection
             where TService : class
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-            return serviceProvider.GetService(typeof(TService))
-                .AsOptional<TService>();
+            return serviceProvider.GetService(typeof(TService)).AsOptional().CastOptional<TService>();
         }
 
         /// <summary>
@@ -53,8 +52,7 @@ namespace System.Design.DependencyInjection
             where TService : class
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-            return serviceProvider.GetService(serviceType)
-                .AsOptional<TService>();
+            return serviceProvider.GetService(serviceType).AsOptional().CastOptional<TService>();
         }
 
         /// <summary>
@@ -71,7 +69,9 @@ namespace System.Design.DependencyInjection
             if (serviceProvider
                 .GetService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
                 is IEnumerable<object> services)
+            {
                 return services;
+            }
 
             return Enumerable.Empty<object>();
         }
@@ -111,7 +111,9 @@ namespace System.Design.DependencyInjection
             if (serviceProvider
                 .GetService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
                 is IEnumerable<TService> services)
+            {
                 return services;
+            }
 
             return Enumerable.Empty<TService>();
         }
@@ -214,7 +216,6 @@ namespace System.Design.DependencyInjection
             {
                 return Optional<ServiceDescriptor>.Exception(exception);
             }
-
         }
     }
 }

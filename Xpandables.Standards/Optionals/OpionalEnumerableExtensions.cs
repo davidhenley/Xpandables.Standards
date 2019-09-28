@@ -24,7 +24,7 @@ namespace System
     /// <summary>
     /// Functionality for optional pattern for Enumerable.
     /// </summary>
-    public static partial class OptionalHelpers
+    public static partial class OptionalExtensions
     {
         public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> source)
         {
@@ -64,9 +64,7 @@ namespace System
             return await source.FirstOrDefault(predicate).ConfigureAwait(false);
         }
 
-        public static IEnumerable<U> SelectOptional<T, U>(
-            this IEnumerable<T> source,
-            Func<T, Optional<U>> mapper)
+        public static IEnumerable<U> SelectOptional<T, U>(this IEnumerable<T> source, Func<T, Optional<U>> mapper)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (mapper is null) throw new ArgumentNullException(nameof(mapper));
@@ -164,19 +162,21 @@ namespace System
                 : Optional<IEnumerable<TValue>>.Empty();
         }
 
-        public static void ForEach<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)
+        public static void ForEachExtended<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)
             where TSource : IEnumerable<TElement>
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
 
             if (optional.IsValue())
+            {
                 optional.InternalValue
                     .ToList()
                     .ForEach(some);
+            }
         }
 
-        public static Optional<TSource> ForEach<TSource, TElement>(
+        public static Optional<TSource> ForEachExtended<TSource, TElement>(
             this Optional<TSource> optional,
             Func<TElement, TElement> some)
             where TSource : IEnumerable<TElement>
@@ -186,35 +186,35 @@ namespace System
 
             if (optional.IsValue())
             {
-                var result = new List<TElement>();
+                var result = new HashSet<TElement>();
                 foreach (var element in optional.InternalValue)
                     result.Add(some(element));
 
-                return result.AsOptional<TSource>();
+                return (TSource)result.AsEnumerable();
             }
 
             return optional;
         }
 
-        public static Optional<U> ForEach<TSource, U, TSourceElement, TResultElement>(
+        public static Optional<TResult> ForEachExtended<TSource, TResult, TSourceElement, TResultElement>(
             this Optional<TSource> optional,
             Func<TSourceElement, TResultElement> some)
             where TSource : IEnumerable<TSourceElement>
-            where U : IEnumerable<TResultElement>
+            where TResult : IEnumerable<TResultElement>
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
 
             if (optional.IsValue())
             {
-                var result = new List<TResultElement>();
+                var result = new HashSet<TResultElement>();
                 foreach (var element in optional.InternalValue)
                     result.Add(some(element));
 
-                return result.AsOptional<U>();
+                return (TResult)result.AsEnumerable();
             }
 
-            return Enumerable.Empty<TResultElement>().AsOptional<U>();
+            return Optional<TResult>.Empty();
         }
     }
 }

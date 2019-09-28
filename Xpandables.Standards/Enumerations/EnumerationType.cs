@@ -183,7 +183,7 @@ namespace System
             => GetType().GetCustomAttribute<DescriptionAttribute>()
                 .AsOptional()
                 .Map(attr => attr.Description)
-                .Reduce(() => DisplayName);
+                .WhenEmpty(() => DisplayName);
 
         /// <summary>
         /// Returns the comparison value of both <see cref="EnumerationType"/> objects.
