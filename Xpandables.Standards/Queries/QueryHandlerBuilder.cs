@@ -41,7 +41,11 @@ namespace System.Design.Query
         /// method such as thrown exceptions.</para></param>
         /// <exception cref="ArgumentNullException">The <paramref name="handler"/> is null.</exception>
         public QueryHandlerBuilder(Func<IQuery<TResult>, CancellationToken, Task<TResult>> handler)
-            => _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            => _handler = handler ?? throw new ArgumentNullException(
+                nameof(handler),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerBuilder<TQuery, TResult>),
+                    nameof(handler)));
 
         public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
             => await _handler(query, cancellationToken).ConfigureAwait(false);

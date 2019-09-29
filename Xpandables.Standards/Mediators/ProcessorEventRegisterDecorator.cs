@@ -35,8 +35,16 @@ namespace System.Design.Mediator
             IProcessor decoratee,
             CorrelationTaskRegister eventRegister)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorEventRegisterDecorator),
+                    nameof(decoratee)));
+            _eventRegister = eventRegister ?? throw new ArgumentNullException(
+                nameof(eventRegister),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorEventRegisterDecorator),
+                    nameof(eventRegister)));
         }
 
         public async Task<TResult> HandleResultAsync<TResult>(

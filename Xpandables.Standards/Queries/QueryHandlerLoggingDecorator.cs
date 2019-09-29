@@ -39,8 +39,16 @@ namespace System.Design.Query
             ILoggerWrapper loggerWrapper)
             : base(decoratee)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _loggerWrapper = loggerWrapper ?? throw new ArgumentNullException(nameof(loggerWrapper));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerLoggingDecorator<TQuery, TResult>),
+                    nameof(decoratee)));
+            _loggerWrapper = loggerWrapper ?? throw new ArgumentNullException(
+                nameof(loggerWrapper),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerLoggingDecorator<TQuery, TResult>),
+                    nameof(loggerWrapper)));
         }
 
         public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)

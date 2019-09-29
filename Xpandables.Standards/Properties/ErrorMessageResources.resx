@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArgumentExpected" xml:space="preserve">
+    <value>{0}. Parameter {1} cannot be null.</value>
+  </data>
   <data name="CommandQueryHandlerFailed" xml:space="preserve">
     <value>{0} operation failed. See inner exception.</value>
   </data>

@@ -33,8 +33,16 @@ namespace System.Design.Mediator
 
         public ProcessorTransactionDecorator(IProcessor decoratee, IAttributeAccessor attributeAccessor)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(nameof(attributeAccessor));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorTransactionDecorator),
+                    nameof(decoratee)));
+            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
+                nameof(attributeAccessor),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorTransactionDecorator),
+                    nameof(attributeAccessor)));
         }
 
         public async Task<TResult> HandleResultAsync<TResult>(

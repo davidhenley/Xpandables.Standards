@@ -34,7 +34,11 @@ namespace System
         /// </summary>
         /// <param name="serviceProvider">The service provider to be used.</param>
         public EventDispatcher(IServiceProvider serviceProvider)
-            => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(
+                nameof(serviceProvider),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(EventDispatcher),
+                    nameof(serviceProvider)));
 
         public Task DispatchAsync<T>(T source, CancellationToken cancellationToken)
             where T : class, IEvent

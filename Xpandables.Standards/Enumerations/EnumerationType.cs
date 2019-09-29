@@ -17,7 +17,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -39,7 +38,11 @@ namespace System
         protected EnumerationType(string displayName, int value)
         {
             Value = value;
-            DisplayName = displayName ?? throw new ArgumentNullException(nameof(displayName));
+            DisplayName = displayName ?? throw new ArgumentNullException(
+                nameof(displayName),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(EnumerationType),
+                    nameof(displayName)));
         }
 
         /// <summary>

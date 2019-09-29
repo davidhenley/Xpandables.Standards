@@ -31,9 +31,17 @@ namespace System.Design.Database
             IDataContextSeeder dataContextSeeder)
         {
             _decoratee = decoratedDataContextProducer
-                ?? throw new ArgumentNullException(nameof(decoratedDataContextProducer));
+                ?? throw new ArgumentNullException(
+                    nameof(decoratedDataContextProducer),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(DataContextProviderSeederDecorator),
+                    nameof(decoratedDataContextProducer)));
             _seeder = dataContextSeeder
-                ?? throw new ArgumentNullException(nameof(dataContextSeeder));
+                ?? throw new ArgumentNullException(
+                    nameof(dataContextSeeder),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(DataContextProviderSeederDecorator),
+                    nameof(dataContextSeeder)));
         }
 
         Optional<IDataContext> IDataContextProvider.GetDataContext()

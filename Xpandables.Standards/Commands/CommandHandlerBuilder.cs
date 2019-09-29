@@ -40,7 +40,11 @@ namespace System.Design.Command
         /// method such as thrown exceptions.</para></param>
         /// <exception cref="ArgumentNullException">The <paramref name="handler"/> is null.</exception>
         public CommandHandlerBuilder(Func<TCommand, CancellationToken, Task> handler)
-            => _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            => _handler = handler ?? throw new ArgumentNullException(
+                nameof(handler),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerBuilder<TCommand>),
+                    nameof(handler)));
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
             => await _handler(command, cancellationToken).ConfigureAwait(false);

@@ -37,8 +37,17 @@ namespace System.Design.Command
             ICommandHandler<TCommand> decoratee)
             : base(decoratee)
         {
-            _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _eventRegister = eventRegister ?? throw new ArgumentNullException(
+                nameof(eventRegister),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerEventRegisterDecorator<TCommand>),
+                    nameof(eventRegister)));
+
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerEventRegisterDecorator<TCommand>),
+                    nameof(decoratee)));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)

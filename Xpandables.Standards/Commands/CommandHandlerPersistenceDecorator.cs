@@ -39,8 +39,17 @@ namespace System.Design.Command
             ICommandHandler<TCommand> decoratee)
             : base(decoratee)
         {
-            _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _dataContext = dataContext ?? throw new ArgumentNullException(
+                nameof(dataContext),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerPersistenceDecorator<TCommand>),
+                    nameof(DataContextProviderSeederDecorator)));
+
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerPersistenceDecorator<TCommand>),
+                    nameof(decoratee)));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)

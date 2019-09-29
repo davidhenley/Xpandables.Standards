@@ -27,7 +27,12 @@ namespace System
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (validationContext is null) throw new ArgumentNullException(nameof(validationContext));
+            if (validationContext is null)
+                throw new ArgumentNullException(
+                    nameof(validationContext),
+                    ErrorMessageResources.ArgumentExpected.StringFormat(
+                        nameof(StringEscapeValidationAttribute),
+                        nameof(validationContext)));
 
             if (value is string stringValue)
             {

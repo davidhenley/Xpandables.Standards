@@ -38,8 +38,16 @@ namespace System.Design.Query
             ICustomCompositeValidator<TQuery> validator)
             : base(decoratee)
         {
-            _decoratee = decoratee;
-            _validator = validator;
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerValidationDecorator<TQuery, TResult>),
+                    nameof(decoratee)));
+            _validator = validator ?? throw new ArgumentNullException(
+                nameof(validator),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerValidationDecorator<TQuery, TResult>),
+                    nameof(validator)));
         }
 
         public Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)

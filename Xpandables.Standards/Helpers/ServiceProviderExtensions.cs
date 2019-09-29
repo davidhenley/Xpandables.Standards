@@ -125,7 +125,7 @@ namespace System.Design.DependencyInjection
         /// <param name="type">The target type.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="serviceProvider"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        public static Optional<object> GetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type type)
+        public static object GetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type type)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
@@ -135,7 +135,8 @@ namespace System.Design.DependencyInjection
             }
             catch (Exception exception)
             {
-                return Optional<object>.Exception(exception);
+                Diagnostics.Trace.WriteLine(exception);
+                return null;
             }
         }
 
@@ -147,7 +148,7 @@ namespace System.Design.DependencyInjection
         /// <param name="arguments">The optional arguments.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="serviceProvider"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        public static Optional<object> CreateInstance(this IServiceProvider serviceProvider, Type type, params object[] arguments)
+        public static object CreateInstance(this IServiceProvider serviceProvider, Type type, params object[] arguments)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
             if (type is null) throw new ArgumentNullException(nameof(type));
@@ -158,7 +159,8 @@ namespace System.Design.DependencyInjection
             }
             catch (Exception exception)
             {
-                return Optional<object>.Exception(exception);
+                Diagnostics.Trace.WriteLine(exception);
+                return null;
             }
         }
 
@@ -169,7 +171,7 @@ namespace System.Design.DependencyInjection
         /// <param name="descriptor">The service descriptor.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="serviceProvider"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="descriptor"/> is null.</exception>
-        public static Optional<object> GetInstance(this IServiceProvider serviceProvider, ServiceDescriptor descriptor)
+        public static object GetInstance(this IServiceProvider serviceProvider, ServiceDescriptor descriptor)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
             if (descriptor is null) throw new ArgumentNullException(nameof(descriptor));
@@ -190,7 +192,8 @@ namespace System.Design.DependencyInjection
             }
             catch (Exception exception)
             {
-                return Optional<object>.Exception(exception);
+                Diagnostics.Trace.WriteLine(exception);
+                return null;
             }
         }
 
@@ -201,7 +204,7 @@ namespace System.Design.DependencyInjection
         /// <param name="factory">The factory to be used.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="descriptor"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="factory"/> is null.</exception>
-        public static Optional<ServiceDescriptor> WithFactory(
+        public static ServiceDescriptor WithFactory(
             this ServiceDescriptor descriptor,
             Func<IServiceProvider, object> factory)
         {
@@ -214,7 +217,8 @@ namespace System.Design.DependencyInjection
             }
             catch (Exception exception)
             {
-                return Optional<ServiceDescriptor>.Exception(exception);
+                Diagnostics.Trace.WriteLine(exception);
+                return null;
             }
         }
     }

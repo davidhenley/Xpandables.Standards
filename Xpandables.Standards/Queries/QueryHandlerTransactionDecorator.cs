@@ -39,8 +39,16 @@ namespace System.Design.Query
             IAttributeAccessor attributeAccessor)
             : base(decoratee)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(nameof(attributeAccessor));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerTransactionDecorator<TQuery, TResult>),
+                    nameof(decoratee)));
+            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
+                nameof(attributeAccessor),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerTransactionDecorator<TQuery, TResult>),
+                    nameof(attributeAccessor)));
         }
 
         public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)

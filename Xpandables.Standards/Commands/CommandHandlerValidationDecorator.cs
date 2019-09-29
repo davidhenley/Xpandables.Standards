@@ -37,8 +37,16 @@ namespace System.Design.Command
             ICustomCompositeValidator<TCommand> validator)
             : base(decoratee)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerValidationDecorator<TCommand>),
+                    nameof(decoratee)));
+            _validator = validator ?? throw new ArgumentNullException(
+                nameof(validator),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerValidationDecorator<TCommand>),
+                    nameof(validator)));
         }
 
         public Task HandleAsync(TCommand command, CancellationToken cancellationToken)

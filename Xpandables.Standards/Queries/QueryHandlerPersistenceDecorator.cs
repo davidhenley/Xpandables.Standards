@@ -40,8 +40,16 @@ namespace System.Design.Query
             IQueryHandler<TQuery, TResult> decoratee)
             : base(decoratee)
         {
-            _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _dataContext = dataContext ?? throw new ArgumentNullException(
+                nameof(dataContext),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerPersistenceDecorator<TQuery, TResult>),
+                    nameof(dataContext)));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerPersistenceDecorator<TQuery, TResult>),
+                    nameof(decoratee)));
         }
 
         public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)

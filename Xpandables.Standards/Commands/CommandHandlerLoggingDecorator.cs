@@ -37,8 +37,17 @@ namespace System.Design.Command
             ILoggerWrapper loggerWrapper)
             : base(decoratee)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _loggerWrapper = loggerWrapper ?? throw new ArgumentNullException(nameof(loggerWrapper));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerLoggingDecorator<TCommand>),
+                    nameof(decoratee)));
+
+            _loggerWrapper = loggerWrapper ?? throw new ArgumentNullException(
+                nameof(loggerWrapper),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerLoggingDecorator<TCommand>),
+                    nameof(loggerWrapper)));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)

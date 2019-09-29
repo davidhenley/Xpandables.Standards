@@ -16,14 +16,13 @@
  *
 ************************************************************************************************************/
 
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace System
 {
     /// <summary>
-    /// provides with async helpers.
+    /// Provides with async helpers.
     /// </summary>
     public static class AsyncHelpers
     {

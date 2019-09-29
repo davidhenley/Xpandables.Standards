@@ -34,8 +34,16 @@ namespace System.Design.Mediator
 
         public ProcessorValidationDecorator(IProcessor decoratee, IServiceProvider serviceProvider)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorValidationDecorator),
+                    nameof(decoratee)));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(
+                nameof(serviceProvider),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorValidationDecorator),
+                    nameof(serviceProvider)));
         }
 
         public Task<TResult> HandleResultAsync<TResult>(

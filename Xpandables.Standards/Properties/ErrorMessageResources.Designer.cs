@@ -61,6 +61,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0}. Parameter {1} cannot be null..
+        /// </summary>
+        public static string ArgumentExpected {
+            get {
+                return ResourceManager.GetString("ArgumentExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} operation failed. See inner exception..
         /// </summary>
         public static string CommandQueryHandlerFailed {

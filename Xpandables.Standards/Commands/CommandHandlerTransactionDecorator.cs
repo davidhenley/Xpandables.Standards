@@ -38,8 +38,16 @@ namespace System.Design.Command
             IAttributeAccessor attributeAccessor)
             : base(decoratee)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(nameof(attributeAccessor));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerTransactionDecorator<TCommand>),
+                    nameof(decoratee)));
+            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
+                nameof(attributeAccessor),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(CommandHandlerTransactionDecorator<TCommand>),
+                    nameof(attributeAccessor)));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)

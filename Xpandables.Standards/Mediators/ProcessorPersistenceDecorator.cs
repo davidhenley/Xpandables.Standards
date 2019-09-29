@@ -33,8 +33,16 @@ namespace System.Design.Mediator
 
         public ProcessorPersistenceDecorator(IProcessor decoratee, IDataContext dataContext)
         {
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
-            _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorPersistenceDecorator),
+                    nameof(decoratee)));
+            _dataContext = dataContext ?? throw new ArgumentNullException(
+                nameof(dataContext),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(ProcessorPersistenceDecorator),
+                    nameof(dataContext)));
         }
 
         public async Task<TResult> HandleResultAsync<TResult>(

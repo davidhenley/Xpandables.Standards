@@ -39,8 +39,16 @@ namespace System.Design.Query
             IQueryHandler<TQuery, TResult> decoratee)
             : base(decoratee)
         {
-            _eventRegister = eventRegister ?? throw new ArgumentNullException(nameof(eventRegister));
-            _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            _eventRegister = eventRegister ?? throw new ArgumentNullException(
+                nameof(eventRegister),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerEventRegisterDecorator<TQuery, TResult>),
+                    nameof(eventRegister)));
+            _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerEventRegisterDecorator<TQuery, TResult>),
+                    nameof(decoratee)));
         }
 
         public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)

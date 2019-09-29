@@ -31,7 +31,9 @@ namespace System
         /// <param name="name">The name of the target property which changes are notified to the decorated property.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="name"/> is null.</exception>
         public NotifyPropertyChangedDependOnAttribute(string name)
-            => Name = name ?? throw new ArgumentNullException(nameof(name));
+            => Name = name ?? throw new ArgumentNullException(
+                nameof(name),
+                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(NotifyPropertyChangedDependOnAttribute), nameof(name)));
 
         /// <summary>
         /// Gets the name of the target property which changes are notified to the decorated property.

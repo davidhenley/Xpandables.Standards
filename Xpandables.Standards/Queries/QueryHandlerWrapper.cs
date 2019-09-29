@@ -25,15 +25,16 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    /// <remarks>
-    /// From https://gist.github.com/dotnetjunkie/d9bdb09534a75635ca552755faaa1cd5
-    /// </remarks>
     public sealed class QueryHandlerWrapper<TQuery, TResult> : IQueryHandlerWrapper<TResult>
         where TQuery : class, IQuery<TResult>
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
         public QueryHandlerWrapper(IQueryHandler<TQuery, TResult> decoratee)
-            => _decoratee = decoratee ?? throw new ArgumentNullException(nameof(decoratee));
+            => _decoratee = decoratee ?? throw new ArgumentNullException(
+                nameof(decoratee),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(QueryHandlerWrapper<TQuery, TResult>),
+                    nameof(decoratee)));
 
         public async Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
             => await _decoratee.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);

@@ -301,7 +301,7 @@ namespace System.Design.DependencyInjection
             => descriptor.WithFactory(
                 provider => provider.CreateInstance(
                     decoratorType,
-                    new object[] { provider.GetInstance(descriptor).InternalValue }).InternalValue);
+                    new object[] { provider.GetInstance(descriptor) }));
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
             this ServiceDescriptor descriptor,
@@ -309,7 +309,7 @@ namespace System.Design.DependencyInjection
             where TService : class
             => descriptor.WithFactory(
                 provider => decorator(
-                    provider.GetInstance(descriptor).Cast<TService>(),
+                    (TService)provider.GetInstance(descriptor),
                     provider));
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
@@ -317,6 +317,6 @@ namespace System.Design.DependencyInjection
             Func<TService, TService> decorator)
             where TService : class
             => descriptor.WithFactory(
-                provider => decorator(provider.GetInstance(descriptor).Cast<TService>()));
+                provider => decorator((TService)provider.GetInstance(descriptor)));
     }
 }
