@@ -37,7 +37,7 @@ namespace System.Design.DependencyInjection
             where TService : class
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-            return serviceProvider.GetService(typeof(TService)).AsOptional().CastOptional<TService>();
+            return serviceProvider.GetRequiredService(typeof(TService)).AsOptional().CastOptional<TService>();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace System.Design.DependencyInjection
             where TService : class
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-            return serviceProvider.GetService(serviceType).AsOptional().CastOptional<TService>();
+            return serviceProvider.GetRequiredService(serviceType).AsOptional().CastOptional<TService>();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace System.Design.DependencyInjection
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
             if (serviceProvider
-                .GetService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
+                .GetRequiredService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
                 is IEnumerable<object> services)
             {
                 return services;
@@ -88,7 +88,7 @@ namespace System.Design.DependencyInjection
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
-            if (serviceProvider.GetService(typeof(IEnumerable<TService>)) is IEnumerable<TService> services)
+            if (serviceProvider.GetRequiredService(typeof(IEnumerable<TService>)) is IEnumerable<TService> services)
                 return services;
 
             return Enumerable.Empty<TService>(); ;
@@ -109,7 +109,7 @@ namespace System.Design.DependencyInjection
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
             if (serviceProvider
-                .GetService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
+                .GetRequiredService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
                 is IEnumerable<TService> services)
             {
                 return services;
