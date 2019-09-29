@@ -15,13 +15,11 @@
  *
 ************************************************************************************************************/
 
-using System;
-using System.Design.Command;
 using System.Design.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Xpandables.Commands
+namespace System.Design.Command
 {
     /// <summary>
     /// This class allows the application author to add logging support to command.

@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 
-namespace System
+namespace System.Configuration
 {
     /// <summary>
     /// Provides a collection of objects that need to be shared across asynchronous control flows.

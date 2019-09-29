@@ -19,6 +19,7 @@ using System.Design.Command;
 using System.Design.Query;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace System.Design.Mediator
 {

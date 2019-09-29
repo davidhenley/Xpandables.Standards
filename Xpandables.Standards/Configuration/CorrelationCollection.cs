@@ -18,10 +18,9 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 
-namespace System
+namespace System.Configuration
 {
     /// <summary>
     /// The correlation collection implementation of <see cref="ICorrelationCollection{TKey, TValue}"/>.

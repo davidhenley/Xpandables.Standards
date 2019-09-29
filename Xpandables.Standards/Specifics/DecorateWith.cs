@@ -18,9 +18,16 @@
 namespace System
 {
     /// <summary>
-    /// Provides a collection of objects that need to be shared across asynchronous control flows.
-    /// See <see cref="ICorrelationCollection{TKey, TValue}"/>.
+    /// Provides with the decorator flags.
     /// </summary>
-    public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext { }
-
+    [Flags]
+    public enum DecorateWith
+    {
+        None = 0,
+        Persistence = 1,
+        EventRegister = 2,
+        Transaction = 4,
+        Validation = 8,
+        Logging = 16
+    }
 }

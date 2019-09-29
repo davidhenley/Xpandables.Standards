@@ -17,7 +17,7 @@
 
 using System.Threading.Tasks;
 
-namespace System
+namespace System.Configuration
 {
     /// <summary>
     /// Defines tasks that will be raised after another one or exception and executed in a control flow.

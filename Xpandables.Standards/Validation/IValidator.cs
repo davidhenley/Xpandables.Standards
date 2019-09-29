@@ -22,7 +22,7 @@ namespace System.ComponentModel.DataAnnotations
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// <para>Contains default implementation.</para>
     /// </summary>
-    public interface ICustomValidator
+    public interface IValidator
     {
         /// <summary>
         /// Applies validation process and throws the <see cref="ValidationException"/> if necessary.
@@ -45,7 +45,7 @@ namespace System.ComponentModel.DataAnnotations
     /// <para>Contains default implementation.</para>
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
-    public interface ICustomValidator<in TArgument> : ICustomValidator
+    public interface ICustomValidator<in TArgument> : IValidator
         where TArgument : class
     {
         /// <summary>

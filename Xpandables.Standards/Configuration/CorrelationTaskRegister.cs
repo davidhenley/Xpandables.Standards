@@ -17,7 +17,7 @@
 
 using System.Threading.Tasks;
 
-namespace System
+namespace System.Configuration
 {
     /// <summary>
     /// The implementation of <see cref="ICorrelationTaskRegister"/>.

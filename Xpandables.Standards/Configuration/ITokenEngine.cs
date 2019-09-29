@@ -15,12 +15,12 @@
  *
 ************************************************************************************************************/
 
-namespace System
+namespace System.Configuration
 {
     /// <summary>
     ///  Defines a method that build a token from an object source.
     /// </summary>
-    public interface ICustomTokenBuilder
+    public interface ITokenEngine
     {
         /// <summary>
         /// Encodes the source and returns a string token.

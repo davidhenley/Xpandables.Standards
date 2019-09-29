@@ -1,5 +1,5 @@
 ﻿/************************************************************************************************************
- * Copyright (C) 2018 Francis-Black EWANE
+ * Copyright (C) 2019 Francis-Black EWANE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,18 @@
  *
 ************************************************************************************************************/
 
-using System.Configuration;
+using Microsoft.AspNetCore.Mvc;
 
-namespace System.GraphQL
+namespace System
 {
     /// <summary>
-    /// Implementation of <see cref="ITableObjectCollection"/>.
+    /// Provides with a method to access the ambient application version.
     /// </summary>
-    public sealed class TableObjectCollection : CorrelationCollection<string, TableObject>, ITableObjectCollection
+    public interface IApplicationVersionAccessor
     {
+        /// <summary>
+        /// Returns the current version.
+        /// </summary>
+        ApiVersion GetVersion();
     }
 }

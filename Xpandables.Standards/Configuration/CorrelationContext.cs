@@ -15,18 +15,12 @@
  *
 ************************************************************************************************************/
 
-using Microsoft.AspNetCore.Mvc;
-
-namespace System
+namespace System.Configuration
 {
     /// <summary>
-    /// Provides with a method to access the ambient application version.
+    /// Provides a collection of objects that need to be shared across asynchronous control flows.
+    /// See <see cref="ICorrelationCollection{TKey, TValue}"/>.
     /// </summary>
-    public interface ICustomVersionAccessor
-    {
-        /// <summary>
-        /// Returns the current version.
-        /// </summary>
-        ApiVersion GetVersion();
-    }
+    public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext { }
+
 }

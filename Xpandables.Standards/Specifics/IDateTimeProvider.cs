@@ -22,7 +22,7 @@ namespace System
     /// <summary>
     /// Allows an application author to provide runtime date time according to the context.
     /// </summary>
-    public interface ICustomDateTimeProvider
+    public interface IDateTimeProvider
     {
         /// <summary>
         /// Returns the ambient date time.

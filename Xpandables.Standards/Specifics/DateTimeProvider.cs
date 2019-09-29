@@ -20,9 +20,9 @@ using System.Globalization;
 namespace System
 {
     /// <summary>
-    /// Provides runtime date time according to the context, implements <see cref="ICustomDateTimeProvider"/>.
+    /// Provides runtime date time according to the context, implements <see cref="IDateTimeProvider"/>.
     /// </summary>
-    public class CustomDateTimeProvider : ICustomDateTimeProvider
+    public class DateTimeProvider : IDateTimeProvider
     {
         public DateTime GetDateTime() => DateTime.UtcNow;
 

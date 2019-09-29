@@ -19,14 +19,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Configuration;
 using System.Design.Database;
+using System.Design.Logging;
 using System.Diagnostics;
 
-namespace System.Design.Logging
+namespace System.Design.DependencyInjection
 {
     /// <summary>
     /// Provides method to register <see cref="Serilog"/> logger.
     /// </summary>
-    public static class SerilogServiceCollectionExtensions
+    public static class LoggingServiceCollectionExtensions
     {
         /// <summary>
         /// Adds the logger using the default <see cref="LogEntity"/> event.
@@ -50,7 +51,22 @@ namespace System.Design.Logging
             where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
             => services.DoAddCustomSerilog<TLogEvent>();
 
-        private static IServiceCollection DoAddCustomSerilog<TLogEvent>(this IServiceCollection services)
+        /// <summary>
+        /// Adds the logger wrapper to the services with scoped life time.
+        /// </summary>
+        /// <typeparam name="TLoggerWrapper">The type of the logger to be registered.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddCustomLoggerWrapper<TLoggerWrapper>(this IServiceCollection services)
+            where TLoggerWrapper : class, ILoggerWrapper
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            services.AddScoped<ILoggerWrapper, TLoggerWrapper>();
+
+            return services;
+        }
+
+    private static IServiceCollection DoAddCustomSerilog<TLogEvent>(this IServiceCollection services)
             where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
         {
             if (services is null) throw new ArgumentNullException(nameof(services));

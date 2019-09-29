@@ -20,10 +20,10 @@ namespace System.ComponentModel.DataAnnotations
     /// <summary>
     /// Defines the default process for validating an argument of type-specific.
     /// <para>You must derive from this class to implement a custom validator that match your requirement.
-    /// If you want to apply many validators for one argument, see <see cref="CustomCompositeValidator{TArgument}"/>.</para>
+    /// If you want to apply many validators for one argument, see <see cref="CompositeValidator{TArgument}"/>.</para>
     /// </summary>
     [Serializable]
-    public class CustomValidator : ICustomValidator
+    public class ValidatorBase : IValidator
     {
         /// <summary>
         /// Determines the zero-base order in which the validator will be executed.
@@ -42,13 +42,13 @@ namespace System.ComponentModel.DataAnnotations
     /// <summary>
     /// Defines the default process for validating an argument of type-specific.
     /// <para>You must derive from this class to implement a custom validator that match your requirement.
-    /// If you want to apply many validators for one argument, see <see cref="CustomCompositeValidator{TArgument}"/>.</para>
+    /// If you want to apply many validators for one argument, see <see cref="CompositeValidator{TArgument}"/>.</para>
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
     [Serializable]
-    public class CustomValidator<TArgument> : CustomValidator, ICustomValidator<TArgument>
+    public class CustomValidator<TArgument> : ValidatorBase, ICustomValidator<TArgument>
         where TArgument : class
     {
-        public virtual void Validate(TArgument argument) => ((ICustomValidator)this).Validate(argument);
+        public virtual void Validate(TArgument argument) => ((IValidator)this).Validate(argument);
     }
 }
