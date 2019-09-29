@@ -15,7 +15,6 @@
  *
 ************************************************************************************************************/
 
-using Newtonsoft.Json.Linq;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,8 +44,8 @@ namespace System.Design.Logging
                 throw new ArgumentNullException(nameof(logEvent));
 
             var json = ConvertLogEventToJson(logEvent);
-            var jobject = JObject.Parse(json);
-            var properties = jobject["Properties"];
+            using var jobject = Text.Json.JsonDocument.Parse(json);
+            var properties = jobject.RootElement.GetProperty("Properties");
 
             return
                 WithException(logEvent.Exception)
@@ -56,7 +55,7 @@ namespace System.Design.Logging
                 .WithMessageTemplate(logEvent.MessageTemplate?.ToString())
                 .WithTimeSpan(logEvent.Timestamp);
 
-            string ConvertLogEventToJson(LogEvent log)
+            static string ConvertLogEventToJson(LogEvent log)
             {
                 var stringBuilder = new StringBuilder();
                 using (var writer = new StringWriter(stringBuilder))

@@ -142,6 +142,6 @@ namespace System
         /// Serves as the default hash function.
         /// </summary>
         /// <returns>A hash code for the current entity.</returns>
-        public override int GetHashCode() => (GetType().ToString() + Id).GetHashCode();
+        public override int GetHashCode() => (GetType().ToString() + Id).GetHashCode(StringComparison.OrdinalIgnoreCase);
     }
 }

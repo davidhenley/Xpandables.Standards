@@ -56,11 +56,9 @@ namespace System.Design.Command
 
             if (attribute.IsValue())
             {
-                using (var scope = attribute.Single().GetTransactionScope())
-                {
-                    await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
-                    scope.Complete();
-                }
+                using var scope = attribute.Single().GetTransactionScope();
+                await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
+                scope.Complete();
             }
             else
             {

@@ -32,7 +32,7 @@ namespace System
         /// <param name="value">The value to compare with.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="encrypted"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        bool Equals(ValueEncrypted encrypted, string value);
+        bool Equals(EncryptedValues encrypted, string value);
 
         /// <summary>
         /// Returns an encrypted string from the value using a randomize key.
@@ -41,6 +41,6 @@ namespace System
         /// <param name="value">The value to be encrypted.</param>
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        Optional<ValueEncrypted> Encrypt(string value);
+        Optional<EncryptedValues> Encrypt(string value);
     }
 }

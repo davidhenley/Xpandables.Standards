@@ -32,19 +32,18 @@ namespace System
             _stringEncryptor = stringEncryptor ?? throw new ArgumentNullException(nameof(stringEncryptor));
         }
 
-        public Optional<ValueEncrypted> Encrypt(string value)
+        public Optional<EncryptedValues> Encrypt(string value)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
             return _stringGenerator
                 .Generate(12, source)
                 .MapOptional(key => _stringEncryptor.Encrypt(value, key).And(key))
-                .Map(pair => ValueEncrypted.CreateWith(pair.Right, pair.Left));
+                .Map(pair =>new EncryptedValues(pair.Right, pair.Left));
         }
 
-        public bool Equals(ValueEncrypted encrypted, string value)
+        public bool Equals(EncryptedValues encrypted, string value)
         {
-            if (encrypted is null) throw new ArgumentNullException(nameof(encrypted));
             if (value is null) throw new ArgumentNullException(nameof(value));
 
             string password = _stringEncryptor.Encrypt(value, encrypted.Key);

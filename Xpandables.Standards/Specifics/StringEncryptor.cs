@@ -36,7 +36,7 @@ namespace System
                 {
                     var data = Text.Encoding.UTF8.GetBytes(value);
                     var hash = cryptoManaged.ComputeHash(data);
-                    var result = BitConverter.ToString(hash).Replace("-", string.Empty);
+                    var result = BitConverter.ToString(hash).Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
                     return result;
                 }
             }

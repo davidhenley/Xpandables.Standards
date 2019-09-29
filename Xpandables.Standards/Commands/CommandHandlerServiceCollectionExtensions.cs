@@ -69,7 +69,7 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandValidatorDecorator(this IServiceCollection services)
+        public static IServiceCollection AddCustomCommandValidationDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));

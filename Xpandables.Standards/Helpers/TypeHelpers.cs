@@ -120,7 +120,7 @@ namespace System
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
 
-            var index = type.Name.IndexOf('`');
+            var index = type.Name.IndexOf('`', StringComparison.OrdinalIgnoreCase);
             return index == -1 ? type.Name : type.Name.Substring(0, index);
         }
 

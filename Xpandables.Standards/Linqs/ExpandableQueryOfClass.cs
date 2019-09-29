@@ -26,13 +26,13 @@ using System.Linq.Expressions;
 
 namespace System.Design.Linq
 {
-#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
     /// <summary>
     /// Dot not directly use this class !
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Les identificateurs doivent avoir un suffixe correct",
+        Justification = "<En attente>")]
     public class ExpandableQueryOfClass<T> : ExpandableQuery<T>
-#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
         where T : class
     {
         public ExpandableQueryOfClass(IQueryable<T> inner, Func<Expression, Expression> queryOptimizer)

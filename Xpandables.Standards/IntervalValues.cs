@@ -20,60 +20,61 @@ using System.Diagnostics;
 namespace System
 {
     /// <summary>
-    /// Defines a representation for a signed value : positive and negative form.
+    /// Defines a representation of an interval of a specific type.
     /// </summary>
-    /// <typeparam name="T">Type of value.</typeparam>
+    /// <typeparam name="T">Type of the value.</typeparam>
     [Serializable]
-    [DebuggerDisplay("Positive = {Positive}, Negative = {Negative}")]
-    public struct SignedValues<T> : IFluent, IEquatable<SignedValues<T>>
-        where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+    [DebuggerDisplay("Starting = {Starting}, Ending = {Ending}")]
+    public struct IntervalValues<T> : IFluent, IEquatable<IntervalValues<T>>
+        where T : struct
     {
+
         /// <summary>
-        /// Returns a new instance of <see cref="SignedValues{TValue}"/> with the specified values.
+        /// Returns a new instance of <see cref="IntervalValues{TValue}"/> with the specified values.
         /// </summary>
-        /// <param name="positive">The positive value</param>
-        /// <param name="negative">The negative value</param>
-        public SignedValues(T positive, T negative)
+        /// <param name="starting">The starting value</param>
+        /// <param name="ending">The ending value</param>
+        public IntervalValues(T starting, T ending)
         {
-            Positive = positive;
-            Negative = negative;
+            Starting = starting;
+            Ending = ending;
         }
 
         /// <summary>
-        /// Provides with deconstruction for <see cref="SignedValues{T}"/>.
+        /// Provides with deconstruction for <see cref="IntervalValues{T}"/>.
         /// </summary>
-        /// <param name="positive">The output positive value.</param>
-        /// <param name="negative">The output negative value.</param>
-        public void Deconstruct(out T positive, out T negative)
+        /// <param name="starting">The output starting value</param>
+        /// <param name="ending">The output ending value</param>
+        public void Deconstruct(out T starting, out T ending)
         {
-            positive = Positive;
-            negative = Negative;
+            starting = Starting;
+            ending = Ending;
         }
 
         /// <summary>
-        /// Contains the positive value.
+        /// Contains the starting value.
         /// </summary>
-        public readonly T Positive { get; }
+        public readonly T Starting { get; }
 
         /// <summary>
-        /// Contains the negative value.
+        /// Contains the ending value.
         /// </summary>
-        public readonly T Negative { get; }
+        public readonly T Ending { get; }
 
         /// <summary>
-        /// Compares the <see cref="SignedValues{T}"/> with other object.
+        /// Compares the <see cref="IntervalValues{T}"/> with other object.
         /// </summary>
         /// <param name="obj">Object to compare with.</param>
-        public override bool Equals(object obj) => obj is SignedValues<T> signedValues && Equals(signedValues);
+        public override bool Equals(object obj) => obj is IntervalValues<T> interval && Equals(interval);
 
         /// <summary>
-        /// Computes the hash-code for the <see cref="SignedValues{T}"/> instance.
+        /// Computes the hash-code for the <see cref="IntervalValues{T}"/> instance.
         /// </summary>
         public override int GetHashCode()
         {
             var hash = 17;
-            hash += Positive.GetHashCode() ^ 31;
-            hash += Negative.GetHashCode() ^ 31;
+            hash += Starting.GetHashCode() ^ 31;
+            hash += Ending.GetHashCode() ^ 31;
             return hash ^ 29;
         }
 
@@ -82,34 +83,34 @@ namespace System
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public static bool operator ==(SignedValues<T> left, SignedValues<T> right) => left.Equals(right);
+        public static bool operator ==(IntervalValues<T> left, IntervalValues<T> right) => left.Equals(right);
 
         /// <summary>
         /// Applies non equality operator.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public static bool operator !=(SignedValues<T> left, SignedValues<T> right) => !(left == right);
+        public static bool operator !=(IntervalValues<T> left, IntervalValues<T> right) => !(left == right);
 
         /// <summary>
-        /// Compares <see cref="SignedValues{T}"/> with the value of type <typeparamref name="T"/>.
+        /// Compares <see cref="IntervalValues{T}"/> with the value of type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="other">Option to compare with.</param>
-        public bool Equals(SignedValues<T> other) => Positive.Equals(other.Positive) && Negative.Equals(other.Negative);
+        public bool Equals(IntervalValues<T> other) => Starting.Equals(other.Starting) && Ending.Equals(other.Ending);
 
         /// <summary>
-        /// Creates a string representation of the <see cref="SignedValues{T}"/>.
+        /// Creates a string representation of the <see cref="IntervalValues{T}"/>.
         /// </summary>
-        public readonly override string ToString() => $"{Positive}:{Negative}";
+        public readonly override string ToString() => $"{Starting}:{Ending}";
 
         /// <summary>
-        /// Creates a string representation of the <see cref="SignedValues{T}"/> using the specified format and provider.
+        /// Creates a string representation of the <see cref="IntervalValues{T}"/> using the specified format and provider.
         /// </summary>
         /// <param name="format">A composite format string.</param>
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
         public string ToString(string format, IFormatProvider formatProvider)
-            => string.Format(formatProvider, format, Positive, Negative);
+            => string.Format(formatProvider, format, Starting, Ending);
     }
 }

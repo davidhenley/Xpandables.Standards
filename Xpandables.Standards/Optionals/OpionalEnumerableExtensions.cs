@@ -32,10 +32,10 @@ namespace System
             return source.FirstOrDefault();
         }
 
-        public static async Task<Optional<T>> FirstOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
+        public static Task<Optional<T>> FirstOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
-            return await source.FirstOrDefault().ConfigureAwait(false);
+            return source.FirstOrEmptyAsync(_ => true);
         }
 
         public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> source)
@@ -44,11 +44,12 @@ namespace System
             return source.LastOrDefault();
         }
 
-        public static async Task<Optional<T>> LastOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            return await source.LastOrDefault().ConfigureAwait(false);
-        }
+        //public static async Task<Optional<T>> LastOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
+        //{
+        //    if (source is null) throw new ArgumentNullException(nameof(source));
+        //    await foreach(var item in source.)
+        //    return await source.LastOrDefault().ConfigureAwait(false);
+        //}
 
         public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
@@ -61,7 +62,18 @@ namespace System
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            return await source.FirstOrDefault(predicate).ConfigureAwait(false);
+
+            var result = Optional<T>.Empty();
+            await foreach (var item in source)
+            {
+                if (predicate(item))
+                {
+                    result = item;
+                    break;
+                }
+            }
+
+            return result;
         }
 
         public static IEnumerable<U> SelectOptional<T, U>(this IEnumerable<T> source, Func<T, Optional<U>> mapper)
@@ -74,17 +86,19 @@ namespace System
                    select result;
         }
 
-        public static IAsyncEnumerable<U> SelectOptionalAsync<T, U>(
+        public static async IAsyncEnumerable<U> SelectOptionalAsync<T, U>(
             this IAsyncEnumerable<T> source,
             Func<T, Optional<U>> mapper)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (mapper is null) throw new ArgumentNullException(nameof(mapper));
 
-            return source
-                .Select(mapper)
-                .OfType<U>()
-                .Select(result => result);
+            await foreach (var item in source)
+            {
+                var result = mapper(item);
+                if (result.IsValue())
+                    yield return result;
+            }
         }
 
         public static IEnumerable<T> SelectOptional<T>(this IEnumerable<Optional<T>> source)
@@ -96,14 +110,15 @@ namespace System
                    select result;
         }
 
-        public static IAsyncEnumerable<T> SelectOptionalAsync<T>(this IAsyncEnumerable<Optional<T>> source)
+        public static async IAsyncEnumerable<T> SelectOptionalAsync<T>(this IAsyncEnumerable<Optional<T>> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
-            return source
-                .Where(item => item.IsValue())
-                .OfType<T>()
-                .Select(item => item);
+            await foreach (var item in source)
+            {
+                if (item.IsValue())
+                    yield return item;
+            }
         }
 
         public static IEnumerable<T> SelectOptional<T>(
@@ -119,17 +134,18 @@ namespace System
                    select result;
         }
 
-        public static IAsyncEnumerable<T> SelectOptionalAsync<T>(
+        public static async IAsyncEnumerable<T> SelectOptionalAsync<T>(
             this IAsyncEnumerable<Optional<T>> source,
             Func<Optional<T>, bool> predicate)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            return source
-                .Where(predicate)
-                .OfType<T>()
-                .Select(item => item);
+            await foreach (var item in source)
+            {
+                if (predicate(item))
+                    yield return item;
+            }
         }
 
         public static Optional<TValue> TryGetValueExtended<TKey, TValue>(

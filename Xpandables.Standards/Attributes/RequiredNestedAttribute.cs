@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace System
@@ -38,19 +39,18 @@ namespace System
         /// the context where the validation checks are performed.
         /// This parameter cannot be null.</param>
         /// <returns> An instance of <see cref="ValidationResult"/> class.</returns>
+        [SuppressMessage("Design", "CA1062:Valider les arguments de méthodes publiques", Justification = "<En attente>")]
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (base.IsValid(value, validationContext) != ValidationResult.Success)
                 return base.IsValid(value, validationContext);
 
-#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
             if (value.GetType().IsPrimitive || value is string)
-#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
+            {
                 return new ValidationResult(
                     ErrorMessageResources.RequiredNestedAttributeTypeMissmatched,
-#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
                     new string[] { validationContext.MemberName });
-#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
+            }
 
             var context = new ValidationContext(value, null, null);
             var requiredValidation = base.IsValid(value, context);

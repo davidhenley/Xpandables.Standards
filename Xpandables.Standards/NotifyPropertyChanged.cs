@@ -189,23 +189,27 @@ namespace System
                 foreach (var dependency in attributes)
                 {
                     if (property.Name == dependency)
+                    {
                         throw new InvalidOperationException(
                             ErrorMessageResources.PropertyChangedCircularDependency,
                             new ArgumentException(
                                 ErrorMessageResources
                                     .PropertyChangedCircularDependencyItself
                                         .StringFormat(dependency, typeof(T).Name)));
+                    }
 
                     if (dependencies.TryGetValue(dependency, out var notifiers))
                     {
                         Predicate<string> predicateProperty = new Predicate<string>(PredicateFindProperty);
                         if (notifiers.Find(predicateProperty) != null)
+                        {
                             throw new InvalidOperationException(
                                 ErrorMessageResources.PropertyChangedDuplicateDependency,
                                 new ArgumentException(
                                     ErrorMessageResources
                                         .PropertyChangedDuplicateDependencyMore
                                             .StringFormat(property.Name, dependency)));
+                        }
 
                         notifiers.Add(property.Name);
                     }

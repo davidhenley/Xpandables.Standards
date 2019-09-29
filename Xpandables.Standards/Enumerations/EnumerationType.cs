@@ -221,7 +221,7 @@ namespace System
         /// </summary>
         /// <returns>hash-code.</returns>
         public override int GetHashCode()
-            => Value.GetHashCode() + DisplayName.GetHashCode();
+            => Value.GetHashCode() + DisplayName.GetHashCode(StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Returns the comparison value of both <see cref="EnumerationType"/> objects.
@@ -243,13 +243,11 @@ namespace System
         public static implicit operator string(EnumerationType enumeration)
             => enumeration?.DisplayName ?? string.Empty;
 
-#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         /// <summary>
         /// Implicit returns the <see cref="int"/> value.
         /// </summary>
         /// <param name="enumeration">current instance.</param>
         public static implicit operator int(EnumerationType enumeration) => enumeration?.Value ?? default;
-#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
 
         /// <inheritdoc />
         /// <summary>Determines whether the specified objects are equal.</summary>
