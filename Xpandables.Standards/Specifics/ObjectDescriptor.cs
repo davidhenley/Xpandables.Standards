@@ -16,7 +16,6 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 namespace System
 {
@@ -34,7 +33,7 @@ namespace System
         {
             Name = typeof(T).Name;
             Description = string.Empty;
-            Properties = ImmutableDictionary<string, object>.Empty;
+            Properties = new Dictionary<string, object>();
         }
 
         /// <summary>
