@@ -32,7 +32,7 @@ namespace System.Design.DependencyInjection
         /// that implements <see cref="IDataContextProvider"/>.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomDataContext<TDataContextProvider>(this IServiceCollection services)
+        public static IServiceCollection AddXDataContext<TDataContextProvider>(this IServiceCollection services)
             where TDataContextProvider : class, IDataContextProvider
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
@@ -56,7 +56,7 @@ namespace System.Design.DependencyInjection
         /// <typeparam name="TDataContextSeeder">The type that implements <see cref="IDataContextSeeder"/>.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomDataContextSeederDecorator<TDataContextSeeder>(this IServiceCollection services)
+        public static IServiceCollection AddXDataContextSeederDecorator<TDataContextSeeder>(this IServiceCollection services)
             where TDataContextSeeder : class, IDataContextSeeder
         {
             if (services is null) throw new ArgumentNullException(nameof(services));

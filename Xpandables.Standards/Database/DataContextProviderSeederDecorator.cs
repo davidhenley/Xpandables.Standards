@@ -36,6 +36,7 @@ namespace System.Design.Database
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(DataContextProviderSeederDecorator),
                     nameof(decoratedDataContextProducer)));
+
             _seeder = dataContextSeeder
                 ?? throw new ArgumentNullException(
                     nameof(dataContextSeeder),

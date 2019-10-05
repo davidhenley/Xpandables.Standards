@@ -46,7 +46,7 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous find operation.
         /// The task result contains the entity found, or optional empty.</returns>
-        Task<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues)
+        ValueTask<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues)
             where T : Entity;
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous get operation.
         /// The task result contains the matching anonymous value.</returns>
-        Task<Optional<TResult>> GetFirstAsync<T, TResult>(
+        ValueTask<Optional<TResult>> GetFirstAsync<T, TResult>(
             Func<IQueryable<T>, IQueryable<TResult>> selector,
             CancellationToken cancellationToken = default)
             where T : Entity;
@@ -90,7 +90,7 @@ namespace System.Design.Database
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<Optional<TResult>> GetLastAsync<T, TResult>(
+        ValueTask<Optional<TResult>> GetLastAsync<T, TResult>(
             Func<IQueryable<T>, IQueryable<TResult>> selector,
             CancellationToken cancellationToken = default)
             where T : Entity;

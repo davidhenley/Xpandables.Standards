@@ -32,6 +32,7 @@ namespace System.Design.Database
         {
             _decoratee = decoratedDataContextProducer
                 ?? throw new ArgumentNullException(nameof(decoratedDataContextProducer));
+
             _seeder = dataContextSeeder
                 ?? throw new ArgumentNullException(nameof(dataContextSeeder));
         }
