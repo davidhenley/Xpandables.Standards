@@ -70,21 +70,21 @@ namespace System.GraphQL
             return (FormatTablePluralName(pluralName, singleName), singleName);
         }
 
-        private string FormatTablePluralName(string pluralName, string singleName)
+        private static string FormatTablePluralName(string pluralName, string singleName)
             => pluralName == singleName ? $"{pluralName}s" : pluralName;
 
-        private string GetTablePluralName(IEntityType entityType)
+        private static string GetTablePluralName(IEntityType entityType)
             => entityType.IsOwned()
                     ? $"{entityType.GetTableName()}_{entityType.ClrType.Name}s"
                     : entityType.GetTableName();
 
-        private string GetTableSingleName(IEntityType entityType)
+        private static string GetTableSingleName(IEntityType entityType)
             => entityType.IsOwned()
                     ? $"{entityType.GetTableName()}_{entityType.ClrType.Name}"
                     : entityType.ClrType.Name;
 
-        private TableObject.TableData GetQueryableTableData(IEntityType entityType)
-            => new TableObject.TableData(
+        private TableData GetQueryableTableData(IEntityType entityType)
+            => new TableData(
                           SetMethod.MakeGenericMethod(new Type[] { entityType.ClrType }),
                           entityType.GetNavigations().Select(navigation => navigation.Name));
 

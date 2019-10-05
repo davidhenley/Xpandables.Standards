@@ -33,27 +33,6 @@ namespace System.GraphQL
     /// </summary>
     public class TableObject : ValueObject
     {
-        public class TableData
-        {
-            public TableData(MethodInfo source, IEnumerable<string> navigations)
-            {
-                Source = source;
-                Navigations = navigations;
-            }
-
-            private MethodInfo Source { get; }
-            private IEnumerable<string> Navigations { get; }
-
-            public IQueryable<object> QueryOn(IDataContext dataContext)
-            {
-                var queryable = (IQueryable<object>)Source.Invoke(dataContext, null);
-                foreach (var navigation in Navigations.ToArray())
-                    queryable = queryable.Include(navigation);
-
-                return queryable;
-            }
-        }
-
         public TableObject(
             string tableName, string assemblyFullName, Type tableType, TableData queryable, IEnumerable<ColumnObject> columns)
         {
@@ -132,7 +111,7 @@ namespace System.GraphQL
 
             QueryArguments ProvideQueryArgumentsForId()
              => new QueryArguments(Columns
-                  .Where(w => w.ColumnName.EndsWith("Id"))
+                  .Where(w => w.ColumnName.EndsWith("Id", StringComparison.OrdinalIgnoreCase))
                   .Select(s => new QueryArgument<IdGraphType> { Name = s.ColumnName, Description = s.Description }));
         }
 
@@ -157,6 +136,27 @@ namespace System.GraphQL
             yield return AssemblyFullName;
             foreach (var column in Columns.ToArray())
                 yield return column;
+        }
+    }
+
+    public class TableData
+    {
+        public TableData(MethodInfo source, IEnumerable<string> navigations)
+        {
+            Source = source;
+            Navigations = navigations;
+        }
+
+        private MethodInfo Source { get; }
+        private IEnumerable<string> Navigations { get; }
+
+        public IQueryable<object> QueryOn(IDataContext dataContext)
+        {
+            var queryable = (IQueryable<object>)Source.Invoke(dataContext, null);
+            foreach (var navigation in Navigations.ToArray())
+                queryable = queryable.Include(navigation);
+
+            return queryable;
         }
     }
 }

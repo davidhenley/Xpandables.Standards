@@ -27,13 +27,15 @@ namespace System.GraphQL
     /// </summary>
     public sealed class FieldResolverId : IFieldResolver
     {
-        private readonly TableObject.TableData tableData;
+        private readonly TableData tableData;
 
-        public FieldResolverId(TableObject.TableData tableData)
+        public FieldResolverId(TableData tableData)
             => this.tableData = tableData ?? throw new ArgumentNullException(nameof(tableData));
 
         public object Resolve(ResolveFieldContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             var dataSource = ((GraphQLSchema)context.Schema).DependencyResolver.Resolve<IDataContext>();
             var id = context.GetArgument<string>("id");
             return tableData.QueryOn(dataSource).FirstOrDefault("Id == @0", new object[] { id });

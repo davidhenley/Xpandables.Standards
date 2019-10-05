@@ -27,6 +27,8 @@ namespace System.GraphQL
     {
         public object? Resolve(ResolveFieldContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             if (context.Source is null)
                 return default;
 

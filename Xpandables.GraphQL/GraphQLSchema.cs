@@ -27,6 +27,8 @@ namespace System.GraphQL
     {
         public GraphQLSchema(IGraphQueryBuilder graphQueryBuilder, IServiceProvider serviceProvider)
         {
+            if (graphQueryBuilder == null) throw new ArgumentNullException(nameof(graphQueryBuilder));
+
             Query = graphQueryBuilder.GetGraphQuery();
             DependencyResolver = new DependencyResolver(serviceProvider);
         }

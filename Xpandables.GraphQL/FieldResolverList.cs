@@ -27,13 +27,15 @@ namespace System.GraphQL
     /// </summary>
     public sealed class FieldResolverList : IFieldResolver
     {
-        private readonly TableObject.TableData tableData;
+        private readonly TableData tableData;
 
-        public FieldResolverList(TableObject.TableData tableData)
+        public FieldResolverList(TableData tableData)
             => this.tableData = tableData ?? throw new ArgumentNullException(nameof(tableData));
 
         public object Resolve(ResolveFieldContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             var first = context.GetArgument("first", int.MaxValue);
             var offset = context.GetArgument("offset", 0);
             var dataSource = ((GraphQLSchema)context.Schema).DependencyResolver.Resolve<IDataContext>();
