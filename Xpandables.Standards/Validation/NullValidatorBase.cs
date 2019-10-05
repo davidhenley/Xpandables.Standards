@@ -21,16 +21,14 @@ namespace System.ComponentModel.DataAnnotations
     /// Validator when no explicit registration exist for a given type.
     /// </summary>
     /// <typeparam name="TArgument">Type of argument to be validated.</typeparam>
-    public sealed class NullCustomValidator<TArgument> : CustomValidator<TArgument>
+    public sealed class NullValidatorBase<TArgument> : ValidatorRule<TArgument>
         where TArgument : class
     {
-#pragma warning disable CA1801 // Supprimer le paramètre inutilisé
-#pragma warning disable IDE0060 // Supprimer le paramètre inutilisé
         /// <summary>
         /// Default implementation.
         /// </summary>
-        /// <param name="argument"></param>
-        public override void Validate(TArgument argument)
+        /// <param name="argument">The argument to be validated.</param>
+        public void Validate(TArgument argument)
         {
             // Class intentionally left empty.
         }

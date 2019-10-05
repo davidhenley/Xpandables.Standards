@@ -109,6 +109,8 @@ namespace System
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
+        /// <exception cref="FormatException">The <paramref name="format"/> is invalid or
+        /// the index of a format item is not zero or one.</exception>
         public string ToString(string format, IFormatProvider formatProvider)
             => string.Format(formatProvider, format, Positive, Negative);
     }

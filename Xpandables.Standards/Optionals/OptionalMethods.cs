@@ -259,8 +259,8 @@ namespace System
         /// Applies the function to the element only if the optional contains a value and matches the predicate.
         /// Otherwise returns the current optional.
         /// </summary>
-        /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>

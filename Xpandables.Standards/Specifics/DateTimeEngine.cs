@@ -18,16 +18,7 @@
 namespace System
 {
     /// <summary>
-    /// Provides with the decorator flags.
+    /// Provides runtime date time according to the context, implements <see cref="IDateTimeEngine"/>.
     /// </summary>
-    [Flags]
-    public enum DecorateWith
-    {
-        None = 0,
-        Persistence = 1,
-        EventRegister = 2,
-        Transaction = 4,
-        Validation = 8,
-        Logging = 16
-    }
+    public class DateTimeEngine : IDateTimeEngine { }
 }

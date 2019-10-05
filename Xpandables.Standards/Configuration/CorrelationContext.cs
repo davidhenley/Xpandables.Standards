@@ -22,5 +22,4 @@ namespace System.Configuration
     /// See <see cref="ICorrelationCollection{TKey, TValue}"/>.
     /// </summary>
     public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext { }
-
 }

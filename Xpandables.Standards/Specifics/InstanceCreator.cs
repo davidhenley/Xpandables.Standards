@@ -16,14 +16,12 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace System
 {
-#pragma warning disable CA1031 // Ne pas intercepter les types d'exception générale
     /// <summary>
     /// Implementation of <see cref="IInstanceCreator"/>.
     /// </summary>

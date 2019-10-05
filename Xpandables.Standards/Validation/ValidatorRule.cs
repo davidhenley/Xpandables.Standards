@@ -18,37 +18,21 @@
 namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
-    /// Defines the default process for validating an argument of type-specific.
+    /// Defines the default implementation for validating an argument of type-specific.
     /// <para>You must derive from this class to implement a custom validator that match your requirement.
-    /// If you want to apply many validators for one argument, see <see cref="CompositeValidator{TArgument}"/>.</para>
+    /// If you want to apply many validators for one argument, see <see cref="CompositeValidatorRule{TArgument}"/>.</para>
     /// </summary>
     [Serializable]
-    public class ValidatorBase : IValidator
-    {
-        /// <summary>
-        /// Determines the zero-base order in which the validator will be executed.
-        /// The default value is zero.
-        /// </summary>
-        public virtual int Order => 0;
-
-        public virtual void Validate(object argument)
-              => Validator
-               .ValidateObject(
-                   argument,
-                   new ValidationContext(argument, null, null),
-                   true);
-    }
+    public class ValidatorRule : IValidatorRule { }
 
     /// <summary>
-    /// Defines the default process for validating an argument of type-specific.
+    /// Defines the default implementation for validating an argument of type-specific.
     /// <para>You must derive from this class to implement a custom validator that match your requirement.
-    /// If you want to apply many validators for one argument, see <see cref="CompositeValidator{TArgument}"/>.</para>
+    /// If you want to apply many validators for one argument, see <see cref="CompositeValidatorRule{TArgument}"/>.</para>
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
     [Serializable]
-    public class CustomValidator<TArgument> : ValidatorBase, ICustomValidator<TArgument>
+    public class ValidatorRule<TArgument> : ValidatorRule, IValidatorRule<TArgument>
         where TArgument : class
-    {
-        public virtual void Validate(TArgument argument) => ((IValidator)this).Validate(argument);
-    }
+    { }
 }

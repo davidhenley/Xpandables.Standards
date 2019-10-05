@@ -26,7 +26,7 @@
 namespace System.Design.DependencyInjection
 {
     [Flags]
-    public enum ReplacementBehavior
+    public enum ReplacementBehaviors
     {
         /// <summary>
         /// Replace existing services by service type.

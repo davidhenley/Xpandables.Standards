@@ -300,8 +300,7 @@ namespace Microsoft.Extensions.DependencyInjection
             out Exception error)
         {
             var arguments = services
-                .Where(x => !x.ServiceType.IsGenericTypeDefinition)
-                .Where(x => IsSameGenericType(x.ServiceType, serviceType))
+                .Where(x => !x.ServiceType.IsGenericTypeDefinition && IsSameGenericType(x.ServiceType, serviceType))
                 .Select(x => x.ServiceType.GenericTypeArguments)
                 .ToArray();
 
@@ -368,7 +367,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Type serviceType,
             out ICollection<ServiceDescriptor> descriptors)
         {
-            return (descriptors = services.Where(service => service.ServiceType == serviceType).ToArray()).Any();
+            return (descriptors = services.Where(service => service.ServiceType == serviceType).ToArray()).Count > 0;
         }
 
         private static ServiceDescriptor Decorate<TService>(

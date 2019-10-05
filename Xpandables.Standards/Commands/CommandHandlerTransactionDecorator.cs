@@ -18,6 +18,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace System.Design.Command
 {
@@ -26,23 +27,20 @@ namespace System.Design.Command
     /// The command must be decorated with the <see cref="SupportTransactionAttribute"/>.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to apply transaction.</typeparam>
-    public sealed class CommandHandlerTransactionDecorator<TCommand> :
-        ObjectDescriptor<CommandHandlerTransactionDecorator<TCommand>>, ICommandHandler<TCommand>
+    public sealed class CommandHandlerTransactionDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand, ITransactionDecorator
     {
         private readonly ICommandHandler<TCommand> _decoratee;
         private readonly IAttributeAccessor _attributeAccessor;
 
-        public CommandHandlerTransactionDecorator(
-            ICommandHandler<TCommand> decoratee,
-            IAttributeAccessor attributeAccessor)
-            : base(decoratee)
+        public CommandHandlerTransactionDecorator(ICommandHandler<TCommand> decoratee, IAttributeAccessor attributeAccessor)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(CommandHandlerTransactionDecorator<TCommand>),
                     nameof(decoratee)));
+
             _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
                 nameof(attributeAccessor),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -56,7 +54,7 @@ namespace System.Design.Command
 
             if (attribute.IsValue())
             {
-                using var scope = attribute.Single().GetTransactionScope();
+                using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
                 await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
                 scope.Complete();
             }

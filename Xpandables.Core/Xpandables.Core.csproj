@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Platforms>x64</Platforms>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -12,15 +12,15 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>1.5.0</Version>
-    <AssemblyVersion>1.5.0</AssemblyVersion>
-    <FileVersion>1.5.0</FileVersion>
-    <PackageVersion>1.5.0</PackageVersion>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
+    <FileVersion>3.0.0</FileVersion>
+    <PackageVersion>3.0.0</PackageVersion>
     <PackageId>Xpandables.Core</PackageId>
     <PackageTags>Database, Http, EntityFramework</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Update ref.</PackageReleaseNotes>
+    <PackageReleaseNotes>Move to NetCore 3.0</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables.Core</AssemblyName>
     <RootNamespace>Xpandables.Core</RootNamespace>
@@ -32,7 +32,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DocumentationFile>bin\x64\Debug\netcoreapp2.2\Xpandables.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\netcoreapp3.0\Xpandables.Core.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <NoWarn>1701;1702;CS1591</NoWarn>
   </PropertyGroup>
@@ -41,7 +41,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DocumentationFile>bin\x64\Release\netcoreapp2.2\Xpandables.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Release\netcoreapp3.0\Xpandables.Core.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <NoWarn>1701;1702;CS1591</NoWarn>
   </PropertyGroup>
@@ -61,6 +61,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.10.0" />
   </ItemGroup>
 
   <ItemGroup>

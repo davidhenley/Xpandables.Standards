@@ -27,7 +27,7 @@ namespace System.GraphQL
             var property = source ?? throw new ArgumentNullException(nameof(source));
 
             return new ColumnObject(
-                    property.DeclaringEntityType.IsOwned() ? property.Name : property.Relational().ColumnName,
+                    property.DeclaringEntityType.IsOwned() ? property.Name : property.GetColumnName(),
                     property.ClrType,
                     property.PropertyInfo.GetDescription())
                 .Nullable(property.IsNullable);

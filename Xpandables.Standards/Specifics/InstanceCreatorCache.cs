@@ -22,7 +22,7 @@ using System.Linq;
 namespace System
 {
     /// <summary>
-    /// Provides cache behavior to <see cref="IInstanceCreator"/>.
+    /// Provides with cache behavior to <see cref="IInstanceCreator"/>.
     /// You must derive from this class to implement custom behavior cache.
     /// </summary>
     public class InstanceCreatorCache : InstanceCreator

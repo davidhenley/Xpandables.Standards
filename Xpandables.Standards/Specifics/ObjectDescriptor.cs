@@ -64,6 +64,5 @@ namespace System
         /// Contains a collection of key/values pairs of the underlying instance.
         /// </summary>
         public IReadOnlyDictionary<string, object> Properties { get; }
-
     }
 }

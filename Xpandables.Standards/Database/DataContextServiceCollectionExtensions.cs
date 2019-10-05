@@ -61,7 +61,7 @@ namespace System.Design.DependencyInjection
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddScoped<IDataContextSeeder, TDataContextSeeder>();
-            services.TryDecorateExtended<IDataContextProvider, DataContextProviderSeederDecorator>();
+            services.XTryDecorate<IDataContextProvider, DataContextProviderSeederDecorator>();
             return services;
         }
     }

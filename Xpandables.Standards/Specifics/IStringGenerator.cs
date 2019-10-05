@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Security.Cryptography;
+using System.Text;
 
 namespace System
 {
@@ -37,6 +38,38 @@ namespace System
         /// <returns>A new string of the specified length with random characters.</returns>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="length"/> is lower or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="lookupCharacters"/> is null.</exception>
-        Optional<string> Generate(int length, string lookupCharacters);
+        Optional<string> Generate(int length, string lookupCharacters)
+        {
+            if (length <= 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (string.IsNullOrWhiteSpace(lookupCharacters)) throw new ArgumentNullException(nameof(lookupCharacters));
+
+            try
+            {
+                var stringResult = new StringBuilder(length);
+                using (var random = new RNGCryptoServiceProvider())
+                {
+                    var count = (int)Math.Ceiling(Math.Log(lookupCharacters.Length, 2) / 8.0);
+                    Diagnostics.Debug.Assert(count <= sizeof(uint));
+
+                    var offset = BitConverter.IsLittleEndian ? 0 : sizeof(uint) - count;
+                    var max = (int)(Math.Pow(2, count * 8) / lookupCharacters.Length) * lookupCharacters.Length;
+
+                    var uintBuffer = new byte[sizeof(uint)];
+                    while (stringResult.Length < length)
+                    {
+                        random.GetBytes(uintBuffer, offset, count);
+                        var number = BitConverter.ToUInt32(uintBuffer, 0);
+                        if (number < max)
+                            stringResult.Append(lookupCharacters[(int)(number % lookupCharacters.Length)]);
+                    }
+                }
+
+                return stringResult.ToString();
+            }
+            catch (Exception exception)
+            {
+                return Optional<string>.Exception(exception);
+            }
+        }
     }
 }

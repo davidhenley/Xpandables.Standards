@@ -26,7 +26,8 @@ namespace System
 {
     /// <summary>
     /// Implementation for <see cref="INotifyPropertyChanged"/>.
-    /// This is an <see langword="abstract"/> and serializable class.
+    /// You can combine the use with <see cref="NotifyPropertyChangedDependOnAttribute"/> to propagate notification.
+    /// <para>This is an <see langword="abstract"/> and serializable class.</para>
     /// </summary>
     /// <typeparam name="T">Type of the derived class.</typeparam>
     [Serializable]
@@ -106,7 +107,7 @@ namespace System
 
                 (from keyValues in Dependencies
                  from dependent in keyValues.Value
-                 where keyValues.Key.Equals(property, StringComparison.InvariantCulture)
+                 where keyValues.Key.Equals(property, StringComparison.OrdinalIgnoreCase)
                  select dependent)
                  .ToList()
                  .ForEach(onPropertyChangedAction);
@@ -122,7 +123,6 @@ namespace System
 
         /// <summary>
         /// Contains a collection of dependencies on property changed notification.
-        /// You can override the value in the constructor.
         /// </summary>
         private IDictionary<string, List<string>> Dependencies { get; }
 

@@ -20,6 +20,7 @@ using System.Design.Query;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace System.Design.Mediator
 {
@@ -38,6 +39,7 @@ namespace System.Design.Mediator
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(ProcessorTransactionDecorator),
                     nameof(decoratee)));
+
             _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
                 nameof(attributeAccessor),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -45,22 +47,20 @@ namespace System.Design.Mediator
                     nameof(attributeAccessor)));
         }
 
-        public async Task<TResult> HandleResultAsync<TResult>(
+        public async ValueTask<TResult> HandleResultAsync<TResult>(
             IQuery<TResult> query,
             CancellationToken cancellationToken = default)
         {
             if (query is null) throw new ArgumentNullException(nameof(query));
 
-            var transactionAttribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(query.GetType());
-            if (transactionAttribute.IsValue())
+            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(query.GetType());
+            if (attribute.IsValue())
             {
-                using (var scope = transactionAttribute.Single().GetTransactionScope())
-                {
-                    var result = await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
-                    scope.Complete();
+                using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
+                var result = await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
+                scope.Complete();
 
-                    return result;
-                }
+                return result;
             }
 
             return await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
@@ -71,14 +71,12 @@ namespace System.Design.Mediator
         {
             if (command is null) throw new ArgumentNullException(nameof(command));
 
-            var transactionAttribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TCommand));
-            if (transactionAttribute.IsValue())
+            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TCommand));
+            if (attribute.IsValue())
             {
-                using (var scope = transactionAttribute.Single().GetTransactionScope())
-                {
-                    await _decoratee.HandleCommandAsync(command, cancellationToken).ConfigureAwait(false);
-                    scope.Complete();
-                }
+                using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
+                await _decoratee.HandleCommandAsync(command, cancellationToken).ConfigureAwait(false);
+                scope.Complete();
             }
             else
             {
@@ -86,27 +84,24 @@ namespace System.Design.Mediator
             }
         }
 
-        public async Task<TResult> HandleQueryResultAsync<TQuery, TResult>(
+        public async ValueTask<TResult> HandleQueryResultAsync<TQuery, TResult>(
             TQuery query, CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
         {
             if (query is null) throw new ArgumentNullException(nameof(query));
 
-            var transactionAttribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
-            if (transactionAttribute.IsValue())
+            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
+            if (attribute.IsValue())
             {
-                using (var scope = transactionAttribute.Single().GetTransactionScope())
-                {
-                    var result = await _decoratee
-                          .HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);
-                    scope.Complete();
-
-                    return result;
-                }
+                using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
+                var result = await _decoratee
+                    .HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken)
+                    .ConfigureAwait(false);
+                scope.Complete();
+                return result;
             }
 
             return await _decoratee.HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);
         }
     }
-
 }

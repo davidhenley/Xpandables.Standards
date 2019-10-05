@@ -16,9 +16,6 @@
 ************************************************************************************************************/
 
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace System.Design.DependencyInjection
 {
@@ -33,7 +30,7 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomStringEncryptorGenerator(this IServiceCollection services)
+        public static IServiceCollection AddXStringEncryptorGenerator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddTransient<IStringEncryptor, StringEncryptor>();
@@ -43,28 +40,46 @@ namespace System.Design.DependencyInjection
         }
 
         /// <summary>
-        /// Adds the <typeparamref name="TDataTimeProvider"/> that implements the <see cref="IDateTimeProvider"/> interface.
+        /// Adds the <typeparamref name="TDateTimeEngine"/> that implements the <see cref="IDateTimeEngine"/> interface
+        /// with transient life time.
         /// </summary>
-        /// <typeparam name="TDataTimeProvider">The type of date time provider.</typeparam>
+        /// <typeparam name="TDateTimeEngine">The type of date time provider.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomDatTimeProvider<TDataTimeProvider>(this IServiceCollection services)
-            where TDataTimeProvider:class, IDateTimeProvider
+        public static IServiceCollection AddXDatTimeEngine<TDateTimeEngine>(this IServiceCollection services)
+            where TDateTimeEngine : class, IDateTimeEngine
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.AddTransient<IDateTimeProvider, TDataTimeProvider>();
+            services.AddTransient<IDateTimeEngine, TDateTimeEngine>();
             return services;
         }
 
         /// <summary>
-        /// Adds the default date time provider implementation.
+        /// Adds the default date time engine implementation to the services with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomDatTimeProvider(this IServiceCollection services)
+        public static IServiceCollection AddXDatTimeEngine(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+            services.AddTransient<IDateTimeEngine, DateTimeEngine>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the instance creator to the services with the transient life time.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <param name="withCache">Determines whether or not the instance creator should be used with cache.
+        /// The default value is false.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddXInstanceCreator(this IServiceCollection services, bool withCache = false)
+        {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            if (withCache)
+                services.AddTransient<IInstanceCreator, InstanceCreatorCache>();
+            else
+                services.AddTransient<IInstanceCreator, InstanceCreator>();
             return services;
         }
     }

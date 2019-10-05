@@ -15,36 +15,11 @@
  *
 ************************************************************************************************************/
 
-using System.Reflection;
-
 namespace System
 {
     /// <summary>
-    /// Provides with a method to access a specific type attribute. It implements the <see cref="IAttributeAccessor"/>.
+    /// Defines the default implementation for <see cref="IAttributeAccessor"/>.
+    /// <para>You must derive from this class to implement a custom validator that match your requirement.</para>
     /// </summary>
-    public class AttributeAccessor : IAttributeAccessor
-    {
-        /// <summary>
-        /// Returns the found attribute of type <typeparamref name="TAttribute"/> from the specified type.
-        /// Otherwise returns an empty / exception optional.
-        /// </summary>
-        /// <param name="type">The type to act on.</param>
-        /// <returns>An optional instance that may be contains the found attribute.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        public Optional<TAttribute> GetAttribute<TAttribute>(Type type)
-            where TAttribute : Attribute
-        {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            try
-            {
-                return type.GetCustomAttribute<TAttribute>();
-            }
-            catch (Exception exception) when (exception is NotSupportedException
-                                            || exception is AmbiguousMatchException
-                                            || exception is TypeLoadException)
-            {
-                return Optional<TAttribute>.Exception(exception);
-            }
-        }
-    }
+    public class AttributeAccessor : IAttributeAccessor { }
 }

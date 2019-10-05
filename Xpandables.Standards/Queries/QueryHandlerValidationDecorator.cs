@@ -26,23 +26,20 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of query.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class QueryHandlerValidationDecorator<TQuery, TResult> :
-        ObjectDescriptor<QueryHandlerValidationDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+    public sealed class QueryHandlerValidationDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>, IValidationDecorator
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
-        private readonly ICustomCompositeValidator<TQuery> _validator;
+        private readonly ICompositeValidatorRule<TQuery> _validator;
 
-        public QueryHandlerValidationDecorator(
-            IQueryHandler<TQuery, TResult> decoratee,
-            ICustomCompositeValidator<TQuery> validator)
-            : base(decoratee)
+        public QueryHandlerValidationDecorator(IQueryHandler<TQuery, TResult> decoratee, ICompositeValidatorRule<TQuery> validator)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerValidationDecorator<TQuery, TResult>),
                     nameof(decoratee)));
+
             _validator = validator ?? throw new ArgumentNullException(
                 nameof(validator),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -50,7 +47,7 @@ namespace System.Design.Query
                     nameof(validator)));
         }
 
-        public Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             _validator.Validate(query);
             return _decoratee.HandleAsync(query, cancellationToken);

@@ -32,13 +32,18 @@ namespace System
             TaskContinuationOptions.None,
             TaskScheduler.Default);
 
-        [Diagnostics.CodeAnalysis.SuppressMessage(
-            "Reliability", "CA2008:Ne pas créer de tâches sans passer TaskScheduler", Justification = "<En attente>")]
+        /// <summary>
+        /// Executes the asynchronous operation synchronously.
+        /// </summary>
+        /// <typeparam name="TResult">The type of result.</typeparam>
+        /// <param name="func">The asynchronous function to execute synchronously.</param>
         public static TResult RunSync<TResult>(this Func<Task<TResult>> func)
             => _taskFactory.StartNew(func).Unwrap().GetAwaiter().GetResult();
 
-        [Diagnostics.CodeAnalysis.SuppressMessage(
-            "Reliability", "CA2008:Ne pas créer de tâches sans passer TaskScheduler", Justification = "<En attente>")]
+        /// <summary>
+        /// Executes the asynchronous operation synchronously.
+        /// </summary>
+        /// <param name="func">The operation to be synchronously executed.</param>
         public static void RunSync(this Func<Task> func)
             => _taskFactory.StartNew(func).Unwrap().GetAwaiter().GetResult();
     }

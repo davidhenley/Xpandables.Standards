@@ -32,17 +32,17 @@ namespace System.Configuration
         /// <summary>
         /// The event that will be post raised.
         /// </summary>
-        public event Func<Task> PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
+        public event Func<ValueTask> PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
 
         /// <summary>
         /// The event that will be raised when exception occurred in order to rollback previous actions.
         /// </summary>
-        public event Func<Task> RollbackEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
+        public event Func<ValueTask> RollbackEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
 
         /// <summary>
         /// Raises the <see cref="PostEvent"/> event.
         /// </summary>
-        public async Task OnPostEventAsync()
+        public async ValueTask OnPostEventAsync()
         {
             try
             {
@@ -57,7 +57,7 @@ namespace System.Configuration
         /// <summary>
         /// Raises the <see cref="RollbackEvent"/> event.
         /// </summary>
-        public async Task OnRollbackEventAsync()
+        public async ValueTask OnRollbackEventAsync()
         {
             try
             {

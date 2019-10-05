@@ -98,8 +98,8 @@ namespace System
         /// </summary>
         /// <param name="other">Option to compare with.</param>
         public bool Equals(EncryptedValues other)
-            => Key.Equals(other.Key, StringComparison.InvariantCultureIgnoreCase)
-                && Value.Equals(other.Value, StringComparison.InvariantCultureIgnoreCase);
+            => Key.Equals(other.Key, StringComparison.OrdinalIgnoreCase)
+                && Value.Equals(other.Value, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Creates a string representation of the <see cref="EncryptedValues"/>.
@@ -107,14 +107,15 @@ namespace System
         public readonly override string ToString() => $"{Key}:{Value}";
 
         /// <summary>
-        /// Creates a string representation of the <see cref="SignedValues{T}"/> using the specified format and provider.
+        /// Creates a string representation of the <see cref="EncryptedValues"/> using the specified format and provider.
         /// </summary>
         /// <param name="format">A composite format string.</param>
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
+        /// <exception cref="FormatException">The <paramref name="format"/> is invalid or
+        /// the index of a format item is not zero or one.</exception>
         public string ToString(string format, IFormatProvider formatProvider)
             => string.Format(formatProvider, format, Key, Value);
-
     }
 }

@@ -35,9 +35,9 @@ namespace System.Design.DependencyInjection
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddCustomQueryHandlers(
+        public static IServiceCollection AddXQueryHandlers(
             this IServiceCollection services,
-            DecorateWith decorateWith = DecorateWith.None,
+            Decorators decorateWith = Decorators.None,
             params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
@@ -51,77 +51,66 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if ((decorateWith & DecorateWith.Validation) == DecorateWith.Validation)
-                services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
-            if ((decorateWith & DecorateWith.Persistence) == DecorateWith.Persistence)
-                services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
-            if ((decorateWith & DecorateWith.Transaction) == DecorateWith.Transaction)
-                services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
-            if ((decorateWith & DecorateWith.EventRegister) == DecorateWith.EventRegister)
-                services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
-            if ((decorateWith & DecorateWith.Logging) == DecorateWith.Logging)
-                services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerLoggingDecorator<,>));
-
+            if ((decorateWith & Decorators.Validation) == Decorators.Validation)
+                services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
+            if ((decorateWith & Decorators.Persistence) == Decorators.Persistence)
+                services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
+            if ((decorateWith & Decorators.Transaction) == Decorators.Transaction)
+                services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
+            if ((decorateWith & Decorators.EventRegister) == Decorators.EventRegister)
+                services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="QueryHandlerValidationDecorator{TQuery, TResult}"/> decorator.
+        /// Adds <see cref="QueryHandlerValidationDecorator{TQuery, TResult}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomQueryValidationDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXQueryValidationDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
+            services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerValidationDecorator<,>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="QueryHandlerPersistenceDecorator{TQuery, TResult}"/> decorator.
+        /// Adds <see cref="QueryHandlerPersistenceDecorator{TQuery, TResult}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomQueryPersistenceDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXQueryPersistenceDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
+            services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerPersistenceDecorator<,>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="QueryHandlerTransactionDecorator{TQuery, TResult}"/> decorator.
+        /// Adds <see cref="QueryHandlerTransactionDecorator{TQuery, TResult}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomQueryTransactionDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXQueryTransactionDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
+            services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerTransactionDecorator<,>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="QueryHandlerEventRegisterDecorator{TQuery, TResult}"/> decorator.
+        /// Adds <see cref="QueryHandlerEventRegisterDecorator{TQuery, TResult}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomQueryEventRegisterDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXQueryEventRegisterDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds <see cref="QueryHandlerLoggingDecorator{TQuery, TResult}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomQueryLoggingDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(IQueryHandler<,>), typeof(QueryHandlerLoggingDecorator<,>));
+            services.XTryDecorate(typeof(IQueryHandler<,>), typeof(QueryHandlerEventRegisterDecorator<,>));
             return services;
         }
     }

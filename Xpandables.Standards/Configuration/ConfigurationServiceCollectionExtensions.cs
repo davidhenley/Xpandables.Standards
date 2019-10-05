@@ -32,7 +32,7 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCorrelationContext(this IServiceCollection services)
+        public static IServiceCollection AddXCorrelationContext(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddScoped<ICorrelationContext, CorrelationContext>();
@@ -44,7 +44,7 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomConfigurationAccessor(this IServiceCollection services)
+        public static IServiceCollection AddXConfigurationAccessor(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddTransient<IConfigurationAccessor, ConfigurationAccessor>();
@@ -56,7 +56,7 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCorrelationTaskRegister(this IServiceCollection services)
+        public static IServiceCollection AddXCorrelationTaskRegister(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddScoped<CorrelationTaskRegister>();
@@ -70,7 +70,7 @@ namespace System.Design.DependencyInjection
         /// <typeparam name="TTokenEngine">The type of that implements <see cref="ITokenEngine"/>.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomTokenEngine<TTokenEngine>(this IServiceCollection services)
+        public static IServiceCollection AddXTokenEngine<TTokenEngine>(this IServiceCollection services)
             where TTokenEngine : class, ITokenEngine
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
@@ -86,7 +86,7 @@ namespace System.Design.DependencyInjection
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddCustomEventDispatcher(this IServiceCollection services, params Assembly[] assemblies)
+        public static IServiceCollection AddXEventDispatcher(this IServiceCollection services, params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             if (assemblies?.Any() != true) throw new ArgumentNullException(nameof(assemblies));

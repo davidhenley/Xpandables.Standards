@@ -64,7 +64,7 @@ namespace System.Design.Mediator
             }
         }
 
-        public async Task<TResult> HandleQueryResultAsync<TQuery, TResult>(
+        public async ValueTask<TResult> HandleQueryResultAsync<TQuery, TResult>(
             TQuery query,
             CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
@@ -93,7 +93,7 @@ namespace System.Design.Mediator
             }
         }
 
-        public async Task<TResult> HandleResultAsync<TResult>(
+        public async ValueTask<TResult> HandleResultAsync<TResult>(
             IQuery<TResult> query,
             CancellationToken cancellationToken = default)
         {

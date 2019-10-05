@@ -30,24 +30,24 @@ namespace System.Design.DependencyInjection
     public static class LoggingServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the logger using the default <see cref="LogEntity"/> event.
+        /// Adds the logger using the default <see cref="LogEntity"/> event to the services with scoped life time.
         /// The <see cref="LogEntity"/> must be registered in the data context and the context
         /// must implement the <see cref="IDataContext"/> interface.
         /// </summary>
         /// <param name="services">The current services collection.</param>
         /// <exception cref="InvalidOperationException">Registration failed.</exception>
-        public static IServiceCollection AddCustomSerilog(this IServiceCollection services)
+        public static IServiceCollection AddXSerilog(this IServiceCollection services)
             => services.DoAddCustomSerilog<LogEntity>();
 
         /// <summary>
-        /// Adds the logger using the specified type of log event.
+        /// Adds the logger using the specified type of log event to the services with scope life time.
         /// The <typeparamref name="TLogEvent"/> must be registered in the data context and the context
         /// must implement the <see cref="IDataContext"/> interface.
         /// </summary>
         /// <typeparam name="TLogEvent">The type of the log entity.</typeparam>
         /// <param name="services">The current services collection.</param>
         /// <exception cref="InvalidOperationException">Registration failed.</exception>
-        public static IServiceCollection AddCustomSerilog<TLogEvent>(this IServiceCollection services)
+        public static IServiceCollection AddXSerilog<TLogEvent>(this IServiceCollection services)
             where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
             => services.DoAddCustomSerilog<TLogEvent>();
 
@@ -57,7 +57,7 @@ namespace System.Design.DependencyInjection
         /// <typeparam name="TLoggerWrapper">The type of the logger to be registered.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomLoggerWrapper<TLoggerWrapper>(this IServiceCollection services)
+        public static IServiceCollection AddXLoggerWrapper<TLoggerWrapper>(this IServiceCollection services)
             where TLoggerWrapper : class, ILoggerWrapper
         {
             if (services is null) throw new ArgumentNullException(nameof(services));

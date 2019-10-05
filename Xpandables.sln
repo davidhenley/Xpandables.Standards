@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.EntityFrameworkC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL", "Xpandables.GraphQL\Xpandables.GraphQL.csproj", "{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL.Api", "Xpandables.GraphQL.Api\Xpandables.GraphQL.Api.csproj", "{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL.Api", "Xpandables.GraphQL.Api\Xpandables.GraphQL.Api.csproj", "{EC643C8C-A1C2-4A58-9178-28F990E961B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,12 +53,12 @@ Global
 		{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}.Release|Any CPU.ActiveCfg = Release|x64
 		{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}.Release|x64.ActiveCfg = Release|x64
 		{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}.Release|x64.Build.0 = Release|x64
-		{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}.Debug|x64.ActiveCfg = Debug|x64
-		{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}.Debug|x64.Build.0 = Debug|x64
-		{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}.Release|Any CPU.ActiveCfg = Release|x64
-		{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}.Release|x64.ActiveCfg = Release|x64
-		{CC31FA1B-0EDB-480A-9D7A-FE58F56AFFC7}.Release|x64.Build.0 = Release|x64
+		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Debug|x64.ActiveCfg = Debug|x64
+		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Debug|x64.Build.0 = Debug|x64
+		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|Any CPU.ActiveCfg = Release|x64
+		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|x64.ActiveCfg = Release|x64
+		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

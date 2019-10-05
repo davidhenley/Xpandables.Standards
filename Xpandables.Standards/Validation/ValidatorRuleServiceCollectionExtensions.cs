@@ -15,42 +15,38 @@
  *
 ************************************************************************************************************/
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace System.Design.DependencyInjection
 {
     /// <summary>
-    /// Provides methods to register validation services.
+    /// Provides methods to register validator rules.
     /// </summary>
-    public static class ValidatorServiceCollectionExtensions
+    public static class ValidatorRuleServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the <see cref="ICustomValidator{TArgument}"/> to the services with transient life time.
+        /// Adds the <see cref="IValidatorRule{TArgument}"/> to the services with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddCustomValidators(this IServiceCollection services, params Assembly[] assemblies)
+        public static IServiceCollection AddXValidatorRules(this IServiceCollection services, params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             if (assemblies?.Any() != true) throw new ArgumentNullException(nameof(assemblies));
 
-            services.AddTransient(typeof(ICustomCompositeValidator<>), typeof(CompositeValidator<>));
+            services.AddTransient(typeof(ICompositeValidatorRule<>), typeof(CompositeValidatorRule<>));
             services.Scan(scan => scan
                 .FromAssemblies(assemblies)
-                .AddClasses(classes => classes.AssignableTo(typeof(ICustomValidator<>))
+                .AddClasses(classes => classes.AssignableTo(typeof(IValidatorRule<>))
                     .Where(_ => !_.IsGenericType))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
             return services;
         }
-
     }
 }

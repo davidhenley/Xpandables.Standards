@@ -21,6 +21,8 @@ namespace System
 {
     /// <summary>
     /// Provides with a method to encrypt string with its key.
+    /// <para>Contains default implementation.</para>
+    /// <para>The implementation uses the <see cref="SHA512Managed"/>.</para>
     /// </summary>
     public interface IStringEncryptor
     {
@@ -33,6 +35,22 @@ namespace System
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
-        Optional<string> Encrypt(string value, string key);
+        Optional<string> Encrypt(string value, string key)
+        {
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
+
+            try
+            {
+                using var cryptoManaged = new SHA512Managed();
+                var data = Text.Encoding.UTF8.GetBytes(value);
+                var hash = cryptoManaged.ComputeHash(data);
+                return BitConverter.ToString(hash).Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
+            {
+                return Optional<string>.Exception(exception);
+            }
+        }
     }
 }

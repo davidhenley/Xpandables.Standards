@@ -40,7 +40,7 @@ namespace System.Design.Mediator
         /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<TResult> HandleQueryResultAsync<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default)
+        ValueTask<TResult> HandleQueryResultAsync<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace System.Design.Mediator
         /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<TResult> HandleResultAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
+        ValueTask<TResult> HandleResultAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously handles the specified command.

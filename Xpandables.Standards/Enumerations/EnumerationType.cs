@@ -196,7 +196,7 @@ namespace System
         public virtual int CompareTo(EnumerationType other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
-            return Value.CompareTo(other.Value) & string.Compare(DisplayName, other.DisplayName, StringComparison.Ordinal);
+            return Value.CompareTo(other.Value) & string.CompareOrdinal(DisplayName, other.DisplayName);
         }
 
         /// <summary>

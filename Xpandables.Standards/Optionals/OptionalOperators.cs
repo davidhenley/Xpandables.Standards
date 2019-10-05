@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace System
@@ -37,11 +38,17 @@ namespace System
         public static implicit operator T(Optional<T> optional)
             => optional is null ? (default) : optional.IsValue() ? optional.InternalValue : default;
 
+        public static implicit operator Exception(Optional<T> optional)
+            => optional is null ? (default) : optional.IsException() ? optional.InternalException : default;
+
         public static implicit operator Optional<T>(T value)
             => EqualityComparer<T>.Default.Equals(value, default) ? Empty() : Some(value);
 
         public static implicit operator Task<Optional<T>>(Optional<T> optional)
             => optional is null ? Empty() : Task.FromResult(optional);
+
+        public static implicit operator ValueTask<Optional<T>>(Optional<T> optional)
+            =>optional is null?Empty() : new ValueTask<Optional<T>>(optional);
 
         public static implicit operator Optional<T>(Optional<Optional<T>> optional)
             => optional?.InternalValue;

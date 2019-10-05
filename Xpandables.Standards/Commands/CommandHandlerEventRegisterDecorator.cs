@@ -25,17 +25,13 @@ namespace System.Design.Command
     /// This class allows the application author to add post/rollback event support to command.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command.</typeparam>
-    public sealed class CommandHandlerEventRegisterDecorator<TCommand> :
-        ObjectDescriptor<CommandHandlerEventRegisterDecorator<TCommand>>, ICommandHandler<TCommand>
+    public sealed class CommandHandlerEventRegisterDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand
     {
         private readonly ICommandHandler<TCommand> _decoratee;
         private readonly CorrelationTaskRegister _eventRegister;
 
-        public CommandHandlerEventRegisterDecorator(
-            CorrelationTaskRegister eventRegister,
-            ICommandHandler<TCommand> decoratee)
-            : base(decoratee)
+        public CommandHandlerEventRegisterDecorator(CorrelationTaskRegister eventRegister, ICommandHandler<TCommand> decoratee)
         {
             _eventRegister = eventRegister ?? throw new ArgumentNullException(
                 nameof(eventRegister),

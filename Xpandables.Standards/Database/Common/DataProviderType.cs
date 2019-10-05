@@ -39,7 +39,7 @@ namespace System.Design.Database.Common
         }
 
         /// <summary>
-        /// Gets the invariant (assembly) name that can be used programmatically to refer to the data provider.
+        /// Gets the invariant (assembly) name that can be used pro grammatically to refer to the data provider.
         /// </summary>
         public new string DisplayName { get; }
 

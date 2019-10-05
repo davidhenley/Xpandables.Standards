@@ -18,18 +18,18 @@
 namespace System.Http
 {
     /// <summary>
-    /// Defines a method used to retrieve the ambient token string from the current http request header.
+    /// Defines a method used to retrieve the ambient token string from the current HTTP request header.
     /// </summary>
     public interface IHttpRequestTokenAccessor
     {
         /// <summary>
-        /// Returns the current token value from the current http request matching the "Authorization" key.
+        /// Returns the current token value from the current HTTP request matching the "Authorization" key.
         /// If not found, returns an empty optional.
         /// </summary>
         Optional<string> GetRequestHttpToken();
 
         /// <summary>
-        /// Returns the current token value from the current http request with the specified key.
+        /// Returns the current token value from the current HTTP request with the specified key.
         /// If not found, returns an empty optional.
         /// </summary>
         /// <param name="key">The token key to find.</param>

@@ -35,9 +35,9 @@ namespace System.Design.DependencyInjection
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandHandlers(
+        public static IServiceCollection AddXCommandHandlers(
             this IServiceCollection services,
-            DecorateWith decorateWith = DecorateWith.None,
+            Decorators decorateWith = Decorators.None,
             params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
@@ -50,77 +50,66 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if ((decorateWith & DecorateWith.Validation) == DecorateWith.Validation)
-                services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
-            if ((decorateWith & DecorateWith.Persistence) == DecorateWith.Persistence)
-                services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
-            if ((decorateWith & DecorateWith.Transaction) == DecorateWith.Transaction)
-                services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
-            if ((decorateWith & DecorateWith.EventRegister) == DecorateWith.EventRegister)
-                services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
-            if ((decorateWith & DecorateWith.Logging) == DecorateWith.Logging)
-                services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerLoggingDecorator<>));
-
+            if ((decorateWith & Decorators.Validation) == Decorators.Validation)
+                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
+            if ((decorateWith & Decorators.Persistence) == Decorators.Persistence)
+                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
+            if ((decorateWith & Decorators.Transaction) == Decorators.Transaction)
+                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
+            if ((decorateWith & Decorators.EventRegister) == Decorators.EventRegister)
+                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="CommandHandlerValidationDecorator{TCommand}"/> decorator.
+        /// Adds <see cref="CommandHandlerValidationDecorator{TCommand}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandValidationDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXCommandValidationDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
+            services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="CommandHandlerPersistenceDecorator{TCommand}"/> decorator.
+        /// Adds <see cref="CommandHandlerPersistenceDecorator{TCommand}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandPersistenceDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXCommandPersistenceDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
+            services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="CommandHandlerTransactionDecorator{TCommand}"/> decorator.
+        /// Adds <see cref="CommandHandlerTransactionDecorator{TCommand}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandTransactionDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXCommandTransactionDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
+            services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
             return services;
         }
 
         /// <summary>
-        /// Adds <see cref="CommandHandlerEventRegisterDecorator{TCommand}"/> decorator.
+        /// Adds <see cref="CommandHandlerEventRegisterDecorator{TCommand}"/> decorator to the services
+        /// with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandEventRegisterDecorator(this IServiceCollection services)
+        public static IServiceCollection AddXCommandEventRegisterDecorator(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds <see cref="CommandHandlerLoggingDecorator{TCommand}"/> decorator.
-        /// </summary>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomCommandLoggingDecorator(this IServiceCollection services)
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.TryDecorateExtended(typeof(ICommandHandler<>), typeof(CommandHandlerLoggingDecorator<>));
+            services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
             return services;
         }
     }

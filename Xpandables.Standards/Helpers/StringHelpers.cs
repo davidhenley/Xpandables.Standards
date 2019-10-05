@@ -174,7 +174,6 @@ namespace System
         /// <param name="valueIfException">The value to be returned if conversion failed.</param>
         /// <returns>The string value converted to the specified value type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null or empty.</exception>
-        /// <exception cref="InvalidOperationException">Conversion failed. See inner exception.</exception>
         public static T ToValueType<T>(this string value, T valueIfException)
             where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
         {

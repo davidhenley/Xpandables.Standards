@@ -31,7 +31,7 @@ namespace System.Design.DependencyInjection
         /// <typeparam name="THttpRequestHeaderValuesAccessor">The type of HTTP request header.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomHttpRequestHeaderValuesAccessor<THttpRequestHeaderValuesAccessor>(
+        public static IServiceCollection AddXHttpRequestHeaderValuesAccessor<THttpRequestHeaderValuesAccessor>(
             this IServiceCollection services)
             where THttpRequestHeaderValuesAccessor : class, IHttpRequestHeaderValuesAccessor
         {
@@ -45,8 +45,8 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomHttpRequestTokenAccessor(this IServiceCollection services)
-            => services.AddCustomHttpRequestTokenAccessor<HttpRequestTokenAccessor>();
+        public static IServiceCollection AddXHttpRequestTokenAccessor(this IServiceCollection services)
+            => services.AddXHttpRequestTokenAccessor<HttpRequestTokenAccessor>();
 
         /// <summary>
         /// Adds the specified HTTP request token accessor.
@@ -55,7 +55,7 @@ namespace System.Design.DependencyInjection
         /// <typeparam name="THttpRequestTokenAccessor">The type of HTTP request token.</typeparam>
         /// <param name="services">The collection of services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddCustomHttpRequestTokenAccessor<THttpRequestTokenAccessor>(
+        public static IServiceCollection AddXHttpRequestTokenAccessor<THttpRequestTokenAccessor>(
             this IServiceCollection services)
             where THttpRequestTokenAccessor : class, IHttpRequestTokenAccessor
         {

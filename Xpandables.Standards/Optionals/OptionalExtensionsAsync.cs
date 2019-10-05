@@ -33,7 +33,7 @@ namespace System
         /// <param name="source">The value to act on.</param>
         /// <param name="predicate">The predicate to check.</param>
         /// <returns>An optional of <typeparamref name="T"/> value.</returns>
-        public static async Task<Optional<T>> WhenAsync<T>(this T source, bool predicate)
+        public static async ValueTask<Optional<T>> WhenAsync<T>(this T source, bool predicate)
         {
             return predicate
                 ? await Task.FromResult(source.AsOptional()).ConfigureAwait(false)
@@ -49,7 +49,7 @@ namespace System
         /// <param name="predicate">The predicate to check.</param>
         /// <returns>An optional of <typeparamref name="T"/> value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
-        public static async Task<Optional<T>> WhenAsync<T>(this T source, Predicate<T> predicate)
+        public static async ValueTask<Optional<T>> WhenAsync<T>(this T source, Predicate<T> predicate)
         {
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             return predicate(source)
@@ -63,7 +63,7 @@ namespace System
         /// <typeparam name="T">The Type of the value.</typeparam>
         /// <param name="value">The value to act on.</param>
         /// <returns>An optional instance.</returns>
-        public static async Task<Optional<T>> AsOptionalAsync<T>(this T value)
+        public static async ValueTask<Optional<T>> AsOptionalAsync<T>(this T value)
         {
             if (EqualityComparer<T>.Default.Equals(value, default)) return Optional<T>.Empty();
             return await Task.FromResult(Optional<T>.Some(value)).ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace System
         /// <param name="value">The value to act on.</param>
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
-        public static async Task<Optional<(T Left, U Right)>> AsOptionalAsync<T, U>(this T value, U right)
+        public static async ValueTask<Optional<(T Left, U Right)>> AsOptionalAsync<T, U>(this T value, U right)
             => await Task.FromResult(value.AsOptional(right)).ConfigureAwait(false);
 
         /// <summary>
@@ -91,132 +91,116 @@ namespace System
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
-        public static Task<Optional<(T Left, U Right)>> AsOptionalAsync<T, U>(this Optional<T> optional, U right)
-            => Task.FromResult(optional.AsOptional(right));
+        public static ValueTask<Optional<(T Left, U Right)>> AsOptionalAsync<T, U>(this Optional<T> optional, U right)
+            => new ValueTask<Optional<(T Left, U Right)>>(optional.AsOptional(right));
 
-        public static async Task MapAsync<T, U>(this Task<Optional<T>> optional, Func<T, Task<U>> some)
+        public static async Task MapAsync<T, U>(this ValueTask<Optional<T>> optional, Func<T, ValueTask<U>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             await (await optional.ConfigureAwait(false)).MapAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task MapAsync<T>(this Task<Optional<T>> optional, Func<T, Task> some)
+        public static async Task MapAsync<T>(this ValueTask<Optional<T>> optional, Func<T, Task> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             await (await optional.ConfigureAwait(false)).MapAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<(T Left, U Right)>> AndOptionalAsync<T, U>(
-            this Task<Optional<T>> optional,
-            Func<Task<Optional<U>>> second)
+        public static async ValueTask<Optional<(T Left, U Right)>> AndOptionalAsync<T, U>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<Optional<U>>> second)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).AndOptionalAsync(second).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<(T Left, U Right)>> AndAsync<T, U>(
-           this Task<Optional<T>> optional,
-           Func<T, Task<U>> second)
+        public static async ValueTask<Optional<(T Left, U Right)>> AndAsync<T, U>(
+           this ValueTask<Optional<T>> optional,
+           Func<T, ValueTask<U>> second)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).AndAsync(second).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<(T Left, U Right)>> AndAsync<T, U>(
-            this Task<Optional<T>> optional,
-            Func<Task<U>> second)
+        public static async ValueTask<Optional<(T Left, U Right)>> AndAsync<T, U>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<U>> second)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).AndAsync(second).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<U>> MapOptionalAsync<T, U>(
-            this Task<Optional<T>> optional,
-            Func<T, Task<Optional<U>>> some)
+        public static async ValueTask<Optional<U>> MapOptionalAsync<T, U>(
+            this ValueTask<Optional<T>> optional,
+            Func<T, ValueTask<Optional<U>>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).MapOptionalAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenAsync<T>(
-            this Task<Optional<T>> optional,
+        public static async ValueTask<Optional<T>> WhenAsync<T>(
+            this ValueTask<Optional<T>> optional,
             Predicate<T> predicate,
-            Func<T, Task<T>> some)
+            Func<T, ValueTask<T>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
         public static async Task WhenAsync<T>(
-            this Task<Optional<T>> optional,
+            this ValueTask<Optional<T>> optional,
             Predicate<T> predicate,
             Func<T, Task> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             await (await optional.ConfigureAwait(false)).WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenEmptyAsync<T>(
-            this Task<Optional<T>> optional,
-            Func<Task<T>> empty)
+        public static async ValueTask<Optional<T>> WhenEmptyAsync<T>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<T>> empty)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenEmptyAsync(empty).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenEmptyOptionalAsync<T>(
-            this Task<Optional<T>> optional,
-            Func<Task<Optional<T>>> empty)
+        public static async ValueTask<Optional<T>> WhenEmptyOptionalAsync<T>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<Optional<T>>> empty)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
         }
 
         public static async Task WhenEmptyAsync<T>(
-            this Task<Optional<T>> optional,
+            this ValueTask<Optional<T>> optional,
             Func<Task> action)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             await (await optional.ConfigureAwait(false)).WhenEmptyAsync(action).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenExceptionAsync<T>(
-            this Task<Optional<T>> optional,
-            Func<Task<T>> some)
+        public static async ValueTask<Optional<T>> WhenExceptionAsync<T>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<T>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenExceptionAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenExceptionOptionalAsync<T>(
-            this Task<Optional<T>> optional,
-            Func<Task<Optional<T>>> some)
+        public static async ValueTask<Optional<T>> WhenExceptionOptionalAsync<T>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<Optional<T>>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenExceptionOptionalAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenExceptionAsync<T>(
-            this Task<Optional<T>> optional,
-            Func<Exception, Task<T>> some)
+        public static async ValueTask<Optional<T>> WhenExceptionAsync<T>(
+            this ValueTask<Optional<T>> optional,
+            Func<Exception, ValueTask<T>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenExceptionAsync(some).ConfigureAwait(false);
         }
 
-        public static async Task<Optional<T>> WhenExceptionOptionalAsync<T>(
-            this Task<Optional<T>> optional,
-            Func<Exception, Task<Optional<T>>> some)
+        public static async ValueTask<Optional<T>> WhenExceptionOptionalAsync<T>(
+            this ValueTask<Optional<T>> optional,
+            Func<Exception, ValueTask<Optional<T>>> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return await (await optional.ConfigureAwait(false)).WhenExceptionOptionalAsync(some).ConfigureAwait(false);
         }
 
         public static async Task WhenExceptionAsync<T>(
-            this Task<Optional<T>> optional,
+            this ValueTask<Optional<T>> optional,
             Func<Exception, Task> some)
         {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
             await (await optional.ConfigureAwait(false)).WhenExceptionAsync(some).ConfigureAwait(false);
         }
     }

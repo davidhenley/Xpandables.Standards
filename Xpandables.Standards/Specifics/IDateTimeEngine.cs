@@ -21,14 +21,15 @@ namespace System
 {
     /// <summary>
     /// Allows an application author to provide runtime date time according to the context.
+    /// <para>Contains default implementation.</para>
     /// </summary>
-    public interface IDateTimeProvider
+    public interface IDateTimeEngine
     {
         /// <summary>
         /// Returns the ambient date time.
         /// The default behavior returns <see cref="DateTime.UtcNow"/>.
         /// </summary>
-        DateTime GetDateTime();
+        DateTime GetDateTime() => DateTime.UtcNow;
 
         /// <summary>
         /// Converts string date time to <see cref="DateTime"/> type.
@@ -46,7 +47,23 @@ namespace System
             string source,
             IFormatProvider provider,
             DateTimeStyles styles,
-            params string[] formats);
+            params string[] formats)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (provider is null) throw new ArgumentNullException(nameof(provider));
+
+            try
+            {
+                if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
+                    return dateTime;
+
+                return Optional<DateTime>.Empty();
+            }
+            catch (Exception exception) when (exception is ArgumentException)
+            {
+                return Optional<DateTime>.Exception(exception);
+            }
+        }
 
         /// <summary>
         /// Converts the value of the current System.DateTime object to its equivalent string
@@ -60,6 +77,20 @@ namespace System
         /// by format and provider.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
-        Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider);
+        Optional<string> DateTimeToString(DateTime dateTime, string format, IFormatProvider provider)
+        {
+            if (format is null) throw new ArgumentNullException(nameof(format));
+            if (provider is null) throw new ArgumentNullException(nameof(provider));
+
+            try
+            {
+                return dateTime.ToString(format, provider);
+            }
+            catch (Exception exception) when (exception is FormatException
+                                            || exception is ArgumentOutOfRangeException)
+            {
+                return Optional<string>.Exception(exception);
+            }
+        }
     }
 }

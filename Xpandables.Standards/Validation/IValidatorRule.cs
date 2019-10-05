@@ -22,7 +22,7 @@ namespace System.ComponentModel.DataAnnotations
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// <para>Contains default implementation.</para>
     /// </summary>
-    public interface IValidator
+    public interface IValidatorRule
     {
         /// <summary>
         /// Applies validation process and throws the <see cref="ValidationException"/> if necessary.
@@ -31,12 +31,18 @@ namespace System.ComponentModel.DataAnnotations
         /// <param name="argument">The target argument to be validated.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
-        void Validate(object argument);
+        void Validate(object argument)
+            => Validator
+               .ValidateObject(
+                   argument,
+                   new ValidationContext(argument, null, null),
+                   true);
 
         /// <summary>
-        /// Determines the order for the underlying object.
+        /// Determines the zero-base order in which the validator will be executed.
+        /// The default value is zero.
         /// </summary>
-        int Order { get; }
+        int Order { get => 0; }
     }
 
     /// <summary>
@@ -45,7 +51,7 @@ namespace System.ComponentModel.DataAnnotations
     /// <para>Contains default implementation.</para>
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
-    public interface ICustomValidator<in TArgument> : IValidator
+    public interface IValidatorRule<in TArgument> : IValidatorRule
         where TArgument : class
     {
         /// <summary>
@@ -54,6 +60,6 @@ namespace System.ComponentModel.DataAnnotations
         /// <param name="argument">The target argument to be validated.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="argument"/> is null.</exception>
         /// <exception cref="ValidationException">Any validation exception.</exception>
-        void Validate(TArgument argument);
+        void Validate(TArgument argument) => ((IValidatorRule)this).Validate(argument);
     }
 }

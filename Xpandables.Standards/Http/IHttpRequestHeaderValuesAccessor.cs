@@ -20,12 +20,12 @@ using System.Collections.Generic;
 namespace System.Http
 {
     /// <summary>
-    /// Provides with methods to retrieve an http request header value matching a key.
+    /// Provides with methods to retrieve an HTTP request header value matching a key.
     /// </summary>
     public interface IHttpRequestHeaderValuesAccessor
     {
         /// <summary>
-        /// Gets the http header value from the current http request matching the specified key.
+        /// Gets the HTTP header value from the current HTTP request matching the specified key.
         /// If not found, returns an empty optional.
         /// </summary>
         /// <param name="key">The key of the value to match.</param>
@@ -33,7 +33,7 @@ namespace System.Http
         Optional<string> GetRequestHeaderValue(string key);
 
         /// <summary>
-        /// Gets all http header values from the current http request matching the specified key.
+        /// Gets all HTTP header values from the current HTTP request matching the specified key.
         /// If not found, returns an empty enumerable.
         /// </summary>
         /// <param name="key">The key of the value to match.</param>

@@ -26,7 +26,7 @@ namespace System
         /// Returns an instance of the <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to be created.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok,
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
         /// otherwise an empty result with exception.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         Optional<object> Create(Type type);
@@ -37,7 +37,7 @@ namespace System
         /// <typeparam name="TParam">The type of the parameter to pass to the constructor.</typeparam>
         /// <param name="type">The type to be created.</param>
         /// <param name="param">The parameter to pass to the constructor.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok,
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
         /// otherwise an empty result with exception.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param"/> is null.</exception>
@@ -51,7 +51,7 @@ namespace System
         /// <param name="type">The type to be created.</param>
         /// <param name="param1">The first parameter to pass to the constructor.</param>
         /// <param name="param2">The first parameter to pass to the constructor.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok,
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
         /// otherwise an empty result with exception.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
@@ -68,7 +68,7 @@ namespace System
         /// <param name="param1">The first parameter to pass to the constructor.</param>
         /// <param name="param2">The first parameter to pass to the constructor.</param>
         /// <param name="param3">The first parameter to pass to the constructor.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok,
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
         /// otherwise an empty result with exception.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>

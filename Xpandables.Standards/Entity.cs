@@ -23,11 +23,11 @@ using System.Security.Cryptography;
 namespace System
 {
     /// <summary>
-    /// The domain object base implementation that provide an identifier and a key generator for derived class.
+    /// The domain object base implementation that provides an identifier and a key generator for derived class.
     /// This is an <see langword="abstract"/> and serializable class.
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("{Id}")]
+    [DebuggerDisplay("Id = {Id}")]
     public abstract class Entity
     {
         /// <summary>
@@ -81,14 +81,12 @@ namespace System
         /// <returns>A string value as identifier.</returns>
         protected virtual string KeyGenerator()
         {
-            using (var rnd = RandomNumberGenerator.Create())
-            {
-                var salt = new byte[32];
-                var guid = Guid.NewGuid().ToString();
-                rnd.GetBytes(salt);
+            using var rnd = RandomNumberGenerator.Create();
+            var salt = new byte[32];
+            var guid = Guid.NewGuid().ToString();
+            rnd.GetBytes(salt);
 
-                return guid + BitConverter.ToString(salt);
-            }
+            return guid + BitConverter.ToString(salt);
         }
 
         /// <summary>

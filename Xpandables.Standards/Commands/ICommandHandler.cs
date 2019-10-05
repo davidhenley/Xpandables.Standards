@@ -25,7 +25,7 @@ namespace System.Design.Command
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to be handled.</typeparam>
-    public interface ICommandHandler<in TCommand>  : IObjectDescriptor
+    public interface ICommandHandler<in TCommand>
         where TCommand : class, ICommand
     {
         /// <summary>

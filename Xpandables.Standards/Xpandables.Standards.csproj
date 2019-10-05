@@ -36,7 +36,8 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DocumentationFile>bin\x64\Debug\netstandard2.1\Xpandables.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591;CA1715</NoWarn>
+    <NoWarn>1701;1702;CS1591;CA1715,CA1801</NoWarn>
+    <CodeAnalysisRuleSet>Xpandables.Standards.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -45,14 +46,16 @@
     <OutputPath>bin\x64\Release\</OutputPath>
     <DocumentationFile>bin\x64\Release\netstandard2.1\Xpandables.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591;CA1715</NoWarn>
+    <NoWarn>1701;1702;CS1591;CA1715;CA1801</NoWarn>
+    <CodeAnalysisRuleSet>Xpandables.Standards.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.10.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />

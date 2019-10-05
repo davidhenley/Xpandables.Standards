@@ -44,12 +44,12 @@ namespace System.Design.DependencyInjection
         /// </typeparam>
         /// <param name="services">The collection of services to act on.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
-        public static IServiceCollection TryDecorateExtended<TService, TDecorator>(this IServiceCollection services)
+        public static IServiceCollection XTryDecorate<TService, TDecorator>(this IServiceCollection services)
             where TService : class
             where TDecorator : class, TService
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
-            return services.TryDecorateExtended(typeof(TService), typeof(TDecorator));
+            return services.XTryDecorate(typeof(TService), typeof(TDecorator));
         }
 
         /// <summary>
@@ -69,11 +69,11 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <typeparam name="TService">The service type that will be wrapped by the given
         /// <paramref name="decorator"/>.</typeparam>
-        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
         /// <param name="services">The collection of services to act on.</param>
+        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
-        public static IServiceCollection TryDecorateExtended<TService>(
+        public static IServiceCollection XTryDecorate<TService>(
             this IServiceCollection services,
             Func<TService, IServiceProvider, TService> decorator)
             where TService : class
@@ -101,14 +101,14 @@ namespace System.Design.DependencyInjection
         /// wraps the original service type.
         /// </para>
         /// </summary>
+        /// <param name="services">The collection of services to act on.</param>
         /// <param name="serviceType">The service type that will be wrapped by the given
         /// <paramref name="decorator"/>.</param>
         /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
-        /// <param name="services">The collection of services to act on.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="serviceType"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
-        public static IServiceCollection TryDecorateExtended(
+        public static IServiceCollection XTryDecorate(
             this IServiceCollection services,
             Type serviceType,
             Func<object, IServiceProvider, object> decorator)
@@ -138,11 +138,11 @@ namespace System.Design.DependencyInjection
         /// </summary>
         /// <typeparam name="TService">The service type that will be wrapped by the given
         /// <paramref name="decorator"/>.</typeparam>
-        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
         /// <param name="services">The collection of services to act on.</param>
+        /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
-        public static IServiceCollection TryDecorateExtended<TService>(
+        public static IServiceCollection XTryDecorate<TService>(
             this IServiceCollection services,
             Func<TService, TService> decorator)
             where TService : class
@@ -170,14 +170,14 @@ namespace System.Design.DependencyInjection
         /// wraps the original service type.
         /// </para>
         /// </summary>
+        /// <param name="services">The collection of services to act on.</param>
         /// <param name="serviceType">The service type that will be wrapped by the given
         /// <paramref name="decorator"/>.</param>
         /// <param name="decorator">The decorator function type that will be used to wrap the original service type.</param>
-        /// <param name="services">The collection of services to act on.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="serviceType"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="decorator"/> argument is <c>null</c>.</exception>
-        public static IServiceCollection TryDecorateExtended(
+        public static IServiceCollection XTryDecorate(
             this IServiceCollection services,
             Type serviceType,
             Func<object, object> decorator)
@@ -190,7 +190,6 @@ namespace System.Design.DependencyInjection
                 serviceType,
                 serviceDescriptor => serviceDescriptor.DecorateDescriptor(decorator));
         }
-
 
         /// <summary>
         /// Ensures that the supplied <paramref name="decoratorType"/> decorator is returned, wrapping the
@@ -207,13 +206,13 @@ namespace System.Design.DependencyInjection
         /// wraps the original service type.
         /// </para>
         /// </summary>
+        /// <param name="services">The collection of services to act on.</param>
         /// <param name="serviceType">The service type that will be wrapped by the given decorator.</param>
         /// <param name="decoratorType">The decorator type that will be used to wrap the original service type.</param>
-        /// <param name="services">The collection of services to act on.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="services"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="serviceType"/> argument is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">If the <paramref name="decoratorType"/> argument is <c>null</c>.</exception>
-        public static IServiceCollection TryDecorateExtended(
+        public static IServiceCollection XTryDecorate(
             this IServiceCollection services,
             Type serviceType,
             Type decoratorType)
@@ -228,7 +227,6 @@ namespace System.Design.DependencyInjection
                     serviceType,
                     serviceDescriptor => serviceDescriptor.DecorateDescriptor(decoratorType));
         }
-
 
         private static IServiceCollection DecorateOpenGenerics(
             this IServiceCollection services,

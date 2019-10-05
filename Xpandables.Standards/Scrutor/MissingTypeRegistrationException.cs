@@ -28,9 +28,9 @@ using System.Reflection;
 
 namespace System.Design.DependencyInjection
 {
-#pragma warning disable CA1032 // Implémenter des constructeurs d'exception standard
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1194:Implement exception constructors.", Justification = "<En attente>")]
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1032:Implement standard exception constructors", Justification = "<En attente>")]
     public class MissingTypeRegistrationException : InvalidOperationException
-#pragma warning restore CA1032 // Implémenter des constructeurs d'exception standard
     {
         public MissingTypeRegistrationException(Type serviceType)
             : base($"Could not find any registered services for type '{GetFriendlyName(serviceType)}'.")

@@ -35,18 +35,10 @@ namespace System.Design.Query
         /// </summary>
         protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
 
-#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         public static implicit operator Expression<Func<TSource, bool>>(QueryExpression<TSource> criteria)
-#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
-#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
-             => criteria.Expression();
-#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
+             => criteria?.Expression();
 
-#pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         public static implicit operator Func<TSource, bool>(QueryExpression<TSource> criteria)
-#pragma warning restore CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
-#pragma warning disable CA1062 // Valider les arguments de méthodes publiques
-            => criteria.Expression().Compile();
-#pragma warning restore CA1062 // Valider les arguments de méthodes publiques
+            => criteria?.Expression().Compile();
     }
 }

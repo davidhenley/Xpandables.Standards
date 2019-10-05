@@ -41,18 +41,18 @@ namespace System.Design.DependencyInjection
         public static readonly RegistrationStrategy Append = new AppendRegistrationStrategy();
 
         /// <summary>
-        /// Replaces existing service registrations using <see cref="ReplacementBehavior.Default"/>.
+        /// Replaces existing service registrations using <see cref="ReplacementBehaviors.Default"/>.
         /// </summary>
         public static RegistrationStrategy Replace()
         {
-            return Replace(ReplacementBehavior.Default);
+            return Replace(ReplacementBehaviors.Default);
         }
 
         /// <summary>
-        /// Replaces existing service registrations based on the specified <see cref="ReplacementBehavior"/>.
+        /// Replaces existing service registrations based on the specified <see cref="ReplacementBehaviors"/>.
         /// </summary>
         /// <param name="behavior">The behavior to use when replacing services.</param>
-        public static RegistrationStrategy Replace(ReplacementBehavior behavior)
+        public static RegistrationStrategy Replace(ReplacementBehaviors behavior)
         {
             return new ReplaceRegistrationStrategy(behavior);
         }
@@ -76,23 +76,23 @@ namespace System.Design.DependencyInjection
 
         private sealed class ReplaceRegistrationStrategy : RegistrationStrategy
         {
-            public ReplaceRegistrationStrategy(ReplacementBehavior behavior)
+            public ReplaceRegistrationStrategy(ReplacementBehaviors behavior)
             {
                 Behavior = behavior;
             }
 
-            private ReplacementBehavior Behavior { get; }
+            private ReplacementBehaviors Behavior { get; }
 
             public override void Apply(IServiceCollection services, ServiceDescriptor descriptor)
             {
                 var behavior = Behavior;
 
-                if (behavior == ReplacementBehavior.Default)
+                if (behavior == ReplacementBehaviors.Default)
                 {
-                    behavior = ReplacementBehavior.ServiceType;
+                    behavior = ReplacementBehaviors.ServiceType;
                 }
 
-                if (behavior.HasFlag(ReplacementBehavior.ServiceType))
+                if (behavior.HasFlag(ReplacementBehaviors.ServiceType))
                 {
                     for (var i = services.Count - 1; i >= 0; i--)
                     {
@@ -103,7 +103,7 @@ namespace System.Design.DependencyInjection
                     }
                 }
 
-                if (behavior.HasFlag(ReplacementBehavior.ImplementationType))
+                if (behavior.HasFlag(ReplacementBehaviors.ImplementationType))
                 {
                     for (var i = services.Count - 1; i >= 0; i--)
                     {

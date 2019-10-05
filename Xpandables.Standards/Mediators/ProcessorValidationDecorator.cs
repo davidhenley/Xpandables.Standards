@@ -39,6 +39,7 @@ namespace System.Design.Mediator
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(ProcessorValidationDecorator),
                     nameof(decoratee)));
+
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(
                 nameof(serviceProvider),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -46,7 +47,7 @@ namespace System.Design.Mediator
                     nameof(serviceProvider)));
         }
 
-        public Task<TResult> HandleResultAsync<TResult>(
+        public ValueTask<TResult> HandleResultAsync<TResult>(
             IQuery<TResult> query,
             CancellationToken cancellationToken = default)
         {
@@ -55,7 +56,7 @@ namespace System.Design.Mediator
 ;
         }
 
-        public Task<TResult> HandleQueryResultAsync<TQuery, TResult>(
+        public ValueTask<TResult> HandleQueryResultAsync<TQuery, TResult>(
             TQuery query,
             CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
@@ -77,7 +78,7 @@ namespace System.Design.Mediator
         private void DoValidation<T>(T argument)
             where T : class
         {
-            var validator = _serviceProvider.GetServiceExtended<ICustomCompositeValidator<T>>();
+            var validator = _serviceProvider.GetServiceExtended<ICompositeValidatorRule<T>>();
             validator.Map(val => val.Validate(argument));
         }
     }

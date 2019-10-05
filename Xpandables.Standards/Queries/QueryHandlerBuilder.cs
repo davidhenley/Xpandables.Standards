@@ -25,11 +25,10 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of argument to act on.</typeparam>
     /// <typeparam name="TResult">Type of result.</typeparam>
-    public sealed class QueryHandlerBuilder<TQuery, TResult> :
-        ObjectDescriptor<QueryHandlerBuilder<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+    public sealed class QueryHandlerBuilder<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
-        private readonly Func<IQuery<TResult>, CancellationToken, Task<TResult>> _handler;
+        private readonly Func<IQuery<TResult>, CancellationToken, ValueTask<TResult>> _handler;
 
         /// <summary>
         /// Initializes a new instance of <see cref="QueryHandlerBuilder{TQuery, TResult}"/> with the delegate to be used
@@ -40,14 +39,14 @@ namespace System.Design.Query
         /// the <see cref="IQueryHandler{TQuery, TResult}.HandleAsync(TQuery, CancellationToken)"/>
         /// method such as thrown exceptions.</para></param>
         /// <exception cref="ArgumentNullException">The <paramref name="handler"/> is null.</exception>
-        public QueryHandlerBuilder(Func<IQuery<TResult>, CancellationToken, Task<TResult>> handler)
+        public QueryHandlerBuilder(Func<IQuery<TResult>, CancellationToken, ValueTask<TResult>> handler)
             => _handler = handler ?? throw new ArgumentNullException(
                 nameof(handler),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerBuilder<TQuery, TResult>),
                     nameof(handler)));
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
             => await _handler(query, cancellationToken).ConfigureAwait(false);
     }
 }

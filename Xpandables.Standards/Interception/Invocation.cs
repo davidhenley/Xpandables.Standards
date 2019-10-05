@@ -107,7 +107,6 @@ namespace System.Interception
                 .Select((value, index) => new { Index = index, Value = value })
                 .OrderBy(o => o.Value.Position).ToArray())
                 yield return Parameter.BuildWith(param.Index, param.Value, argsValue[param.Index]);
-
         }
     }
 }

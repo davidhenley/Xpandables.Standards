@@ -51,14 +51,14 @@ namespace System.GraphQL
         private IEnumerable<ColumnObject> GetColumnObjects(IEntityType entityType)
         {
             return from property in entityType.GetProperties()
-                   where !property.IsShadowProperty
+                   where !property.IsShadowProperty()
                    select _columnBuilder.BuildObjectFrom(property);
         }
 
         private IEnumerable<ColumnObject> GetNavigationObjects(IEntityType entityType)
         {
             return from navigation in entityType.GetNavigations()
-                   where !navigation.IsShadowProperty
+                   where !navigation.IsShadowProperty()
                    select _navigationBuilder.BuildObjectFrom(navigation);
         }
 
@@ -75,12 +75,12 @@ namespace System.GraphQL
 
         private string GetTablePluralName(IEntityType entityType)
             => entityType.IsOwned()
-                    ? $"{entityType.Relational().TableName}_{entityType.ClrType.Name}s"
-                    : entityType.Relational().TableName;
+                    ? $"{entityType.GetTableName()}_{entityType.ClrType.Name}s"
+                    : entityType.GetTableName();
 
         private string GetTableSingleName(IEntityType entityType)
             => entityType.IsOwned()
-                    ? $"{entityType.Relational().TableName }_{entityType.ClrType.Name}"
+                    ? $"{entityType.GetTableName()}_{entityType.ClrType.Name}"
                     : entityType.ClrType.Name;
 
         private TableObject.TableData GetQueryableTableData(IEntityType entityType)

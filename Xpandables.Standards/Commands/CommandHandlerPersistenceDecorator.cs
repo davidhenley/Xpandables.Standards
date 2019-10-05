@@ -27,17 +27,13 @@ namespace System.Design.Command
     /// after a command execution.</para>
     /// </summary>
     /// <typeparam name="TCommand">Type of command.</typeparam>
-    public sealed class CommandHandlerPersistenceDecorator<TCommand> :
-        ObjectDescriptor<CommandHandlerPersistenceDecorator<TCommand>>, ICommandHandler<TCommand>
+    public sealed class CommandHandlerPersistenceDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand, IPersistenceDecorator
     {
         private readonly IDataContext _dataContext;
         private readonly ICommandHandler<TCommand> _decoratee;
 
-        public CommandHandlerPersistenceDecorator(
-            IDataContext dataContext,
-            ICommandHandler<TCommand> decoratee)
-            : base(decoratee)
+        public CommandHandlerPersistenceDecorator(IDataContext dataContext, ICommandHandler<TCommand> decoratee)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(
                 nameof(dataContext),

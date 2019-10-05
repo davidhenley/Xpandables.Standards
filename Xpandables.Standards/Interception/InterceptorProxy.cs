@@ -34,7 +34,6 @@ namespace System.Interception
         private TInstance _realInstance;
         private IInterceptor _interceptor;
 
-#pragma warning disable CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         /// <summary>
         /// Returns a new instance of <typeparamref name="TInstance"/> wrapped by a proxy.
         /// </summary>
@@ -44,7 +43,6 @@ namespace System.Interception
         /// <exception cref="ArgumentNullException">The <paramref name="instance"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="interceptor"/> is null.</exception>
         public static TInstance Create(TInstance instance, IInterceptor interceptor)
-#pragma warning restore CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         {
             object proxy = Create<TInstance, InterceptorProxy<TInstance>>();
             ((InterceptorProxy<TInstance>)proxy).SetParameters(instance, interceptor);
@@ -101,9 +99,7 @@ namespace System.Interception
                 {
                     _interceptor.Intercept(invocation);
                 }
-#pragma warning disable CA1031 // Ne pas intercepter les types d'exception générale
                 catch (Exception exception)
-#pragma warning restore CA1031 // Ne pas intercepter les types d'exception générale
                 {
                     invocation.WithException(
                         new InvalidOperationException(

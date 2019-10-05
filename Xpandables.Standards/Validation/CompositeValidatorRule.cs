@@ -25,17 +25,17 @@ namespace System.ComponentModel.DataAnnotations
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated</typeparam>
     [Serializable]
-    public sealed class CompositeValidator<TArgument> : ICustomCompositeValidator<TArgument>
+    public sealed class CompositeValidatorRule<TArgument> : ICompositeValidatorRule<TArgument>
         where TArgument : class
     {
-        private readonly IEnumerable<ICustomValidator<TArgument>> _validators;
+        private readonly IEnumerable<IValidatorRule<TArgument>> _validators;
 
         /// <summary>
         /// Initializes the composite validator with all validators for the argument.
         /// </summary>
-        /// <param name="validators"></param>
-        public CompositeValidator(IEnumerable<ICustomValidator<TArgument>> validators)
-            => _validators = validators ?? Enumerable.Empty<ICustomValidator<TArgument>>();
+        /// <param name="validators">The collection of validators to act with.</param>
+        public CompositeValidatorRule(IEnumerable<IValidatorRule<TArgument>> validators)
+            => _validators = validators ?? Enumerable.Empty<IValidatorRule<TArgument>>();
 
         public void Validate(TArgument argument)
         {
@@ -43,7 +43,7 @@ namespace System.ComponentModel.DataAnnotations
                 validator.Validate(argument);
         }
 
-        void ICompositeValidator.Validate(object argument)
+        void ICompositeValidatorRule.Validate(object argument)
         {
             if (argument is null) throw new ArgumentNullException(nameof(argument));
             Validate((TArgument)argument);

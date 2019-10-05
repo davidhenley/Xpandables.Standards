@@ -15,10 +15,13 @@
  *
 ************************************************************************************************************/
 
+using System.Reflection;
+
 namespace System
 {
     /// <summary>
     /// Allows an application author to access a type-specific <see cref="Attribute"/> from a specified type.
+    /// <para>Contains default implementation.</para>
     /// </summary>
     public interface IAttributeAccessor
     {
@@ -30,6 +33,19 @@ namespace System
         /// <returns>An optional instance that may be contains the found attribute.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         Optional<TAttribute> GetAttribute<TAttribute>(Type type)
-            where TAttribute : Attribute;
+            where TAttribute : Attribute
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            try
+            {
+                return type.GetCustomAttribute<TAttribute>();
+            }
+            catch (Exception exception) when (exception is NotSupportedException
+                                            || exception is AmbiguousMatchException
+                                            || exception is TypeLoadException)
+            {
+                return Optional<TAttribute>.Exception(exception);
+            }
+        }
     }
 }

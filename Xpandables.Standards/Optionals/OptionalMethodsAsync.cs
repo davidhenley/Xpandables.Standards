@@ -15,7 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace System
@@ -27,27 +26,27 @@ namespace System
         /// if not, returns the default type of value.
         /// </summary>
         /// <typeparam name="U">The type to cast the value to.</typeparam>
-        public async Task<U> CastAsync<U>() => await Task.FromResult(Cast<U>()).ConfigureAwait(false);
+        public async ValueTask<U> CastAsync<U>() => await Task.FromResult(Cast<U>()).ConfigureAwait(false);
 
         /// <summary>
         /// Casts the element of optional to the specified type and returns an optional with the new value.
         /// if not, returns an empty optional of the target typed.
         /// </summary>
         /// <typeparam name="U">The type to cast to.</typeparam>
-        public async Task<Optional<U>> CastOptionalAsync<U>() => await CastAsync<U>().ConfigureAwait(false);
+        public async ValueTask<Optional<U>> CastOptionalAsync<U>() => await CastAsync<U>().ConfigureAwait(false);
 
         /// <summary>
         /// Converts the current instance to an empty one.
         /// </summary>
         /// <returns>An empty optional.</returns>
-        public async Task<Optional<T>> ToEmptyAsync() => await Task.FromResult(Empty()).ConfigureAwait(false);
+        public async ValueTask<Optional<T>> ToEmptyAsync() => await Task.FromResult(Empty()).ConfigureAwait(false);
 
         /// <summary>
         /// Converts the current instance to an empty of the specific type.
         /// </summary>
         /// <typeparam name="U">The type to store.</typeparam>
         /// <returns>An empty optional of the specific type.</returns>
-        public async Task<Optional<U>> ToEmptyAsync<U>() => await Task.FromResult(Optional<U>.Empty()).ConfigureAwait(false);
+        public async ValueTask<Optional<U>> ToEmptyAsync<U>() => await Task.FromResult(Optional<U>.Empty()).ConfigureAwait(false);
 
         /// <summary>
         /// Converts the current instance to an optional with the specified value.
@@ -55,7 +54,7 @@ namespace System
         /// <param name="value">The value to be used.</param>
         /// <returns>An optional that contains a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public async Task<Optional<T>> ToSomeAsync(T value) => await Task.FromResult(Some(value)).ConfigureAwait(false);
+        public async ValueTask<Optional<T>> ToSomeAsync(T value) => await Task.FromResult(Some(value)).ConfigureAwait(false);
 
         /// <summary>
         /// Converts the current instance to an optional of the specified type with value.
@@ -63,7 +62,7 @@ namespace System
         /// <param name="value">The value to be used.</param>
         /// <returns>An optional that contains a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public async Task<Optional<U>> ToSomeAsync<U>(U value)
+        public async ValueTask<Optional<U>> ToSomeAsync<U>(U value)
             => await Task.FromResult(Optional<U>.Some(value)).ConfigureAwait(false);
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace System
         /// <param name="exception">The exception to be used.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
-        public async Task<Optional<T>> ToExceptionAsync(Exception exception)
+        public async ValueTask<Optional<T>> ToExceptionAsync(Exception exception)
             => await Task.FromResult(Exception(exception)).ConfigureAwait(false);
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace System
         /// <param name="right">The value to be used.</param>
         /// <returns>An optional pair.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Task<U> right)
+        public async ValueTask<Optional<(T Left, U Right)>> AndAsync<U>(ValueTask<U> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
             var result = await right.ConfigureAwait(false);
@@ -99,7 +98,7 @@ namespace System
         /// <typeparam name="U">The type of the right side.</typeparam>
         /// <param name="right">The optional to be used.</param>
         /// <returns>An optional pair.</returns>
-        public async Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Task<Optional<U>> right)
+        public async ValueTask<Optional<(T Left, U Right)>> AndOptionalAsync<U>(ValueTask<Optional<U>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
             var result = await right.ConfigureAwait(false);
@@ -113,7 +112,7 @@ namespace System
         /// <param name="some">The function to call.</param>
         /// <returns>An optional of <typeparamref name="T"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> MapAsync(Func<Task<T>> some)
+        public async ValueTask<Optional<T>> MapAsync(Func<ValueTask<T>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some().ConfigureAwait(false);
@@ -129,7 +128,7 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="U"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<U>> MapAsync<U>(Func<T, Task<U>> some)
+        public async ValueTask<Optional<U>> MapAsync<U>(Func<T, ValueTask<U>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
@@ -145,7 +144,7 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="U"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<U>> MapOptionalAsync<U>(Func<T, Task<Optional<U>>> some)
+        public async ValueTask<Optional<U>> MapOptionalAsync<U>(Func<T, ValueTask<Optional<U>>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
@@ -182,7 +181,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Func<Task<U>> right)
+        public async ValueTask<Optional<(T Left, U Right)>> AndAsync<U>(Func<ValueTask<U>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return Optional<(T Left, U Right)>.Empty();
@@ -201,7 +200,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public async Task<Optional<(T Left, U Right)>> AndAsync<U>(Func<T, Task<U>> right)
+        public async ValueTask<Optional<(T Left, U Right)>> AndAsync<U>(Func<T, ValueTask<U>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return Optional<(T Left, U Right)>.Empty();
@@ -220,7 +219,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Task<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Func<Task<Optional<U>>> right)
+        public ValueTask<Optional<(T Left, U Right)>> AndOptionalAsync<U>(Func<ValueTask<Optional<U>>> right)
         {
             if (right == null) throw new ArgumentNullException(nameof(right));
             return AndOptionalAsync(right());
@@ -235,7 +234,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public async Task<Optional<T>> WhenAsync(Predicate<T> predicate, Func<Task<T>> some)
+        public async ValueTask<Optional<T>> WhenAsync(Predicate<T> predicate, Func<ValueTask<T>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -255,7 +254,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public async Task<Optional<T>> WhenAsync(Predicate<T> predicate, Func<T, Task<T>> some)
+        public async ValueTask<Optional<T>> WhenAsync(Predicate<T> predicate, Func<T, ValueTask<T>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -290,7 +289,7 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<T>> WhenEmptyAsync(Func<Task<T>> empty)
+        public async ValueTask<Optional<T>> WhenEmptyAsync(Func<ValueTask<T>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
@@ -304,7 +303,7 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<T>> WhenEmptyOptionalAsync(Func<Task<Optional<T>>> empty)
+        public async ValueTask<Optional<T>> WhenEmptyOptionalAsync(Func<ValueTask<Optional<T>>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
@@ -329,7 +328,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionAsync(Func<Task<T>> some)
+        public async ValueTask<Optional<T>> WhenExceptionAsync(Func<ValueTask<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return await some().ConfigureAwait(false);
@@ -343,7 +342,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionOptionalAsync(Func<Task<Optional<T>>> some)
+        public async ValueTask<Optional<T>> WhenExceptionOptionalAsync(Func<ValueTask<Optional<T>>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return await some().ConfigureAwait(false);
@@ -357,7 +356,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionAsync(Func<Exception, Task<T>> some)
+        public async ValueTask<Optional<T>> WhenExceptionAsync(Func<Exception, ValueTask<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return await some(InternalException).ConfigureAwait(false);
@@ -371,7 +370,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionOptionalAsync(Func<Exception, Task<Optional<T>>> some)
+        public async ValueTask<Optional<T>> WhenExceptionOptionalAsync(Func<Exception, ValueTask<Optional<T>>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return await some(InternalException).ConfigureAwait(false);

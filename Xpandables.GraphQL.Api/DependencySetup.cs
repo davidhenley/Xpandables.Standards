@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Design.DependencyInjection;
+using Xpandables.GraphQL.Api.Models;
 
 namespace Xpandables.GraphQL.Api
 {
@@ -8,8 +9,8 @@ namespace Xpandables.GraphQL.Api
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddCustomGraphQL();
-            services.AddCustomDataContext<TestContextProvider>();
-            services.AddCustomDataContextSeederDecorator<TestContextSeeder>();
+            services.AddCustomDataContext<GraphQLContextProvider>();
+            services.AddCustomDataContextSeederDecorator<GraphQLContextSeeder>();
         }
     }
 }

@@ -38,6 +38,7 @@ namespace System.Design.Mediator
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(ProcessorPersistenceDecorator),
                     nameof(decoratee)));
+
             _dataContext = dataContext ?? throw new ArgumentNullException(
                 nameof(dataContext),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -45,13 +46,12 @@ namespace System.Design.Mediator
                     nameof(dataContext)));
         }
 
-        public async Task<TResult> HandleResultAsync<TResult>(
+        public async ValueTask<TResult> HandleResultAsync<TResult>(
             IQuery<TResult> query,
             CancellationToken cancellationToken = default)
         {
             var result = await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
             await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
-
             return result;
         }
 
@@ -62,14 +62,13 @@ namespace System.Design.Mediator
             await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(default);
         }
 
-        public async Task<TResult> HandleQueryResultAsync<TQuery, TResult>(
+        public async ValueTask<TResult> HandleQueryResultAsync<TQuery, TResult>(
             TQuery query,
             CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
         {
             var result = await _decoratee.HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);
             await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
-
             return result;
         }
     }

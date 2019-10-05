@@ -18,6 +18,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace System.Design.Query
 {
@@ -27,23 +28,20 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public sealed class QueryHandlerTransactionDecorator<TQuery, TResult> :
-        ObjectDescriptor<QueryHandlerTransactionDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+    public sealed class QueryHandlerTransactionDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>, ITransactionDecorator
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
         private readonly IAttributeAccessor _attributeAccessor;
 
-        public QueryHandlerTransactionDecorator(
-            IQueryHandler<TQuery, TResult> decoratee,
-            IAttributeAccessor attributeAccessor)
-            : base(decoratee)
+        public QueryHandlerTransactionDecorator(IQueryHandler<TQuery, TResult> decoratee, IAttributeAccessor attributeAccessor)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerTransactionDecorator<TQuery, TResult>),
                     nameof(decoratee)));
+
             _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
                 nameof(attributeAccessor),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -51,19 +49,16 @@ namespace System.Design.Query
                     nameof(attributeAccessor)));
         }
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
 
             if (attribute.IsValue())
             {
-                using (var scope = attribute.Single().GetTransactionScope())
-                {
-                    var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
-                    scope.Complete();
-
-                    return result;
-                }
+                using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
+                var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
+                scope.Complete();
+                return result;
             }
             else
             {

@@ -31,15 +31,14 @@ namespace System.Design.Mediator
         private readonly IProcessor _decoratee;
         private readonly CorrelationTaskRegister _eventRegister;
 
-        public ProcessorEventRegisterDecorator(
-            IProcessor decoratee,
-            CorrelationTaskRegister eventRegister)
+        public ProcessorEventRegisterDecorator(IProcessor decoratee, CorrelationTaskRegister eventRegister)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(ProcessorEventRegisterDecorator),
                     nameof(decoratee)));
+
             _eventRegister = eventRegister ?? throw new ArgumentNullException(
                 nameof(eventRegister),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -47,7 +46,7 @@ namespace System.Design.Mediator
                     nameof(eventRegister)));
         }
 
-        public async Task<TResult> HandleResultAsync<TResult>(
+        public async ValueTask<TResult> HandleResultAsync<TResult>(
             IQuery<TResult> query,
             CancellationToken cancellationToken = default)
         {
@@ -55,7 +54,6 @@ namespace System.Design.Mediator
             {
                 var result = await _decoratee.HandleResultAsync(query, cancellationToken).ConfigureAwait(false);
                 await _eventRegister.OnPostEventAsync().ConfigureAwait(false);
-
                 return result;
             }
             catch
@@ -80,7 +78,7 @@ namespace System.Design.Mediator
             }
         }
 
-        public async Task<TResult> HandleQueryResultAsync<TQuery, TResult>(
+        public async ValueTask<TResult> HandleQueryResultAsync<TQuery, TResult>(
             TQuery query,
             CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
@@ -90,7 +88,6 @@ namespace System.Design.Mediator
                 var result = await _decoratee
                     .HandleQueryResultAsync<TQuery, TResult>(query, cancellationToken).ConfigureAwait(false);
                 await _eventRegister.OnPostEventAsync().ConfigureAwait(false);
-
                 return result;
             }
             catch
@@ -100,5 +97,4 @@ namespace System.Design.Mediator
             }
         }
     }
-
 }

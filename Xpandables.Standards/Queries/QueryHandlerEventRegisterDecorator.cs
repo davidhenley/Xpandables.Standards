@@ -27,23 +27,20 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of the query.</typeparam>
     /// <typeparam name="TResult">Type of the result.</typeparam>
-    public sealed class QueryHandlerEventRegisterDecorator<TQuery, TResult> :
-        ObjectDescriptor<QueryHandlerEventRegisterDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+    public sealed class QueryHandlerEventRegisterDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>, IEventRegisterDecorator
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
         private readonly CorrelationTaskRegister _eventRegister;
 
-        public QueryHandlerEventRegisterDecorator(
-            CorrelationTaskRegister eventRegister,
-            IQueryHandler<TQuery, TResult> decoratee)
-            : base(decoratee)
+        public QueryHandlerEventRegisterDecorator(CorrelationTaskRegister eventRegister, IQueryHandler<TQuery, TResult> decoratee)
         {
             _eventRegister = eventRegister ?? throw new ArgumentNullException(
                 nameof(eventRegister),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerEventRegisterDecorator<TQuery, TResult>),
                     nameof(eventRegister)));
+
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -51,7 +48,7 @@ namespace System.Design.Query
                     nameof(decoratee)));
         }
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             try
             {

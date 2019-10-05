@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Xpandables.GraphQL.Api.Controllers
 {
     [Route("graphql")]
-    public class GraphQLController : Controller
+    [ApiController]
+    public class GraphQLController : ControllerBase
     {
         private readonly ISchema _schema;
         private readonly IDocumentExecuter _documentExecuter;

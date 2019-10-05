@@ -28,8 +28,9 @@ namespace System
     /// <para>  if (Disposed)
     ///         return;</para>
     ///
-    /// <para>  if(disposing)
-    ///     {
+    /// <para>
+    /// if(disposing)<para></para>
+    ///    {
     ///         // Release all managed resources here
     ///         // Need to unregister/detach yourself from the events. Always make sure
     ///         // the object is not null first before trying to unregister/detach them!

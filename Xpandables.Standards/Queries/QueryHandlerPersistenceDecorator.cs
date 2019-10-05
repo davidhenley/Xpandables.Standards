@@ -28,23 +28,20 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public sealed class QueryHandlerPersistenceDecorator<TQuery, TResult> :
-        ObjectDescriptor<QueryHandlerPersistenceDecorator<TQuery, TResult>>, IQueryHandler<TQuery, TResult>
+    public sealed class QueryHandlerPersistenceDecorator<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : class, IQuery<TResult>, IPersistenceDecorator
     {
         private readonly IDataContext _dataContext;
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
 
-        public QueryHandlerPersistenceDecorator(
-            IDataContext dataContext,
-            IQueryHandler<TQuery, TResult> decoratee)
-            : base(decoratee)
+        public QueryHandlerPersistenceDecorator(IDataContext dataContext, IQueryHandler<TQuery, TResult> decoratee)
         {
             _dataContext = dataContext ?? throw new ArgumentNullException(
                 nameof(dataContext),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerPersistenceDecorator<TQuery, TResult>),
                     nameof(dataContext)));
+
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
@@ -52,11 +49,10 @@ namespace System.Design.Query
                     nameof(decoratee)));
         }
 
-        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
             await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);
-
             return result;
         }
     }

@@ -220,7 +220,7 @@ namespace System.Design.DependencyInjection
                 Lifetime = ServiceLifetime.Transient;
             }
 
-            strategy = strategy ?? RegistrationStrategy.Append;
+            strategy ??= RegistrationStrategy.Append;
 
             foreach (var typeMap in TypeMaps)
             {

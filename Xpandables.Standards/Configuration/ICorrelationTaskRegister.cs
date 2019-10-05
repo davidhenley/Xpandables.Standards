@@ -27,11 +27,11 @@ namespace System.Configuration
         /// <summary>
         /// The event that will be executed after the main one in the same control flow.
         /// </summary>
-        event Func<Task> PostEvent;
+        event Func<ValueTask> PostEvent;
 
         /// <summary>
         /// The event that will be executed after the main one only on exception.
         /// </summary>
-        event Func<Task> RollbackEvent;
+        event Func<ValueTask> RollbackEvent;
     }
 }

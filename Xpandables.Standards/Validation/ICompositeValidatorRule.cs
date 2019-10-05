@@ -18,10 +18,10 @@
 namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
-    /// Defines a method contract used to validate an argument using composition.
+    /// Defines a method contract used to validate an argument using composition (wrapping all validators of a specific-type).
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    public interface ICompositeValidator
+    public interface ICompositeValidatorRule
     {
         /// <summary>
         /// Applies all validators to the argument and throws the <see cref="ValidationException"/> if necessary.
@@ -37,7 +37,7 @@ namespace System.ComponentModel.DataAnnotations
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
     /// <typeparam name="TArgument">Type of the argument to be validated.</typeparam>
-    public interface ICustomCompositeValidator<in TArgument> : ICompositeValidator
+    public interface ICompositeValidatorRule<in TArgument> : ICompositeValidatorRule
         where TArgument : class
     {
         /// <summary>
