@@ -7,7 +7,9 @@ namespace Xpandables.GraphQL.Api.Models
     {
         public IDataContext Seed(IDataContext dataContext)
         {
-            if (dataContext.SetOf<Person>().Count() > 0)
+            if (dataContext == null) throw new System.ArgumentNullException(nameof(dataContext));
+
+            if (dataContext.SetOf<Person>().Any())
                 return dataContext;
 
             var person1 = new Person

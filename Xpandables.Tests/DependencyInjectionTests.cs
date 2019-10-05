@@ -27,7 +27,7 @@ namespace Xpandables.Tests
         {
             var provider = new ServiceCollection()
                 .AddTransient<IBaseClass<string>, BaseClass>()
-                .TryDecorateExtended(typeof(IBaseClass<>), typeof(BaseClassDecorator<>))
+                .XTryDecorate(typeof(IBaseClass<>), typeof(BaseClassDecorator<>))
                 .BuildServiceProvider();
 
             var instance = provider.GetService<IBaseClass<string>>();

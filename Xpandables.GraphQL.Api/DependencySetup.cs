@@ -8,9 +8,9 @@ namespace Xpandables.GraphQL.Api
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddCustomGraphQL();
-            services.AddCustomDataContext<GraphQLContextProvider>();
-            services.AddCustomDataContextSeederDecorator<GraphQLContextSeeder>();
+            services.AddXGraphQL();
+            services.AddXDataContext<GraphQLContextProvider>();
+            services.AddXDataContextSeederDecorator<GraphQLContextSeeder>();
         }
     }
 }

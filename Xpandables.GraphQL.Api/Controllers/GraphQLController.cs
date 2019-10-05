@@ -22,6 +22,8 @@ namespace Xpandables.GraphQL.Api.Controllers
 
         public async Task<IActionResult> Post([FromBody] GraphQLQuery query, CancellationToken cancellationToken = default)
         {
+            if (query == null) throw new System.ArgumentNullException(nameof(query));
+
             var inputs = query.Variables.ToInputs();
 
             var executeOptions = new ExecutionOptions
