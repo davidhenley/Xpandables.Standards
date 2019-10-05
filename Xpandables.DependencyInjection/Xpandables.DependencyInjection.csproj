@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -6,10 +6,9 @@
     <PublishTrimmed>true</PublishTrimmed>
     <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
     <LangVersion>8.0</LangVersion>
-    <Nullable>enable</Nullable>
     <Authors>Francis-Black EWANE</Authors>
-    <Product>Xpandables.GraphQL @ 2019</Product>
-    <Description>Contains some useful implementations for GraphQl .Net.</Description>
+    <Product>Xpandables DependencyInjection @ 2019</Product>
+    <Description>Contains some useful class for dependency injection.</Description>
     <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
@@ -18,14 +17,14 @@
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion>3.0.0</FileVersion>
     <PackageVersion>3.0.0</PackageVersion>
-    <PackageId>Xpandables.GraphQL</PackageId>
-    <PackageTags>GraphQl, Database, EntityFramework</PackageTags>
+    <PackageId>Xpandables.DependencyInjection</PackageId>
+    <PackageTags>Dependency injection, Resolver, Interception...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageReleaseNotes>Move to NetStandard 2.1.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AssemblyName>Xpandables.GraphQL</AssemblyName>
-    <RootNamespace>Xpandables.GraphQL</RootNamespace>
+    <AssemblyName>Xpandables.DependencyInjection</AssemblyName>
+    <RootNamespace>Xpandables.DependencyInjection</RootNamespace>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NeutralLanguage>en-GB</NeutralLanguage>
@@ -35,39 +34,37 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DocumentationFile>bin\x64\Debug\netstandard2.1\Xpandables.GraphQL.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\netstandard2.1\Xpandables.DependencyInjection.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591</NoWarn>
-    <CodeAnalysisRuleSet>Xpandables.GraphQL.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1701;1702;CS1591;CA1715,CA1801</NoWarn>
+    <CodeAnalysisRuleSet>Xpandables.DependencyInjection.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DocumentationFile>bin\x64\Release\netstandard2.1\Xpandables.GraphQL.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Release\netstandard2.1\Xpandables.DependencyInjection.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591;</NoWarn>
-    <CodeAnalysisRuleSet>Xpandables.GraphQL.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1701;1702;CS1591;CA1715;CA1801</NoWarn>
+    <CodeAnalysisRuleSet>Xpandables.DependencyInjection.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xpandables.Standards\Xpandables.Standards.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="Xpandables.png" Pack="true" Visible="true" PackagePath="" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="GraphQL" Version="2.4.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.0.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Xpandables.EntityFrameworkCore\Xpandables.EntityFrameworkCore.csproj" />
-  </ItemGroup>
-
 
 </Project>

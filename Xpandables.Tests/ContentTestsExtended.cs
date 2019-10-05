@@ -126,7 +126,7 @@ namespace Xpandables.TestsExtended
         void IContentUpdater.UpdateWith<TContent>(IUpdaterDescriptor<TContent> updater)
         {
             var validatorType = typeof(IUpdaterValidator<>).MakeGenericType(updater.GetType());
-            var validator = _provider.GetServiceExtended<IUpdaterValidator>(validatorType).Cast<IUpdaterValidator>();
+            var validator = _provider.XGetService<IUpdaterValidator>(validatorType).Cast<IUpdaterValidator>();
             validator?.Validate(updater);
 
             _decoratee.UpdateWith(updater);

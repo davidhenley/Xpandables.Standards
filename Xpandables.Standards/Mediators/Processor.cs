@@ -45,7 +45,7 @@ namespace System.Design.Mediator
                 if (command is null) throw new ArgumentNullException(nameof(command));
 
                 await _serviceProvider
-                    .GetServiceExtended<ICommandHandler<TCommand>>()
+                    .XGetService<ICommandHandler<TCommand>>()
                     .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TCommand))))
@@ -74,7 +74,7 @@ namespace System.Design.Mediator
                 if (query is null) throw new ArgumentNullException(nameof(query));
 
                 return await _serviceProvider
-                    .GetServiceExtended<IQueryHandler<TQuery, TResult>>()
+                    .XGetService<IQueryHandler<TQuery, TResult>>()
                     .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
@@ -107,7 +107,7 @@ namespace System.Design.Mediator
                         "Building Query wrapper failed.",
                         exception); });
 
-                return await _serviceProvider.GetServiceExtended<IQueryHandlerWrapper<TResult>>(wrapperType)
+                return await _serviceProvider.XGetService<IQueryHandlerWrapper<TResult>>(wrapperType)
                     .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(query.GetType().Name)))

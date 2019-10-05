@@ -296,25 +296,25 @@ namespace System.Design.DependencyInjection
         private static ServiceDescriptor DecorateDescriptor(
             this ServiceDescriptor descriptor,
             Type decoratorType)
-            => descriptor.WithFactory(
-                provider => provider.CreateInstance(
+            => descriptor.XWithFactory(
+                provider => provider.XCreateInstance(
                     decoratorType,
-                    new object[] { provider.GetInstance(descriptor) }));
+                    new object[] { provider.XGetInstance(descriptor) }));
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
             this ServiceDescriptor descriptor,
             Func<TService, IServiceProvider, TService> decorator)
             where TService : class
-            => descriptor.WithFactory(
+            => descriptor.XWithFactory(
                 provider => decorator(
-                    (TService)provider.GetInstance(descriptor),
+                    (TService)provider.XGetInstance(descriptor),
                     provider));
 
         private static ServiceDescriptor DecorateDescriptor<TService>(
             this ServiceDescriptor descriptor,
             Func<TService, TService> decorator)
             where TService : class
-            => descriptor.WithFactory(
-                provider => decorator((TService)provider.GetInstance(descriptor)));
+            => descriptor.XWithFactory(
+                provider => decorator((TService)provider.XGetInstance(descriptor)));
     }
 }

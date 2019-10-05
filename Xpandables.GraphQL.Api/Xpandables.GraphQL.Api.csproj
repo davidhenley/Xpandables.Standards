@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xpandables.Core\Xpandables.Core.csproj" />
+    <ProjectReference Include="..\Xpandables.DependencyInjection\Xpandables.DependencyInjection.csproj" />
     <ProjectReference Include="..\Xpandables.GraphQL\Xpandables.GraphQL.csproj" />
   </ItemGroup>
 

@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL", "Xpand
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL.Api", "Xpandables.GraphQL.Api\Xpandables.GraphQL.Api.csproj", "{EC643C8C-A1C2-4A58-9178-28F990E961B0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.DependencyInjection", "Xpandables.DependencyInjection\Xpandables.DependencyInjection.csproj", "{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.SeriLog", "Xpandables.SeriLog\Xpandables.SeriLog.csproj", "{E4852AB6-05E7-4A96-9CFB-C0B10619384D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,18 @@ Global
 		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|Any CPU.ActiveCfg = Release|x64
 		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|x64.ActiveCfg = Release|x64
 		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|x64.Build.0 = Release|x64
+		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Debug|x64.ActiveCfg = Debug|x64
+		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Debug|x64.Build.0 = Debug|x64
+		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Release|Any CPU.ActiveCfg = Release|x64
+		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Release|x64.ActiveCfg = Release|x64
+		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Release|x64.Build.0 = Release|x64
+		{E4852AB6-05E7-4A96-9CFB-C0B10619384D}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{E4852AB6-05E7-4A96-9CFB-C0B10619384D}.Debug|x64.ActiveCfg = Debug|x64
+		{E4852AB6-05E7-4A96-9CFB-C0B10619384D}.Debug|x64.Build.0 = Debug|x64
+		{E4852AB6-05E7-4A96-9CFB-C0B10619384D}.Release|Any CPU.ActiveCfg = Release|x64
+		{E4852AB6-05E7-4A96-9CFB-C0B10619384D}.Release|x64.ActiveCfg = Release|x64
+		{E4852AB6-05E7-4A96-9CFB-C0B10619384D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

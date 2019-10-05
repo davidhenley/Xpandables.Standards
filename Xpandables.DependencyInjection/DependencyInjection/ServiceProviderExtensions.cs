@@ -16,8 +16,6 @@
 ************************************************************************************************************/
 
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace System.Design.DependencyInjection
 {
@@ -27,105 +25,13 @@ namespace System.Design.DependencyInjection
     public static class ServiceProviderExtensions
     {
         /// <summary>
-        /// Gets the service object of the specified type.
-        /// If not found, returns an empty optional.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="serviceProvider">The current service provider to use.</param>
-        /// <returns>An instance of optional with found service otherwise empty.</returns>
-        public static Optional<TService> GetServiceExtended<TService>(this IServiceProvider serviceProvider)
-            where TService : class
-        {
-            if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-            return serviceProvider.GetRequiredService(typeof(TService)).AsOptional().CastOptional<TService>();
-        }
-
-        /// <summary>
-        /// Gets the service object of the specified type.
-        /// If not found, returns an empty optional.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="serviceProvider">The current service provider to use.</param>
-        /// <param name="serviceType">An object that specifies the type of service object to get.</param>
-        /// <returns>An instance of optional with found service otherwise empty.</returns>
-        public static Optional<TService> GetServiceExtended<TService>(this IServiceProvider serviceProvider, Type serviceType)
-            where TService : class
-        {
-            if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-            return serviceProvider.GetRequiredService(serviceType).AsOptional().CastOptional<TService>();
-        }
-
-        /// <summary>
-        /// Gets the services object of the specified type.
-        /// If not found, returns an <see cref="Enumerable.Empty{T}"/>.
-        /// </summary>
-        /// <param name="serviceProvider">The current service provider to use.</param>
-        /// <param name="serviceType">An object that specifies the type of service object to get.</param>
-        /// <returns>An instance of optional with found services otherwise empty.</returns>
-        public static IEnumerable<object> GetServicesExtended(this IServiceProvider serviceProvider, Type serviceType)
-        {
-            if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-
-            if (serviceProvider
-                .GetRequiredService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
-                is IEnumerable<object> services)
-            {
-                return services;
-            }
-
-            return Enumerable.Empty<object>();
-        }
-
-        /// <summary>
-        /// Gets the services object of the specified type.
-        /// If not found, returns an <see cref="Enumerable.Empty{TService}"/>.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="serviceProvider">The current service provider to use.</param>
-        /// <returns>An instance of optional with found services otherwise empty.</returns>
-        public static IEnumerable<TService> GetServicesExtended<TService>(this IServiceProvider serviceProvider)
-            where TService : class
-        {
-            if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-
-            if (serviceProvider.GetRequiredService(typeof(IEnumerable<TService>)) is IEnumerable<TService> services)
-                return services;
-
-            return Enumerable.Empty<TService>(); ;
-        }
-
-        /// <summary>
-        /// Gets the services object of the specified type.
-        /// If not found, returns an <see cref="Enumerable.Empty{TService}"/>.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="serviceProvider">The current service provider to use.</param>
-        /// <param name="serviceType">An object that specifies the type of service object to get.</param>
-        /// <returns>An instance of optional with found services otherwise empty.</returns>
-        public static IEnumerable<TService> GetServicesExtended<TService>(
-            this IServiceProvider serviceProvider, Type serviceType)
-            where TService : class
-        {
-            if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
-
-            if (serviceProvider
-                .GetRequiredService(typeof(IEnumerable<>).MakeGenericType(new Type[] { serviceType }))
-                is IEnumerable<TService> services)
-            {
-                return services;
-            }
-
-            return Enumerable.Empty<TService>();
-        }
-
-        /// <summary>
         /// Instantiates a type with constructor provided directly and/or from an System.IServiceProvider.
         /// </summary>
         /// <param name="serviceProvider">The service provider to act with.</param>
         /// <param name="type">The target type.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="serviceProvider"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        public static object GetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type type)
+        public static object XGetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type type)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
 
@@ -148,7 +54,7 @@ namespace System.Design.DependencyInjection
         /// <param name="arguments">The optional arguments.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="serviceProvider"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
-        public static object CreateInstance(this IServiceProvider serviceProvider, Type type, params object[] arguments)
+        public static object XCreateInstance(this IServiceProvider serviceProvider, Type type, params object[] arguments)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
             if (type is null) throw new ArgumentNullException(nameof(type));
@@ -171,7 +77,7 @@ namespace System.Design.DependencyInjection
         /// <param name="descriptor">The service descriptor.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="serviceProvider"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="descriptor"/> is null.</exception>
-        public static object GetInstance(this IServiceProvider serviceProvider, ServiceDescriptor descriptor)
+        public static object XGetInstance(this IServiceProvider serviceProvider, ServiceDescriptor descriptor)
         {
             if (serviceProvider is null) throw new ArgumentNullException(nameof(serviceProvider));
             if (descriptor is null) throw new ArgumentNullException(nameof(descriptor));
@@ -183,7 +89,7 @@ namespace System.Design.DependencyInjection
 
             if (descriptor.ImplementationType != null)
             {
-                return serviceProvider.GetServiceOrCreateInstance(descriptor.ImplementationType);
+                return serviceProvider.XGetServiceOrCreateInstance(descriptor.ImplementationType);
             }
 
             try
@@ -204,7 +110,7 @@ namespace System.Design.DependencyInjection
         /// <param name="factory">The factory to be used.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="descriptor"/> is null</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="factory"/> is null.</exception>
-        public static ServiceDescriptor WithFactory(
+        public static ServiceDescriptor XWithFactory(
             this ServiceDescriptor descriptor,
             Func<IServiceProvider, object> factory)
         {

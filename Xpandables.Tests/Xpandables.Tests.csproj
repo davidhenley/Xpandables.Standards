@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xpandables.Standards\Xpandables.Standards.csproj" />
+    <ProjectReference Include="..\Xpandables.DependencyInjection\Xpandables.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>

@@ -78,7 +78,7 @@ namespace System.Design.Mediator
         private void DoValidation<T>(T argument)
             where T : class
         {
-            var validator = _serviceProvider.GetServiceExtended<ICompositeValidatorRule<T>>();
+            var validator = _serviceProvider.XGetService<ICompositeValidatorRule<T>>();
             validator.Map(val => val.Validate(argument));
         }
     }

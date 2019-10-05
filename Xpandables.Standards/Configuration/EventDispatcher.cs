@@ -46,7 +46,7 @@ namespace System
             if (source is null) throw new ArgumentNullException(nameof(source));
 
             var tasks = _serviceProvider
-                .GetServicesExtended<IEventHandler<T>>()
+                .XGetService<IEventHandler<T>>()
                 .Select(handler => handler.HandleAsync(source));
 
             return Task.WhenAll(tasks);
@@ -59,7 +59,7 @@ namespace System
             var typeHandler = typeof(IEventHandler<>).MakeGenericType(new Type[] { source.GetType() });
 
             var tasks = _serviceProvider
-                .GetServicesExtended<IEventHandler>(typeHandler)
+                .XGetService<IEventHandler>(typeHandler)
                 .Select(handler => handler.HandleAsync(source));
 
             return Task.WhenAll(tasks);
