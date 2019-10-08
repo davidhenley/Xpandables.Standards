@@ -32,30 +32,17 @@ namespace System
             return source.FirstOrDefault();
         }
 
-        public static Task<Optional<T>> FirstOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            return source.FirstOrEmptyAsync(_ => true);
-        }
-
-        public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> source)
-        {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            return source.LastOrDefault();
-        }
-
-        //public static async Task<Optional<T>> LastOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
-        //{
-        //    if (source is null) throw new ArgumentNullException(nameof(source));
-        //    await foreach(var item in source.)
-        //    return await source.LastOrDefault().ConfigureAwait(false);
-        //}
-
         public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             return source.FirstOrDefault(predicate);
+        }
+
+        public static Task<Optional<T>> FirstOrEmptyAsync<T>(this IAsyncEnumerable<T> source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.FirstOrEmptyAsync(_ => true);
         }
 
         public static async Task<Optional<T>> FirstOrEmptyAsync<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
@@ -74,6 +61,12 @@ namespace System
             }
 
             return result;
+        }
+
+        public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.LastOrDefault();
         }
 
         public static IEnumerable<U> SelectOptional<T, U>(this IEnumerable<T> source, Func<T, Optional<U>> mapper)
@@ -148,7 +141,7 @@ namespace System
             }
         }
 
-        public static Optional<TValue> TryGetValueExtended<TKey, TValue>(
+        public static Optional<TValue> TryGetValueOptional<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary,
             TKey key)
         {
@@ -160,7 +153,7 @@ namespace System
                 : default;
         }
 
-        public static Optional<T> TryGetElementAtExtended<T>(this IEnumerable<T> source, int index)
+        public static Optional<T> TryGetElementAtOptional<T>(this IEnumerable<T> source, int index)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             return source.ElementAtOrDefault(index);
@@ -178,7 +171,7 @@ namespace System
                 : Optional<IEnumerable<TValue>>.Empty();
         }
 
-        public static void ForEachExtended<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)
+        public static void ForEachOptional<TSource, TElement>(this Optional<TSource> optional, Action<TElement> some)
             where TSource : IEnumerable<TElement>
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
@@ -192,7 +185,7 @@ namespace System
             }
         }
 
-        public static Optional<TSource> ForEachExtended<TSource, TElement>(
+        public static Optional<TSource> ForEachOptional<TSource, TElement>(
             this Optional<TSource> optional,
             Func<TElement, TElement> some)
             where TSource : IEnumerable<TElement>
@@ -212,7 +205,7 @@ namespace System
             return optional;
         }
 
-        public static Optional<TResult> ForEachExtended<TSource, TResult, TSourceElement, TResultElement>(
+        public static Optional<TResult> ForEachOptional<TSource, TResult, TSourceElement, TResultElement>(
             this Optional<TSource> optional,
             Func<TSourceElement, TResultElement> some)
             where TSource : IEnumerable<TSourceElement>
