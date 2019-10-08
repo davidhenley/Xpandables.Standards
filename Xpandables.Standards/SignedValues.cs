@@ -69,7 +69,7 @@ namespace System
         /// <summary>
         /// Computes the hash-code for the <see cref="SignedValues{T}"/> instance.
         /// </summary>
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             var hash = 17;
             hash += Positive.GetHashCode() ^ 31;
@@ -111,7 +111,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
         /// <exception cref="FormatException">The <paramref name="format"/> is invalid or
         /// the index of a format item is not zero or one.</exception>
-        public string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string format, IFormatProvider formatProvider)
             => string.Format(formatProvider, format, Positive, Negative);
     }
 }
