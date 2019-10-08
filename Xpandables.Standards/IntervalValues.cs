@@ -33,22 +33,14 @@ namespace System
         /// </summary>
         /// <param name="starting">The starting value</param>
         /// <param name="ending">The ending value</param>
-        public IntervalValues(T starting, T ending)
-        {
-            Starting = starting;
-            Ending = ending;
-        }
+        public IntervalValues(T starting, T ending) => (Starting, Ending) = (starting, ending);
 
         /// <summary>
         /// Provides with deconstruction for <see cref="IntervalValues{T}"/>.
         /// </summary>
         /// <param name="starting">The output starting value</param>
         /// <param name="ending">The output ending value</param>
-        public void Deconstruct(out T starting, out T ending)
-        {
-            starting = Starting;
-            ending = Ending;
-        }
+        public void Deconstruct(out T starting, out T ending) => (starting, ending) = (Starting, Ending);
 
         /// <summary>
         /// Contains the starting value.
@@ -69,7 +61,7 @@ namespace System
         /// <summary>
         /// Computes the hash-code for the <see cref="IntervalValues{T}"/> instance.
         /// </summary>
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             var hash = 17;
             hash += Starting.GetHashCode() ^ 31;
@@ -111,7 +103,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
         /// <exception cref="FormatException">The <paramref name="format"/> is invalid or
         /// the index of a format item is not zero or one.</exception>
-        public string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string format, IFormatProvider formatProvider)
             => string.Format(formatProvider, format, Starting, Ending);
     }
 }

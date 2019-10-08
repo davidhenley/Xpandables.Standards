@@ -33,22 +33,14 @@ namespace System
         /// </summary>
         /// <param name="positive">The positive value</param>
         /// <param name="negative">The negative value</param>
-        public SignedValues(T positive, T negative)
-        {
-            Positive = positive;
-            Negative = negative;
-        }
+        public SignedValues(T positive, T negative) => (Positive, Negative) = (positive, negative);
 
         /// <summary>
         /// Provides with deconstruction for <see cref="SignedValues{T}"/>.
         /// </summary>
         /// <param name="positive">The output positive value.</param>
         /// <param name="negative">The output negative value.</param>
-        public void Deconstruct(out T positive, out T negative)
-        {
-            positive = Positive;
-            negative = Negative;
-        }
+        public void Deconstruct(out T positive, out T negative) => (positive, negative) = (Positive, Negative);
 
         /// <summary>
         /// Contains the positive value.

@@ -35,8 +35,13 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         public EncryptedValues(string key, string value)
         {
-            Key = key ?? throw new ArgumentNullException(nameof(key));
-            Value = value ?? throw new ArgumentNullException(nameof(value));
+            Key = key ?? throw new ArgumentNullException(
+                nameof(key),
+                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(EncryptedValues), nameof(key)));
+
+            Value = value ?? throw new ArgumentNullException(
+                nameof(value),
+                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(EncryptedValues), nameof(value)));
         }
 
         /// <summary>
@@ -44,11 +49,7 @@ namespace System
         /// </summary>
         /// <param name="key">The output key.</param>
         /// <param name="value">The output value.</param>
-        public void Deconstruct(out string key, out string value)
-        {
-            key = Key;
-            value = Value;
-        }
+        public void Deconstruct(out string key, out string value) => (key, value) = (Key, Value);
 
         /// <summary>
         /// Contains the encryption key.
@@ -115,7 +116,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="formatProvider"/> is null.</exception>
         /// <exception cref="FormatException">The <paramref name="format"/> is invalid or
         /// the index of a format item is not zero or one.</exception>
-        public string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string format, IFormatProvider formatProvider)
             => string.Format(formatProvider, format, Key, Value);
     }
 }

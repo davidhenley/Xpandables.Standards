@@ -42,12 +42,9 @@ namespace System
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
-        {
-            if (obj == null || obj.GetType() != GetType())
-                return false;
-
-            return GetEqualityComponents().SequenceEqual(((ValueObject)obj).GetEqualityComponents());
-        }
+            => obj == null || obj.GetType() != GetType()
+                ? false
+                : GetEqualityComponents().SequenceEqual(((ValueObject)obj).GetEqualityComponents());
 
         /// <summary>
         /// Serves as the default hash function.
@@ -70,12 +67,7 @@ namespace System
         /// <param name="right">The right object to compare.</param>
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
         protected static bool EqualOperator(ValueObject left, ValueObject right)
-        {
-            if (left is null ^ right is null)
-                return false;
-
-            return left?.Equals(right) != false;
-        }
+            => left is null ^ right is null ? false : left?.Equals(right) != false;
 
         /// <summary>
         /// Compares equality.
@@ -83,8 +75,7 @@ namespace System
         /// <param name="left">The left object to compare.</param>
         /// <param name="right">The right object to compare.</param>
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
-        public static bool operator ==(ValueObject left, ValueObject right)
-            => EqualOperator(left, right);
+        public static bool operator ==(ValueObject left, ValueObject right) => EqualOperator(left, right);
 
         /// <summary>
         /// Compares difference.
@@ -92,8 +83,7 @@ namespace System
         /// <param name="left">The left object to compare.</param>
         /// <param name="right">The right object to compare.</param>
         /// <returns>true if the specified objects are not equal; otherwise, false.</returns>
-        public static bool operator !=(ValueObject left, ValueObject right)
-            => NotEqualOperator(left, right);
+        public static bool operator !=(ValueObject left, ValueObject right) => NotEqualOperator(left, right);
 
         /// <summary>
         /// Compares difference.
@@ -101,7 +91,6 @@ namespace System
         /// <param name="left">The left object to compare.</param>
         /// <param name="right">The right object to compare.</param>
         /// <returns>true if the specified objects are not equal; otherwise, false.</returns>
-        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
-            => !EqualOperator(left, right);
+        protected static bool NotEqualOperator(ValueObject left, ValueObject right) => !EqualOperator(left, right);
     }
 }
