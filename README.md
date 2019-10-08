@@ -34,7 +34,7 @@ public Optional<User> TryFindUser(string userName, string password)
     .TryFindUserByName(userName)
     .WhenException(...action)
     .When(user => user.IsPasswordValid(password), _ => throw an exception for example...)
-    .Reduce(()=> throw an exception / return another value....);
+    .WhenEmpty(()=> throw an exception / return another value....);
 }
 
 // The user...
