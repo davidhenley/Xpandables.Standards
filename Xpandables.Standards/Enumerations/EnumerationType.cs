@@ -58,18 +58,16 @@ namespace System
 
         /// <summary>
         /// Gets the list of all enumeration found in the current instance.
+        /// If you want to return all enumerations from base classes, use the non-generic method.
         /// </summary>
         /// <typeparam name="TEnumeration">Type of derived class enumeration.</typeparam>
         /// <returns>List of enumerations.</returns>
         public static IEnumerable<TEnumeration> GetAll<TEnumeration>()
             where TEnumeration : EnumerationType
-            => from info in typeof(TEnumeration)
-                    .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-               where info.PropertyType.IsSubclassOf(typeof(EnumerationType)) && info.GetGetMethod() != null
-               select info.GetValue(null) as TEnumeration;
+            => GetAll(typeof(TEnumeration)).SelectOptional(type => (type as TEnumeration).AsOptional());
 
         /// <summary>
-        /// Gets the list of all enumeration found in the instance of the specified type.
+        /// Gets the list of all enumeration found in the instance of the specified type and base classes.
         /// The type must derived from <see cref="EnumerationType"/>.
         /// </summary>
         /// <param name="enumerationType">Type of enumeration.</param>
@@ -83,7 +81,8 @@ namespace System
                 throw new ArgumentException($"The type is not a subclass of {typeof(EnumerationType)}", nameof(enumerationType));
 
             return from info in enumerationType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                    .GetProperties(BindingFlags.Public | BindingFlags.Static
+                    | BindingFlags.FlattenHierarchy | BindingFlags.Instance)
                    where info.PropertyType.IsSubclassOf(typeof(EnumerationType)) && info.GetGetMethod() != null
                    select info.GetValue(null);
         }

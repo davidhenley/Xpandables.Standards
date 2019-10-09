@@ -3,6 +3,8 @@ using System;
 using System.Design.Command;
 using System.Design.Database.Common;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace Xpandables.Tests
@@ -52,7 +54,33 @@ namespace Xpandables.Tests
             Assert.NotNull(factory);
         }
 
+        [Fact]
+        public void GetAllEnum()
+        {
+            var enums = EnumerationType.GetAll<EnumTwo>();
+            Assert.Equal(2, enums.Count());
+        }
+
+        [Fact]
+        public void GetValueEnum()
+        {
+            var value = EnumerationType.FromValue<EnumOne>(1);
+            Assert.NotNull(value);
+        }
+
 
         class CmdTest : ICommand { }
+
+        public class EnumOne : EnumerationType
+        {
+            protected EnumOne(string displayName, int value) : base(displayName, value) { }
+            public static EnumOne One => new EnumOne("One", 1);
+        }
+
+        public class EnumTwo : EnumOne
+        {
+            protected EnumTwo(string displayName, int value) : base(displayName, value) { }
+            public static EnumTwo Two => new EnumTwo("Two", 1);
+        }
     }
 }
