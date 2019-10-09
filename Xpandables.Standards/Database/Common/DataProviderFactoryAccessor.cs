@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Data.Common;
+using System.Globalization;
 using System.Reflection;
 
 namespace System.Design.Database.Common
@@ -27,14 +28,83 @@ namespace System.Design.Database.Common
     {
         public Optional<DbProviderFactory> GetProviderFactory(DataProviderType providerType)
         {
-            if (providerType is null) throw new ArgumentNullException(nameof(providerType));
+            if (providerType is null)
+            {
+                throw new ArgumentNullException(
+                nameof(providerType),
+                ErrorMessageResources.ArgumentExpected.StringFormat(
+                    nameof(DataProviderFactoryAccessor.GetProviderFactory),
+                    nameof(providerType)));
+            }
 
-            const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty;
+            return GetProviderFactoryInstance(providerType)
+                .Map(provider => provider as DbProviderFactory);
 
-            return providerType.ProviderFactoryTypeName
-                .TypeFromString(providerType.DisplayName)
-                .MapOptional(type => type.TypeInvokeMember("Instance", flags, null, type, null))
-                .Cast<DbProviderFactory>();
+            static Optional<object> GetProviderFactoryInstance(DataProviderType dataProviderType)
+            {
+                return GetTypeFromTypeName(dataProviderType.ProviderFactoryTypeName)
+                    .MapOptional(type => GetTypeFromInvokeMember(type, "Instance"))
+                    .WhenEmptyOptional(() => GetAssemblyFromString(dataProviderType.DisplayName))
+                    .MapOptional(ass =>
+                        ass.GetExportedTypes().FirstOrEmpty(testc => testc.FullName == dataProviderType.ProviderFactoryTypeName))
+                    .MapOptional(type => GetTypeFromInvokeMember(type, "Instance"));
+            }
+
+            static Optional<Type> GetTypeFromTypeName(string typeName)
+            {
+                try
+                {
+                    return Type.GetType(typeName, true, true);
+                }
+                catch (Exception exception) when (exception is TargetInvocationException
+                                            || exception is TypeLoadException
+                                            || exception is ArgumentException
+                                            || exception is IO.FileNotFoundException
+                                            || exception is IO.FileLoadException
+                                            || exception is BadImageFormatException)
+                {
+                    return Optional<Type>.Exception(exception);
+                }
+            }
+
+            static Optional<Assembly> GetAssemblyFromString(string assemblyName)
+            {
+                try
+                {
+                    return Assembly.Load(assemblyName);
+                }
+                catch (Exception exception) when (exception is ArgumentException
+                                            || exception is IO.FileNotFoundException
+                                            || exception is IO.FileLoadException
+                                            || exception is BadImageFormatException)
+                {
+                    return Optional<Assembly>.Exception(exception);
+                }
+            }
+
+            static Optional<object> GetTypeFromInvokeMember(Type type, string member)
+            {
+                try
+                {
+                    return type.InvokeMember(
+                        member,
+                        BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField | BindingFlags.GetProperty,
+                        null,
+                        type,
+                        null,
+                        CultureInfo.InvariantCulture);
+                }
+                catch (Exception exception) when (exception is ArgumentException
+                                            || exception is MethodAccessException
+                                            || exception is MissingFieldException
+                                            || exception is MissingMethodException
+                                            || exception is TargetException
+                                            || exception is AmbiguousMatchException
+                                            || exception is InvalidOperationException)
+                {
+                    return Optional<object>.Exception(exception);
+                }
+            }
         }
     }
 }

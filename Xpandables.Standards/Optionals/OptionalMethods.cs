@@ -294,7 +294,7 @@ namespace System
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
-        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
@@ -308,7 +308,22 @@ namespace System
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
-        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
+        /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="empty">The empty map.</param>
+        /// <returns>The replacement value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
+        public Optional<U> WhenEmpty<U>(Func<U> empty)
+        {
+            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (!IsValue()) return empty();
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
@@ -318,6 +333,21 @@ namespace System
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
             return this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="empty">The empty map.</param>
+        /// <returns>The replacement value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
+        public Optional<U> WhenEmptyOptional<U>(Func<Optional<U>> empty)
+        {
+            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (!IsValue()) return empty();
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
         }
 
         /// <summary>

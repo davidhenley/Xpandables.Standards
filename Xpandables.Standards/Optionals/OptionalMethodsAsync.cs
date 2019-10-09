@@ -284,7 +284,7 @@ namespace System
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
-        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
@@ -298,7 +298,22 @@ namespace System
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
-        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
+        /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="empty">The empty map.</param>
+        /// <returns>The replacement value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
+        public async ValueTask<Optional<U>> WhenEmptyAsync<U>(Func<ValueTask<U>> empty)
+        {
+            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (!IsValue()) return await empty().ConfigureAwait(false);
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
@@ -308,6 +323,21 @@ namespace System
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
             return this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="empty">The empty map.</param>
+        /// <returns>The replacement value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
+        public async ValueTask<Optional<U>> WhenEmptyOptionalAsync<U>(Func<ValueTask<Optional<U>>> empty)
+        {
+            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (!IsValue()) return await empty().ConfigureAwait(false);
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
         }
 
         /// <summary>

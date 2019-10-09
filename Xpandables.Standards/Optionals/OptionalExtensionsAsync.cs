@@ -155,9 +155,23 @@ namespace System
             return await (await optional.ConfigureAwait(false)).WhenEmptyAsync(empty).ConfigureAwait(false);
         }
 
+        public static async ValueTask<Optional<U>> WhenEmptyAsync<T, U>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<U>> empty)
+        {
+            return await (await optional.ConfigureAwait(false)).WhenEmptyAsync(empty).ConfigureAwait(false);
+        }
+
         public static async ValueTask<Optional<T>> WhenEmptyOptionalAsync<T>(
             this ValueTask<Optional<T>> optional,
             Func<ValueTask<Optional<T>>> empty)
+        {
+            return await (await optional.ConfigureAwait(false)).WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
+        }
+
+        public static async ValueTask<Optional<U>> WhenEmptyOptionalAsync<T, U>(
+            this ValueTask<Optional<T>> optional,
+            Func<ValueTask<Optional<U>>> empty)
         {
             return await (await optional.ConfigureAwait(false)).WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
         }

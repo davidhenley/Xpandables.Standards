@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Design.Command;
+using System.Design.Database.Common;
 using System.Diagnostics;
 using Xunit;
 
@@ -41,6 +42,14 @@ namespace Xpandables.Tests
             }
 
             //instance.Map(value => Assert.Equal(typeof(CommandHandlerBuilder<CmdTest>), value.GetType()));
+        }
+
+        [Fact]
+        public void ProviderFactoryInstance()
+        {
+            var provider = new DataProviderFactoryAccessor();
+            var factory = provider.GetProviderFactory(DataProviderType.MSSQL);
+            Assert.NotNull(factory);
         }
 
 
