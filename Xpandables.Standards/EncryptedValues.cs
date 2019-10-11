@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace System
@@ -24,6 +25,7 @@ namespace System
     /// </summary>
     [Serializable]
     [DebuggerDisplay("Key = {Key}, Value = {Value}")]
+    [TypeConverter(typeof(EncryptedValuesConverter))]
     public struct EncryptedValues : IFluent, IEquatable<EncryptedValues>
     {
         /// <summary>
