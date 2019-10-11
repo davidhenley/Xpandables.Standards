@@ -42,9 +42,8 @@ namespace System
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
-            => obj == null || obj.GetType() != GetType()
-                ? false
-                : GetEqualityComponents().SequenceEqual(((ValueObject)obj).GetEqualityComponents());
+            => GetType().Equals(obj?.GetType())
+                && GetEqualityComponents().SequenceEqual(((ValueObject)obj).GetEqualityComponents());
 
         /// <summary>
         /// Serves as the default hash function.
