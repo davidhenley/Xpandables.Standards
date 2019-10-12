@@ -13,15 +13,15 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.1</Version>
-    <AssemblyVersion>3.0.1</AssemblyVersion>
-    <FileVersion>3.0.1</FileVersion>
-    <PackageVersion>3.0.1</PackageVersion>
+    <Version>3.0.2</Version>
+    <AssemblyVersion>3.0.2</AssemblyVersion>
+    <FileVersion>3.0.2</FileVersion>
+    <PackageVersion>3.0.2</PackageVersion>
     <PackageId>Xpandables.SeriLog</PackageId>
     <PackageTags>Logging, logger, injection, Interception...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Move to NetStandard 2.1.</PackageReleaseNotes>
+    <PackageReleaseNotes>Update references.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables.SeriLog</AssemblyName>
     <RootNamespace>Xpandables.SeriLog</RootNamespace>
