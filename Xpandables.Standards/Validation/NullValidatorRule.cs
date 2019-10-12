@@ -21,7 +21,7 @@ namespace System.ComponentModel.DataAnnotations
     /// Validator when no explicit registration exist for a given type.
     /// </summary>
     /// <typeparam name="TArgument">Type of argument to be validated.</typeparam>
-    public sealed class NullValidatorBase<TArgument> : ValidatorRule<TArgument>
+    public sealed class NullValidatorRule<TArgument> : ValidatorRule<TArgument>
         where TArgument : class
     {
         /// <summary>

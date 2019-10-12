@@ -26,7 +26,7 @@ namespace System.Design.Command
     /// </summary>
     /// <typeparam name="TCommand">Type of the command.</typeparam>
     public sealed class CommandHandlerEventRegisterDecorator<TCommand> : ICommandHandler<TCommand>
-        where TCommand : class, ICommand
+        where TCommand : class, ICommand, IEventRegisterDecorator
     {
         private readonly ICommandHandler<TCommand> _decoratee;
         private readonly CorrelationTaskRegister _eventRegister;
