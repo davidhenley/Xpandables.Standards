@@ -18,7 +18,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace System.Configuration
 {
@@ -27,15 +26,12 @@ namespace System.Configuration
     /// </summary>
     public class CorrelationCollection<TKey, TValue> : ICorrelationCollection<TKey, TValue>
     {
-        protected AsyncLocal<ConcurrentDictionary<TKey, TValue>> Items { get; }
+        protected ConcurrentDictionary<TKey, TValue> Items { get; }
 
         /// <summary>
         /// Constructs a new instance that initializes the collection.
         /// </summary>
-        public CorrelationCollection() => Items = new AsyncLocal<ConcurrentDictionary<TKey, TValue>>
-        {
-            Value = new ConcurrentDictionary<TKey, TValue>()
-        };
+        public CorrelationCollection() => Items = new ConcurrentDictionary<TKey, TValue>();
 
         public virtual Optional<TValue> this[TKey key]
         {
@@ -44,7 +40,7 @@ namespace System.Configuration
                 if (EqualityComparer<TKey>.Default.Equals(key, default))
                     return Optional<TValue>.Empty();
 
-                return Items.Value.TryGetValue(key, out var found) ? found : default;
+                return Items.TryGetValue(key, out var found) ? found : default;
             }
             set
             {
@@ -54,13 +50,13 @@ namespace System.Configuration
 
                 Diagnostics.Contracts.Contract.Assume(!(value is null));
 
-                Items.Value.AddOrUpdate(key, value.Cast<TValue>(), (_, __) => value.Cast<TValue>());
+                Items.AddOrUpdate(key, value.Cast<TValue>(), (_, __) => value.Cast<TValue>());
             }
         }
 
         public virtual void AddOrUpdateValue(TKey key, TValue value) => this[key] = value;
 
-        public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Items.Value.GetEnumerator();
+        public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Items.GetEnumerator();
 
         public virtual Optional<TValue> GetValue(TKey key) => this[key];
 
