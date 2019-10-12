@@ -25,6 +25,21 @@ namespace System
     public static partial class OptionalExtensions
     {
         /// <summary>
+        /// Converts the left and right values to optional pair.
+        /// If one of the value is null, returns an empty optional.
+        /// </summary>
+        /// <typeparam name="T">The Type of the value.</typeparam>
+        /// <typeparam name="U">The type of the right value.</typeparam>
+        /// <param name="left">The left value to act on.</param>
+        /// <param name="right">The right value to act on.</param>
+        public static Optional<(T Left, U Right)> And<T, U>(this T left, U right)
+        {
+            return !EqualityComparer<U>.Default.Equals(right, default) && !EqualityComparer<T>.Default.Equals(left, default)
+                ? Optional<(T Left, U Right)>.Some((left, right))
+                : Optional<(T Left, U Right)>.Empty();
+        }
+
+        /// <summary>
         /// Returns an optional that contains the value if that value matches the predicate.
         /// Otherwise returns an empty optional.
         /// </summary>
@@ -88,5 +103,5 @@ namespace System
             if (optional == null) throw new ArgumentNullException(nameof(optional));
             return optional.And(right);
         }
-   }
+    }
 }
