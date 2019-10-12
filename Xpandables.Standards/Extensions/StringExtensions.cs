@@ -18,6 +18,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace System
@@ -244,6 +246,113 @@ namespace System
             {
                 return Optional<string>.Exception(exception);
             }
+        }
+
+        /// <summary>
+        /// Returns an encrypted string from the value using the specified key.
+        /// <para>The implementation uses the <see cref="SHA512Managed"/>.</para>
+        /// </summary>
+        /// <param name="source">The value to be encrypted.</param>
+        /// <param name="key">The key value to be used for encryption.</param>
+        /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        public static Optional<string> Encrypt(this string source, string key)
+        {
+            if (string.IsNullOrWhiteSpace(source)) throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
+
+            try
+            {
+                using var cryptoManaged = new SHA512Managed();
+                var data = Text.Encoding.UTF8.GetBytes(source);
+                var hash = cryptoManaged.ComputeHash(data);
+                return BitConverter.ToString(hash).Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
+            {
+                return Optional<string>.Exception(exception);
+            }
+        }
+
+        /// <summary>
+        /// Generates a string of the specified length that contains random characters from the lookup characters.
+        /// <para>The implementation uses the <see cref="RNGCryptoServiceProvider"/>.</para>
+        /// </summary>
+        /// <remarks>
+        /// Inspiration from https://stackoverflow.com/questions/32932679/using-rngcryptoserviceprovider-to-generate-random-string
+        /// </remarks>
+        /// <param name="lookupCharacters">The string to be used to pick characters from.</param>
+        /// <param name="length">The length of the expected string value.</param>
+        /// <returns>A new string of the specified length with random characters.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="length"/> is lower or equal to zero.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="lookupCharacters"/> is null.</exception>
+        public static Optional<string> GenerateString(this string lookupCharacters, int length)
+        {
+            if (length <= 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (string.IsNullOrWhiteSpace(lookupCharacters)) throw new ArgumentNullException(nameof(lookupCharacters));
+
+            try
+            {
+                var stringResult = new StringBuilder(length);
+                using (var random = new RNGCryptoServiceProvider())
+                {
+                    var count = (int)Math.Ceiling(Math.Log(lookupCharacters.Length, 2) / 8.0);
+                    Diagnostics.Debug.Assert(count <= sizeof(uint));
+
+                    var offset = BitConverter.IsLittleEndian ? 0 : sizeof(uint) - count;
+                    var max = (int)(Math.Pow(2, count * 8) / lookupCharacters.Length) * lookupCharacters.Length;
+
+                    var uintBuffer = new byte[sizeof(uint)];
+                    while (stringResult.Length < length)
+                    {
+                        random.GetBytes(uintBuffer, offset, count);
+                        var number = BitConverter.ToUInt32(uintBuffer, 0);
+                        if (number < max)
+                            stringResult.Append(lookupCharacters[(int)(number % lookupCharacters.Length)]);
+                    }
+                }
+
+                return stringResult.ToString();
+            }
+            catch (Exception exception)
+            {
+                return Optional<string>.Exception(exception);
+            }
+        }
+
+        private const string lookupCharacters = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,;!(-è_çàà)=@%µ£¨//?§/.?";
+
+        /// <summary>
+        /// Returns an encrypted string from the value using a randomize key.
+        /// <para>The implementation uses the <see cref="SHA512Managed"/>.</para>
+        /// </summary>
+        /// <param name="source">The value to be encrypted.</param>
+        /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static Optional<EncryptedValues> Encrypt(this string source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+
+            return lookupCharacters
+                .GenerateString(12)
+                .MapOptional(key => source.Encrypt(key).And(() => key))
+                .Map(pair => new EncryptedValues(pair.Right, pair.Left));
+        }
+
+        /// <summary>
+        /// Compares the encrypted value with the specified one.
+        /// Returns <see langword="true"/> if equality otherwise <see langword="false"/>.
+        /// </summary>
+        /// <param name="encrypted">The encrypted value.</param>
+        /// <param name="value">The value to compare with.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
+        public static bool Equals(this EncryptedValues encrypted, string value)
+        {
+            if (value is null) throw new ArgumentNullException(nameof(value));
+
+            string compare = value.Encrypt(encrypted.Key);
+            return compare == encrypted.Value;
         }
     }
 }
