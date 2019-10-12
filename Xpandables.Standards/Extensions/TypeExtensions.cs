@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace System
     /// <summary>
     /// Extensions methods for <see cref="Type"/>.
     /// </summary>
-    public static class TypeHelpers
+    public static class TypeExtensions
     {
         /// <summary>
         /// Determines whether the specified method is overridden in its current implementation.
@@ -332,5 +333,167 @@ namespace System
                 return Optional<Type>.Exception(exception);
             }
         }
+
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to be created.</param>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
+        /// otherwise an empty result with exception.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        public static Optional<object> CreateInstance(this Type type)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
+            try
+            {
+                var lambdaConstructor = GetLambdaConstructor<Func<object>>(type, Array.Empty<Type>());
+                return lambdaConstructor.Invoke();
+            }
+            catch (Exception exception)
+            {
+                return Optional<object>.Exception(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/>.
+        /// </summary>
+        /// <typeparam name="TParam">The type of the parameter to pass to the constructor.</typeparam>
+        /// <param name="type">The type to be created.</param>
+        /// <param name="param">The parameter to pass to the constructor.</param>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
+        /// otherwise an empty result with exception.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="param"/> is null.</exception>
+        public static Optional<object> CreateInstance<TParam>(this Type type, TParam param)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (EqualityComparer<TParam>.Default.Equals(param, default)) throw new ArgumentNullException(nameof(param));
+
+            try
+            {
+                var lambdaConstructor = GetLambdaConstructor<Func<TParam, object>>(type, new[] { typeof(TParam) });
+                return lambdaConstructor.Invoke(param);
+            }
+            catch (Exception exception)
+            {
+                return Optional<object>.Exception(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/>.
+        /// </summary>
+        /// <typeparam name="TParam1">The type of the first parameter to pass to the constructor.</typeparam>
+        /// <typeparam name="TParam2">The type of the second parameter to pass to the constructor.</typeparam>
+        /// <param name="type">The type to be created.</param>
+        /// <param name="param1">The first parameter to pass to the constructor.</param>
+        /// <param name="param2">The first parameter to pass to the constructor.</param>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
+        /// otherwise an empty result with exception.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="param2"/> is null.</exception>
+        public static Optional<object> CreateInstance<TParam1, TParam2>(Type type, TParam1 param1, TParam2 param2)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (EqualityComparer<TParam1>.Default.Equals(param1, default)) throw new ArgumentNullException(nameof(param1));
+            if (EqualityComparer<TParam2>.Default.Equals(param2, default)) throw new ArgumentNullException(nameof(param2));
+
+            try
+            {
+                var lambdaConstructor = GetLambdaConstructor<Func<TParam1, TParam2, object>>(
+                    type,
+                    new[] { typeof(TParam1), typeof(TParam2) });
+
+                return lambdaConstructor.Invoke(param1, param2);
+            }
+            catch (Exception exception)
+            {
+                return Optional<object>.Exception(exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/>.
+        /// </summary>
+        /// <typeparam name="TParam1">The type of the first parameter to pass to the constructor.</typeparam>
+        /// <typeparam name="TParam2">The type of the second parameter to pass to the constructor.</typeparam>
+        /// <typeparam name="TParam3">The type of the third parameter to pass to the constructor.</typeparam>
+        /// <param name="type">The type to be created.</param>
+        /// <param name="param1">The first parameter to pass to the constructor.</param>
+        /// <param name="param2">The first parameter to pass to the constructor.</param>
+        /// <param name="param3">The first parameter to pass to the constructor.</param>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK,
+        /// otherwise an empty result with exception.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="param2"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="param3"/> is null.</exception>
+        public static Optional<object> CreateInstance<TParam1, TParam2, TParam3>(
+            this Type type,
+            TParam1 param1,
+            TParam2 param2,
+            TParam3 param3)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (EqualityComparer<TParam1>.Default.Equals(param1, default)) throw new ArgumentNullException(nameof(param1));
+            if (EqualityComparer<TParam2>.Default.Equals(param2, default)) throw new ArgumentNullException(nameof(param2));
+            if (EqualityComparer<TParam3>.Default.Equals(param3, default)) throw new ArgumentNullException(nameof(param3));
+
+            try
+            {
+                var lambdaConstructor = GetLambdaConstructor<Func<TParam1, TParam2, TParam3, object>>(
+                    type,
+                    new[] { typeof(TParam1), typeof(TParam2), typeof(TParam3) });
+
+                return lambdaConstructor.Invoke(param1, param2, param3);
+            }
+            catch (Exception exception)
+            {
+                return Optional<object>.Exception(exception);
+            }
+        }
+
+        // Gets the delegate associated to the constructor.
+        private static TDelegate GetLambdaConstructor<TDelegate>(Type type, params Type[] parameterTypes)
+               where TDelegate : Delegate
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            var constructor = GetConstructorInfo(type, parameterTypes);
+            var parameterExpression = GetParameterExpression(parameterTypes);
+            var constructorExpression = GetConstructorExpression(constructor, parameterExpression);
+
+            return Expression
+                .Lambda<TDelegate>(constructorExpression, parameterExpression)
+                .Compile();
+        }
+
+        // Gets the Constructor which matches the given argument Types.
+        private static ConstructorInfo GetConstructorInfo(Type type, params Type[] parameterTypes)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            return type.GetConstructor(
+                BindingFlags.Instance | BindingFlags.Public,
+                null,
+                CallingConventions.HasThis,
+                parameterTypes,
+                Array.Empty<ParameterModifier>());
+        }
+
+        // Gets a set of Expressions representing the parameters which will be passed to the constructor.
+        private static ParameterExpression[] GetParameterExpression(params Type[] parameterTypes)
+            => parameterTypes
+                .Select((type, index) => Expression.Parameter(type, $"param{index + 1}"))
+                .ToArray();
+
+        // Gets an Expression representing the constructor call, passing in the constructor parameters.
+        private static Expression GetConstructorExpression(
+           ConstructorInfo constructorInfo,
+           params ParameterExpression[] parameterExpressions)
+           => Expression.New(constructorInfo, parameterExpressions);
     }
 }
