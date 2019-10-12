@@ -31,6 +31,7 @@ namespace System.Design.Database
     {
         public virtual IQueryable<T> SetOf<T>() where T : Entity => Set<T>();
         Optional<T> IDataContext.Find<T>(params object[] keyValues) => Find<T>(keyValues);
+
         public virtual IEnumerable<TResult> GetAll<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
             where T : Entity
         {
@@ -38,50 +39,58 @@ namespace System.Design.Database
             return from entity in selector(Set<T>())
                    select entity;
         }
+
         public virtual Optional<TResult> GetFirst<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
             where T : Entity
         {
             if (selector is null) throw new ArgumentNullException(nameof(selector));
             return selector(Set<T>()).FirstOrEmpty();
         }
+
         public virtual Optional<TResult> GetLast<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
             where T : Entity
         {
             if (selector is null) throw new ArgumentNullException(nameof(selector));
             return selector(Set<T>()).LastOrEmpty();
         }
+
         void IDataContext.Add<T>(T entity)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
             Add(entity);
         }
+
         void IDataContext.AddRange<T>(IEnumerable<T> entities)
         {
-            if (entities is null || !entities.Any())
+            if (entities?.Any() != true)
                 throw new ArgumentNullException(nameof(entities));
 
             AddRange(entities);
         }
+
         public virtual void Delete<T>(T entity)
             where T : Entity
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
             Remove(entity);
         }
+
         public virtual void DeleteRange<T>(IEnumerable<T> entities)
             where T : Entity
         {
-            if (entities is null || !entities.Any())
+            if (entities?.Any() != true)
                 throw new ArgumentNullException(nameof(entities));
 
             RemoveRange(entities);
         }
+
         public virtual void Delete<T>(Expression<Func<T, bool>> predicate)
             where T : Entity
         {
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             Set<T>().Where(predicate).ForEach(Remove);
         }
+
         public virtual void Update<T, TUpdated>(TUpdated updatedEntity)
             where T : Entity
             where TUpdated : Entity
@@ -90,17 +99,21 @@ namespace System.Design.Database
             Set<T>().FirstOrEmpty(entity => entity.Id == updatedEntity.Id)
                    .Map(entity => Entry(entity).CurrentValues.SetValues(updatedEntity));
         }
+
         public virtual void UpdateRange<T, TUpdated>(IReadOnlyList<TUpdated> updatedEntities)
             where T : Entity
             where TUpdated : Entity
         {
-            if (updatedEntities is null || !updatedEntities.Any())
+            if (updatedEntities?.Any() != true)
                 throw new ArgumentNullException(nameof(updatedEntities));
 
             foreach (var updatedEntity in updatedEntities)
+            {
                 Set<T>().FirstOrEmpty(entity => entity.Id == updatedEntity.Id)
                     .Map(entity => Entry(entity).CurrentValues.SetValues(updatedEntity));
+            }
         }
+
         public virtual void Update<T, TUpdated>(Expression<Func<T, bool>> predicate, Func<T, TUpdated> updater)
             where T : Entity
             where TUpdated : class
@@ -111,6 +124,7 @@ namespace System.Design.Database
             foreach (var entity in Set<T>().Where(predicate))
                 Entry(entity).CurrentValues.SetValues(updater(entity));
         }
+
         public void Persist()
         {
             try

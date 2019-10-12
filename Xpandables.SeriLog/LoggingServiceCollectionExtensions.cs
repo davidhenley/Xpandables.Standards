@@ -51,23 +51,8 @@ namespace System.Design.DependencyInjection
             where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
             => services.DoAddCustomSerilog<TLogEvent>();
 
-        /// <summary>
-        /// Adds the logger wrapper to the services with scoped life time.
-        /// </summary>
-        /// <typeparam name="TLoggerWrapper">The type of the logger to be registered.</typeparam>
-        /// <param name="services">The collection of services.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddXLoggerWrapper<TLoggerWrapper>(this IServiceCollection services)
-            where TLoggerWrapper : class, ILoggerWrapper
-        {
-            if (services is null) throw new ArgumentNullException(nameof(services));
-            services.AddScoped<ILoggerWrapper, TLoggerWrapper>();
-
-            return services;
-        }
-
-    private static IServiceCollection DoAddCustomSerilog<TLogEvent>(this IServiceCollection services)
-            where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
+        private static IServiceCollection DoAddCustomSerilog<TLogEvent>(this IServiceCollection services)
+                where TLogEvent : Entity, ILogEvent<TLogEvent>, new()
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddScoped<LogEventSerilogSink<TLogEvent>>();

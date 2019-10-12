@@ -31,14 +31,10 @@ namespace System.Design.DependencyInjection
         /// Adds the <see cref="ICommandHandler{TCommand}"/> to the services with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with or use specific method.</param>
         /// <param name="assemblies">The assemblies to scan for implemented types.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> is null.</exception>
-        public static IServiceCollection AddXCommandHandlers(
-            this IServiceCollection services,
-            Decorators decorateWith = Decorators.None,
-            params Assembly[] assemblies)
+        public static IServiceCollection AddXCommandHandlers(this IServiceCollection services, params Assembly[] assemblies)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
             if (assemblies?.Any() != true) throw new ArgumentNullException(nameof(assemblies));
@@ -50,14 +46,6 @@ namespace System.Design.DependencyInjection
                     .AsImplementedInterfaces()
                     .WithTransientLifetime());
 
-            if ((decorateWith & Decorators.Validation) == Decorators.Validation)
-                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerValidationDecorator<>));
-            if ((decorateWith & Decorators.Persistence) == Decorators.Persistence)
-                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerPersistenceDecorator<>));
-            if ((decorateWith & Decorators.Transaction) == Decorators.Transaction)
-                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerTransactionDecorator<>));
-            if ((decorateWith & Decorators.EventRegister) == Decorators.EventRegister)
-                services.XTryDecorate(typeof(ICommandHandler<>), typeof(CommandHandlerEventRegisterDecorator<>));
             return services;
         }
 

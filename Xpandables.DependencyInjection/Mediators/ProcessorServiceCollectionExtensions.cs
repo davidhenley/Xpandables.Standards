@@ -29,24 +29,12 @@ namespace System.Design.DependencyInjection
         /// Adds the <see cref="IProcessor"/> to the services with transient life time.
         /// </summary>
         /// <param name="services">The collection of services.</param>
-        /// <param name="decorateWith">The decorator to be added with.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
-        public static IServiceCollection AddXProcessor(
-            this IServiceCollection services,
-            Decorators decorateWith = Decorators.None)
+        public static IServiceCollection AddXProcessor(this IServiceCollection services)
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
             services.AddTransient<IProcessor, Processor>();
-            if ((decorateWith & Decorators.Validation) == Decorators.Validation)
-                services.XTryDecorate<IProcessor, ProcessorValidationDecorator>();
-            if ((decorateWith & Decorators.Persistence) == Decorators.Persistence)
-                services.XTryDecorate<IProcessor, ProcessorPersistenceDecorator>();
-            if ((decorateWith & Decorators.Transaction) == Decorators.Transaction)
-                services.XTryDecorate<IProcessor, ProcessorTransactionDecorator>();
-            if ((decorateWith & Decorators.EventRegister) == Decorators.EventRegister)
-                services.XTryDecorate<IProcessor, ProcessorEventRegisterDecorator>();
-
             return services;
         }
     }
