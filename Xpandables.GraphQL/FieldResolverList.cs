@@ -17,6 +17,7 @@
 
 using System.Design.Database;
 using System.Linq.Dynamic.Core;
+using System.Design.DependencyInjection;
 using GraphQL.Resolvers;
 using GraphQL.Types;
 
@@ -38,7 +39,7 @@ namespace System.GraphQL
 
             var first = context.GetArgument("first", int.MaxValue);
             var offset = context.GetArgument("offset", 0);
-            var dataSource = ((GraphQLSchema)context.Schema).DependencyResolver.Resolve<IDataContext>();
+            var dataSource = ((GraphQLSchema)context.Schema).Services.XGetService<IDataContext>().Cast<IDataContext>();
 
             return tableData.QueryOn(dataSource)
                     .Skip(offset)

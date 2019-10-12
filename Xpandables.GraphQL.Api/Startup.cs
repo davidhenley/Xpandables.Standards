@@ -45,13 +45,11 @@ namespace Xpandables.GraphQL.Api
 
             app.UseAuthorization();
 
-            app.UseGraphiQl();
-
+            app.UseGraphiQl("/graphql");
             app.UseMvc();
-
             //app.UseEndpoints(endpoints =>
             //{
-            //    endpoints.MapDefaultControllerRoute();
+            //    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             //});
         }
     }

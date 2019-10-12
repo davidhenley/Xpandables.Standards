@@ -30,7 +30,8 @@ namespace System.GraphQL
             if (graphQueryBuilder == null) throw new ArgumentNullException(nameof(graphQueryBuilder));
 
             Query = graphQueryBuilder.GetGraphQuery();
-            DependencyResolver = new DependencyResolver(serviceProvider);
+            Services = serviceProvider;
+            //DependencyResolver = new DependencyResolver(serviceProvider);
         }
     }
 }

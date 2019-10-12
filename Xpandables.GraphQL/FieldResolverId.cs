@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Design.Database;
+using System.Design.DependencyInjection;
 using System.Linq.Dynamic.Core;
 using GraphQL.Resolvers;
 using GraphQL.Types;
@@ -36,7 +37,7 @@ namespace System.GraphQL
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            var dataSource = ((GraphQLSchema)context.Schema).DependencyResolver.Resolve<IDataContext>();
+            var dataSource = ((GraphQLSchema)context.Schema).Services.XGetService<IDataContext>().Cast<IDataContext>();
             var id = context.GetArgument<string>("id");
             return tableData.QueryOn(dataSource).FirstOrDefault("Id == @0", new object[] { id });
         }

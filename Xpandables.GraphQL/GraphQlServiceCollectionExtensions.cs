@@ -38,14 +38,14 @@ namespace System.Design.DependencyInjection
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<ITableObjectCollection, TableObjectCollection>();
+            services.AddSingleton<ITableObjectCollection, TableObjectCollection>();
             services.AddScoped<ITableObjectCollectionBuilder, TableObjectCollectionBuilder>();
 
-            services.AddScoped<ITableObjectBuilder, TableObjectBuilder>();
-            services.AddScoped<IColumnObjectBuilder, ColumnObjectBuilder>();
-            services.AddScoped<INavigationObjectBuilder, NavigationObjectBuilder>();
+            services.AddSingleton<ITableObjectBuilder, TableObjectBuilder>();
+            services.AddSingleton<IColumnObjectBuilder, ColumnObjectBuilder>();
+            services.AddSingleton<INavigationObjectBuilder, NavigationObjectBuilder>();
 
-            services.AddScoped<IGraphQueryBuilder, GraphQueryBuilder>();
+            services.AddTransient<IGraphQueryBuilder, GraphQueryBuilder>();
 
             services.AddScoped<ISchema, GraphQLSchema>();
             services.AddScoped<IDocumentExecuter, DocumentExecuter>();

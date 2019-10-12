@@ -19,7 +19,7 @@ using GraphQL;
 
 namespace System.GraphQL
 {
-    public sealed class DependencyResolver : IDependencyResolver
+    public sealed class DependencyResolver //: IDependencyResolver
     {
         private readonly IServiceProvider _serviceProvider;
 

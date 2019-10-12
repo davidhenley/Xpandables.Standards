@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.2</Version>
-    <AssemblyVersion>3.0.2</AssemblyVersion>
-    <FileVersion>3.0.2</FileVersion>
-    <PackageVersion>3.0.2</PackageVersion>
+    <Version>3.0.3</Version>
+    <AssemblyVersion>3.0.3</AssemblyVersion>
+    <FileVersion>3.0.3</FileVersion>
+    <PackageVersion>3.0.3</PackageVersion>
     <PackageId>Xpandables.DependencyInjection</PackageId>
     <PackageTags>Dependency injection, Resolver, Interception...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>

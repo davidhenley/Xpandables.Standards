@@ -14,10 +14,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.2</Version>
-    <AssemblyVersion>3.0.2</AssemblyVersion>
-    <FileVersion>3.0.2</FileVersion>
-    <PackageVersion>3.0.2</PackageVersion>
+    <Version>3.0.3</Version>
+    <AssemblyVersion>3.0.3</AssemblyVersion>
+    <FileVersion>3.0.3</FileVersion>
+    <PackageVersion>3.0.3</PackageVersion>
     <PackageId>Xpandables.GraphQL</PackageId>
     <PackageTags>GraphQl, Database, EntityFramework</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
@@ -60,7 +60,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="GraphQL" Version="2.4.0" />
+    <PackageReference Include="GraphQL" Version="3.0.0-preview-1271" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.0.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
   </ItemGroup>
