@@ -15,7 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -31,26 +30,19 @@ namespace System.Design.Command
         where TCommand : class, ICommand, ITransactionDecorator
     {
         private readonly ICommandHandler<TCommand> _decoratee;
-        private readonly IAttributeAccessor _attributeAccessor;
 
-        public CommandHandlerTransactionDecorator(ICommandHandler<TCommand> decoratee, IAttributeAccessor attributeAccessor)
+        public CommandHandlerTransactionDecorator(ICommandHandler<TCommand> decoratee)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(CommandHandlerTransactionDecorator<TCommand>),
                     nameof(decoratee)));
-
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
-                nameof(attributeAccessor),
-                ErrorMessageResources.ArgumentExpected.StringFormat(
-                    nameof(CommandHandlerTransactionDecorator<TCommand>),
-                    nameof(attributeAccessor)));
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
         {
-            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TCommand));
+            var attribute = typeof(TCommand).GetAttribute<SupportTransactionAttribute>();
 
             if (attribute.IsValue())
             {

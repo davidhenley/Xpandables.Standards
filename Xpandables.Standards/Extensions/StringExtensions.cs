@@ -25,7 +25,7 @@ namespace System
     /// <summary>
     /// String extension methods.
     /// </summary>
-    public static class StringHelpers
+    public static class StringExtensions
     {
         /// <summary>
         /// Determines whether the string is a well formatted email address.
@@ -60,11 +60,8 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="pattern"/> is null.</exception>
         public static bool IsValidPhone(this string source, string pattern)
         {
-            if (string.IsNullOrWhiteSpace(source))
-                throw new ArgumentNullException(nameof(source));
-
-            if (string.IsNullOrWhiteSpace(pattern))
-                throw new ArgumentNullException(nameof(pattern));
+            if (string.IsNullOrWhiteSpace(source)) throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrWhiteSpace(pattern)) throw new ArgumentNullException(nameof(pattern));
 
             try
             {
@@ -95,7 +92,8 @@ namespace System
         /// <param name="value">The format string.</param>
         /// <param name="cultureInfo">CultureInfo to be used.</param>
         /// <param name="args">The object to be formatted.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null or <paramref name="cultureInfo"/> or <paramref name="args"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null or
+        /// <paramref name="cultureInfo"/> or <paramref name="args"/> is null.</exception>
         /// <exception cref="InvalidOperationException">See inner exception.</exception>
         /// <returns>value <see cref="string"/> filled with <paramref name="args"/></returns>
         public static string StringFormat(this string value, CultureInfo cultureInfo, params object[] args)
@@ -147,8 +145,7 @@ namespace System
         /// <param name="value">The string value.</param>
         /// <returns>The string value converted to the specified value type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null or empty.</exception>
-        /// <exception cref="InvalidOperationException">Conversion failed. See inner exception.</exception>
-        public static T ToValueType<T>(this string value)
+        public static Optional<T> ToValueType<T>(this string value)
             where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
         {
             try
@@ -159,9 +156,7 @@ namespace System
                                             || exception is FormatException
                                             || exception is OverflowException)
             {
-                throw new InvalidOperationException(
-                     $"Conversion to {typeof(T).Name} failed. See inner exception",
-                     exception);
+                return Optional<T>.Exception(exception);
             }
         }
 
@@ -186,6 +181,68 @@ namespace System
                                             || exception is OverflowException)
             {
                 return valueIfException;
+            }
+        }
+
+        /// <summary>
+        /// Converts string date to <see cref="DateTime"/> type.
+        /// If error, returns an exception optional.
+        /// </summary>
+        /// <param name="source">A string containing a date and time to convert.</param>
+        /// <param name="provider">An object that supplies culture-specific format information about string.</param>
+        /// <param name="styles"> A bitwise combination of enumeration values that indicates the permitted format
+        /// of string. A typical value to specify is System.Globalization.DateTimeStyles.None.</param>
+        /// <param name="formats">An array of allowable formats of strings.</param>
+        /// <returns>An optional instance.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
+        public static Optional<DateTime> ToDateTime(
+            this string source,
+            IFormatProvider provider,
+            DateTimeStyles styles,
+            params string[] formats)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (provider is null) throw new ArgumentNullException(nameof(provider));
+
+            try
+            {
+                if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
+                    return dateTime;
+
+                return Optional<DateTime>.Empty();
+            }
+            catch (Exception exception) when (exception is ArgumentException)
+            {
+                return Optional<DateTime>.Exception(exception);
+            }
+        }
+
+        /// <summary>
+        /// Converts the value of the current System.DateTime object to its equivalent string
+        /// representation using the specified format and culture-specific format information.
+        /// If error, returns an exception
+        /// </summary>
+        /// <param name="dateTime">The date time to be converted.</param>
+        /// <param name="format">A standard or custom date and time format string.</param>
+        /// <param name="provider">An object that supplies culture-specific formatting information.</param>
+        /// <returns>An optional string representation of value of the current System.DateTime object as specified
+        /// by format and provider.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="format"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="provider"/> is null.</exception>
+        public static Optional<string> DateTimeToString(this DateTime dateTime, string format, IFormatProvider provider)
+        {
+            if (format is null) throw new ArgumentNullException(nameof(format));
+            if (provider is null) throw new ArgumentNullException(nameof(provider));
+
+            try
+            {
+                return dateTime.ToString(format, provider);
+            }
+            catch (Exception exception) when (exception is FormatException
+                                            || exception is ArgumentOutOfRangeException)
+            {
+                return Optional<string>.Exception(exception);
             }
         }
     }

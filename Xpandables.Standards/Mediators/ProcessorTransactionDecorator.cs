@@ -30,21 +30,14 @@ namespace System.Design.Mediator
     public sealed class ProcessorTransactionDecorator : IProcessor
     {
         private readonly IProcessor _decoratee;
-        private readonly IAttributeAccessor _attributeAccessor;
 
-        public ProcessorTransactionDecorator(IProcessor decoratee, IAttributeAccessor attributeAccessor)
+        public ProcessorTransactionDecorator(IProcessor decoratee)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(ProcessorTransactionDecorator),
                     nameof(decoratee)));
-
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
-                nameof(attributeAccessor),
-                ErrorMessageResources.ArgumentExpected.StringFormat(
-                    nameof(ProcessorTransactionDecorator),
-                    nameof(attributeAccessor)));
         }
 
         public async ValueTask<TResult> HandleResultAsync<TResult>(
@@ -53,7 +46,7 @@ namespace System.Design.Mediator
         {
             if (query is null) throw new ArgumentNullException(nameof(query));
 
-            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(query.GetType());
+            var attribute = query.GetAttribute<SupportTransactionAttribute>();
             if (attribute.IsValue())
             {
                 using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
@@ -71,7 +64,7 @@ namespace System.Design.Mediator
         {
             if (command is null) throw new ArgumentNullException(nameof(command));
 
-            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TCommand));
+            var attribute = typeof(TCommand).GetAttribute<SupportTransactionAttribute>();
             if (attribute.IsValue())
             {
                 using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
@@ -90,7 +83,7 @@ namespace System.Design.Mediator
         {
             if (query is null) throw new ArgumentNullException(nameof(query));
 
-            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
+            var attribute = typeof(TQuery).GetAttribute<SupportTransactionAttribute>();
             if (attribute.IsValue())
             {
                 using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());

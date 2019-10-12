@@ -24,7 +24,7 @@ namespace System
     /// <summary>
     /// Generic extension methods.
     /// </summary>
-    public static class GenericHelpers
+    public static class GenericExtensions
     {
         /// <summary>
         /// Sets properties via lambda expression scope.
@@ -67,7 +67,7 @@ namespace System
                 throw new ArgumentNullException($"Constant Expression expected. {nameof(nameOfExpression)}");
             if (!(source.GetType().GetProperty(constantExpression.Value.ToString()) is PropertyInfo propertyInfo))
                 throw new ArgumentException($"Property {constantExpression.Value} does not exist in the {source.GetType().Name}.");
-            if (!(propertyInfo.GetSetMethod() is MethodInfo methodInfo))
+            if (!(propertyInfo.GetSetMethod() is MethodInfo))
                 throw new ArgumentException($"Property {propertyInfo.Name} is not settable.");
             if (value != null && !propertyInfo.PropertyType.IsAssignableFrom(value.GetType()))
                 throw new ArgumentException($"Property type of {propertyInfo.Name} and type of the value does not match.");
@@ -77,51 +77,81 @@ namespace System
         }
 
         /// <summary>
-        /// Returns the attribute of the <typeparamref name="T"/> type from the object.
+        /// Returns the attribute of the <typeparamref name="TAttribute"/> type from the object.
         /// </summary>
-        /// <typeparam name="T">Type of attribute.</typeparam>
+        /// <typeparam name="TAttribute">The Type of attribute.</typeparam>
         /// <param name="source">enumeration instance to act on.</param>
         /// <param name="inherit"><see langword="true"/> to inspect the ancestors of element;
         /// otherwise, <see langword="false"/>.</param>
         /// <returns>The description string. If not found, returns the enumeration as string.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        public static T GetAttribute<T>(this object source, bool inherit = true)
-            where T : Attribute
+        public static Optional<TAttribute> GetAttribute<TAttribute>(this object source, bool inherit = true)
+            where TAttribute : Attribute
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
-            return source.GetType().GetCustomAttribute<T>(inherit);
+
+            try
+            {
+                return source.GetType().GetTypeInfo().GetCustomAttribute<TAttribute>(inherit);
+            }
+            catch (Exception exception) when (exception is NotSupportedException
+                                            || exception is AmbiguousMatchException
+                                            || exception is TypeLoadException)
+            {
+                return Optional<TAttribute>.Exception(exception);
+            }
         }
 
         /// <summary>
-        /// Returns the attribute of the <typeparamref name="T"/> type from the type.
+        /// Returns the attribute of the <typeparamref name="TAttribute"/> type from the type.
         /// </summary>
-        /// <typeparam name="T">Type of attribute.</typeparam>
+        /// <typeparam name="TAttribute">Type of attribute.</typeparam>
         /// <param name="source">enumeration instance to act on.</param>
         /// <param name="inherit"><see langword="true"/> to inspect the ancestors of element;
         /// otherwise, <see langword="false"/>.</param>
         /// <returns>The description string. If not found, returns the enumeration as string.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        public static T GetAttribute<T>(this Type source, bool inherit = true)
-            where T : Attribute
+        public static Optional<TAttribute> GetAttribute<TAttribute>(this Type source, bool inherit = true)
+            where TAttribute : Attribute
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
-            return source.GetCustomAttribute<T>(inherit);
+
+            try
+            {
+                return source.GetType().GetTypeInfo().GetCustomAttribute<TAttribute>(inherit);
+            }
+            catch (Exception exception) when (exception is NotSupportedException
+                                            || exception is AmbiguousMatchException
+                                            || exception is TypeLoadException)
+            {
+                return Optional<TAttribute>.Exception(exception);
+            }
         }
 
         /// <summary>
-        /// Returns the attribute of the <typeparamref name="T"/> type from the type.
+        /// Returns the attribute of the <typeparamref name="TAttribute"/> type from the type.
         /// </summary>
-        /// <typeparam name="T">Type of attribute.</typeparam>
+        /// <typeparam name="TAttribute">Type of attribute.</typeparam>
         /// <param name="source">enumeration instance to act on.</param>
         /// <param name="inherit"><see langword="true"/> to inspect the ancestors of element;
         /// otherwise, <see langword="false"/>.</param>
         /// <returns>The description string. If not found, returns the enumeration as string.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        public static T GetAttribute<T>(this PropertyInfo source, bool inherit = true)
-            where T : Attribute
+        public static Optional<TAttribute> GetAttribute<TAttribute>(this PropertyInfo source, bool inherit = true)
+            where TAttribute : Attribute
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
-            return source.GetCustomAttribute<T>(inherit);
+
+            try
+            {
+                return source.GetType().GetTypeInfo().GetCustomAttribute<TAttribute>(inherit);
+            }
+            catch (Exception exception) when (exception is NotSupportedException
+                                            || exception is AmbiguousMatchException
+                                            || exception is TypeLoadException)
+            {
+                return Optional<TAttribute>.Exception(exception);
+            }
         }
 
         /// <summary>
@@ -133,14 +163,18 @@ namespace System
         /// <returns>The description string. If not found, returns the value as string.</returns>
         public static string GetDescriptionAttribute<TEnum>(this TEnum value)
             where TEnum : Enum
-            => typeof(TEnum).GetField($"{value}")?.GetAttribute<DescriptionAttribute>()?.Description ?? $"{value}";
+            => typeof(TEnum)
+                .GetField($"{value}")
+                ?.GetAttribute<DescriptionAttribute>()
+                .Map(attr => attr.Description)
+                .WhenEmpty(() => $"{value}");
 
         /// <summary>
-        /// Converts the current enum value to the target one.
+        /// Converts the current enumeration value to the target one.
         /// </summary>
         /// <typeparam name="TEnum">Type of target value.</typeparam>
-        /// <param name="source">The current enum value.</param>
-        /// <returns>An new enum of <typeparamref name="TEnum"/> type.</returns>
+        /// <param name="source">The current enumeration value.</param>
+        /// <returns>An new enumeration of <typeparamref name="TEnum"/> type.</returns>
         public static Optional<TEnum> ConvertTo<TEnum>(this Enum source)
             where TEnum : struct, Enum
         {
@@ -155,11 +189,11 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the current enum value to the target one.
+        /// Converts the current enumeration value to the target one.
         /// </summary>
         /// <typeparam name="TEnum">Type of target value.</typeparam>
-        /// <param name="source">The current enum value.</param>
-        /// <returns>An new enum of <typeparamref name="TEnum"/> type.</returns>
+        /// <param name="source">The current enumeration value.</param>
+        /// <returns>An new enumeration of <typeparamref name="TEnum"/> type.</returns>
         /// <exception cref="InvalidOperationException">The conversion failed. See inner exception.</exception>
         public static Optional<TEnum> ConvertTo<TEnum>(this string source)
             where TEnum : struct, Enum

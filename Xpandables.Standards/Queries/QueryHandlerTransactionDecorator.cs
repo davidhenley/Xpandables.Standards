@@ -32,26 +32,19 @@ namespace System.Design.Query
         where TQuery : class, IQuery<TResult>, ITransactionDecorator
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
-        private readonly IAttributeAccessor _attributeAccessor;
 
-        public QueryHandlerTransactionDecorator(IQueryHandler<TQuery, TResult> decoratee, IAttributeAccessor attributeAccessor)
+        public QueryHandlerTransactionDecorator(IQueryHandler<TQuery, TResult> decoratee)
         {
             _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerTransactionDecorator<TQuery, TResult>),
                     nameof(decoratee)));
-
-            _attributeAccessor = attributeAccessor ?? throw new ArgumentNullException(
-                nameof(attributeAccessor),
-                ErrorMessageResources.ArgumentExpected.StringFormat(
-                    nameof(QueryHandlerTransactionDecorator<TQuery, TResult>),
-                    nameof(attributeAccessor)));
         }
 
         public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
-            var attribute = _attributeAccessor.GetAttribute<SupportTransactionAttribute>(typeof(TQuery));
+            var attribute = typeof(TQuery).GetAttribute<SupportTransactionAttribute>();
 
             if (attribute.IsValue())
             {
