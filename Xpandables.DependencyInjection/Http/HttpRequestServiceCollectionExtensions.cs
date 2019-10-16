@@ -17,6 +17,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Http;
+using Xpandables.Http;
 
 namespace System.Design.DependencyInjection
 {
@@ -41,6 +42,33 @@ namespace System.Design.DependencyInjection
         }
 
         /// <summary>
+        /// Adds the default HTTP request header values accessor that implements the <see cref="IHttpRequestHeaderValuesAccessor"/>.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddXHttpRequestHeaderValuesAccessor(this IServiceCollection services)
+            => services.AddXHttpRequestHeaderValuesAccessor<HttpRequestHeaderValuesAccessor>();
+
+        /// <summary>
+        /// Adds the default HTTP request header user claims accessor that implements the <see cref="IHttpRequestUserClaimAccessor"/>.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddXHttpRequestUserClaimAccessor(this IServiceCollection services)
+            => services.AddScoped<IHttpRequestUserClaimAccessor, HttpRequestUserClaimAccessor>();
+
+        /// <summary>
+        /// Adds the default HTTP request header user claims accessor that implements the <see cref="IHttpRequestUserClaimAccessor"/>.
+        /// </summary>
+        /// <typeparam name="THttpRequestUserClaimAccessor">The type of HTTP request header user claims.</typeparam>
+        /// <param name="services">The collection of services.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="services"/> is null.</exception>
+        public static IServiceCollection AddXHtppRequestUserClaimAccessor<THttpRequestUserClaimAccessor>(
+            this IServiceCollection services)
+            where THttpRequestUserClaimAccessor : class, IHttpRequestUserClaimAccessor
+            => services.AddScoped<IHttpRequestUserClaimAccessor, THttpRequestUserClaimAccessor>();
+
+        /// <summary>
         /// Adds the default HTTP request token accessor that implements the <see cref="IHttpRequestTokenAccessor"/>.
         /// </summary>
         /// <param name="services">The collection of services.</param>
@@ -62,6 +90,25 @@ namespace System.Design.DependencyInjection
             if (services is null) throw new ArgumentNullException(nameof(services));
             services.AddScoped<IHttpRequestTokenAccessor, THttpRequestTokenAccessor>();
             return services;
+        }
+
+        /// <summary>
+        /// Adds a delegate that will be used to add the authorization token before request execution
+        /// using the <see cref="IHttpRequestTokenAccessor"/>.
+        /// </summary>
+        /// <param name="builder">The Microsoft.Extensions.DependencyInjection.IHttpClientBuilder.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="builder"/> is null.</exception>
+        public static IHttpClientBuilder ConfigureXPrimaryAuthorizationTokenHandler(this IHttpClientBuilder builder)
+        {
+            if (builder is null) throw new ArgumentNullException(nameof(builder));
+
+            builder.ConfigurePrimaryHttpMessageHandler(provider =>
+                {
+                    var httpTokenProvider = provider.GetRequiredService<IHttpRequestTokenAccessor>();
+                    return new HttpAuthorizationTokenHandler(httpTokenProvider);
+                });
+
+            return builder;
         }
     }
 }

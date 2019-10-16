@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.3</Version>
-    <AssemblyVersion>3.0.3</AssemblyVersion>
-    <FileVersion>3.0.3</FileVersion>
-    <PackageVersion>3.0.3</PackageVersion>
+    <Version>3.0.4</Version>
+    <AssemblyVersion>3.0.4</AssemblyVersion>
+    <FileVersion>3.0.4</FileVersion>
+    <PackageVersion>3.0.4</PackageVersion>
     <PackageId>Xpandables.SeriLog</PackageId>
     <PackageTags>Logging, logger, injection, Interception...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
@@ -51,7 +51,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.8.0" />
+    <PackageReference Include="Serilog" Version="2.9.0" />
   </ItemGroup>
 
   <ItemGroup>

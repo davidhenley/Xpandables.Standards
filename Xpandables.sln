@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29123.89
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Standards", "Xpandables.Standards\Xpandables.Standards.csproj", "{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Core", "Xpandables.Core\Xpandables.Core.csproj", "{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Tests", "Xpandables.Tests\Xpandables.Tests.csproj", "{DDE473E7-4DE5-420B-914E-821AF5C5B93B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.EntityFrameworkCore", "Xpandables.EntityFrameworkCore\Xpandables.EntityFrameworkCore.csproj", "{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}"
@@ -33,12 +31,6 @@ Global
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|Any CPU.ActiveCfg = Release|x64
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|x64.ActiveCfg = Release|x64
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|x64.Build.0 = Release|x64
-		{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}.Debug|x64.ActiveCfg = Debug|x64
-		{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}.Debug|x64.Build.0 = Debug|x64
-		{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}.Release|Any CPU.ActiveCfg = Release|x64
-		{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}.Release|x64.ActiveCfg = Release|x64
-		{BF64DB7C-57FA-4ABC-ADFC-2EFAD641AB5C}.Release|x64.Build.0 = Release|x64
 		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Debug|x64.ActiveCfg = Debug|x64
 		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Debug|x64.Build.0 = Debug|x64

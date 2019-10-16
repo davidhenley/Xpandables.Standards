@@ -14,10 +14,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.3</Version>
-    <AssemblyVersion>3.0.3</AssemblyVersion>
-    <FileVersion>3.0.3</FileVersion>
-    <PackageVersion>3.0.3</PackageVersion>
+    <Version>3.0.4</Version>
+    <AssemblyVersion>3.0.4</AssemblyVersion>
+    <FileVersion>3.0.4</FileVersion>
+    <PackageVersion>3.0.4</PackageVersion>
     <PackageId>Xpandables.GraphQL</PackageId>
     <PackageTags>GraphQl, Database, EntityFramework</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
