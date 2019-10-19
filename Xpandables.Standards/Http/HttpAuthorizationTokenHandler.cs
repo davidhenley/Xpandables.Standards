@@ -22,7 +22,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Xpandables.Http
+namespace System.Http
 {
     /// <summary>
     /// Provides with a handler that can be used with <see cref="HttpClient"/> to add header authorization value
@@ -30,16 +30,16 @@ namespace Xpandables.Http
     /// </summary>
     public class HttpAuthorizationTokenHandler : HttpClientHandler
     {
-        private readonly IHttpRequestTokenAccessor _httpRequestTokenAccessor;
+        private readonly IHttpAuthorizationTokenAccessor _httpAuthorizationTokenAccessor;
 
         /// <summary>
         /// Initializes a new instance of <see cref="HttpAuthorizationTokenHandler"/> with the token accessor.
         /// </summary>
-        /// <param name="httpRequestTokenAccessor">The token accessor to act with.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="httpRequestTokenAccessor"/> is null.</exception>
-        public HttpAuthorizationTokenHandler(IHttpRequestTokenAccessor httpRequestTokenAccessor)
+        /// <param name="httpAuthorizationTokenAccessor">The token accessor to act with.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="httpAuthorizationTokenAccessor"/> is null.</exception>
+        public HttpAuthorizationTokenHandler(IHttpAuthorizationTokenAccessor httpAuthorizationTokenAccessor)
         {
-            _httpRequestTokenAccessor = httpRequestTokenAccessor ?? throw new ArgumentNullException(nameof(httpRequestTokenAccessor));
+            _httpAuthorizationTokenAccessor = httpAuthorizationTokenAccessor ?? throw new ArgumentNullException(nameof(httpAuthorizationTokenAccessor));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Xpandables.Http
 
             if (request.Headers.Authorization is AuthenticationHeaderValue authorization)
             {
-                string token = _httpRequestTokenAccessor.GetRequestHttpToken();
+                string token = _httpAuthorizationTokenAccessor.GetToken();
                 request.Headers.Authorization = new AuthenticationHeaderValue(authorization.Scheme, token);
             }
 
