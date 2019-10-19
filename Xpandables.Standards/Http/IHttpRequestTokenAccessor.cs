@@ -23,12 +23,6 @@ namespace System.Http
     public interface IHttpRequestTokenAccessor
     {
         /// <summary>
-        /// Returns the current token value from the current HTTP request matching the "Authorization" key.
-        /// If not found, returns an empty optional.
-        /// </summary>
-        Optional<string> GetRequestHttpToken();
-
-        /// <summary>
         /// Returns the current token value from the current HTTP request with the specified key.
         /// If not found, returns an empty optional.
         /// </summary>

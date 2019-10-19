@@ -18,28 +18,28 @@
 namespace System.Http
 {
     /// <summary>
-    /// A helper class used to implement the <see cref="IHttpAuthorizationTokenAccessor"/> interface.
+    /// A helper class used to implement the <see cref="IHttpRequestTokenAccessor"/> interface.
     /// </summary>
-    public sealed class HttpAuthorizationTokenAccessorBuilder : IHttpAuthorizationTokenAccessor
+    public sealed class HttpRequestTokenAccessorBuilder : IHttpRequestTokenAccessor
     {
-        private readonly Func<string> _tokenAccessor;
+        private readonly Func<string, string> _tokenAccessor;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="HttpAuthorizationTokenAccessorBuilder"/> with the delegate to be used
-        /// as <see cref="IHttpAuthorizationTokenAccessor"/> implementation.
+        /// Initializes a new instance of <see cref="HttpRequestTokenAccessorBuilder"/> with the delegate to be used
+        /// as <see cref="IHttpRequestTokenAccessor"/> implementation.
         /// </summary>
         /// <param name="tokenAccessor">The delegate to be used when the handler will be invoked.
         /// <para>The delegate should match all the behaviors expected in
-        /// the <see cref="IHttpAuthorizationTokenAccessor"/>
+        /// the <see cref="IHttpRequestTokenAccessor"/>
         /// method such as thrown exceptions.</para></param>
         /// <exception cref="ArgumentNullException">The <paramref name="tokenAccessor"/> is null.</exception>
-        public HttpAuthorizationTokenAccessorBuilder(Func<string> tokenAccessor)
+        public HttpRequestTokenAccessorBuilder(Func<string, string> tokenAccessor)
             => _tokenAccessor = tokenAccessor ?? throw new ArgumentNullException(
                 nameof(tokenAccessor),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
-                    nameof(HttpAuthorizationTokenAccessorBuilder),
+                    nameof(HttpRequestTokenAccessorBuilder),
                     nameof(tokenAccessor)));
 
-        public Optional<string> GetToken() => _tokenAccessor();
+        public Optional<string> GetRequestHttpToken(string key) => _tokenAccessor(key);
     }
 }

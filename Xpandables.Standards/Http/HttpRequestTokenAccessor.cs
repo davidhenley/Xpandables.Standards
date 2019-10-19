@@ -27,8 +27,6 @@ namespace System.Http
         public HttpRequestTokenAccessor(IHttpRequestHeaderValuesAccessor headerValuesAccessor)
             => _headerValuesAccessor = headerValuesAccessor ?? throw new ArgumentNullException(nameof(headerValuesAccessor));
 
-        public Optional<string> GetRequestHttpToken() => GetRequestHttpToken("Authorization");
-
         public Optional<string> GetRequestHttpToken(string key)
         {
             if (key is null) throw new ArgumentNullException(nameof(key));

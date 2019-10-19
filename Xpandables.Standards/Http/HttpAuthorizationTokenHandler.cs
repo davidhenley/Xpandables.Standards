@@ -15,8 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System;
-using System.Http;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -30,16 +28,16 @@ namespace System.Http
     /// </summary>
     public class HttpAuthorizationTokenHandler : HttpClientHandler
     {
-        private readonly IHttpAuthorizationTokenAccessor _httpAuthorizationTokenAccessor;
+        private readonly IHttpRequestTokenAccessor _httpRequestTokenAccessor;
 
         /// <summary>
         /// Initializes a new instance of <see cref="HttpAuthorizationTokenHandler"/> with the token accessor.
         /// </summary>
-        /// <param name="httpAuthorizationTokenAccessor">The token accessor to act with.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="httpAuthorizationTokenAccessor"/> is null.</exception>
-        public HttpAuthorizationTokenHandler(IHttpAuthorizationTokenAccessor httpAuthorizationTokenAccessor)
+        /// <param name="httpRequestTokenAccessor">The token accessor to act with.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="httpRequestTokenAccessor"/> is null.</exception>
+        public HttpAuthorizationTokenHandler(IHttpRequestTokenAccessor httpRequestTokenAccessor)
         {
-            _httpAuthorizationTokenAccessor = httpAuthorizationTokenAccessor ?? throw new ArgumentNullException(nameof(httpAuthorizationTokenAccessor));
+            _httpRequestTokenAccessor = httpRequestTokenAccessor ?? throw new ArgumentNullException(nameof(httpRequestTokenAccessor));
         }
 
         /// <summary>
@@ -55,7 +53,13 @@ namespace System.Http
 
             if (request.Headers.Authorization is AuthenticationHeaderValue authorization)
             {
-                string token = _httpAuthorizationTokenAccessor.GetToken();
+                string token = _httpRequestTokenAccessor.GetRequestHttpToken()
+                    ?? throw new InvalidOperationException(
+                        ErrorMessageResources.ArgumentExpected.StringFormat(
+                            nameof(HttpAuthorizationTokenHandler),
+                            nameof(IHttpRequestTokenAccessor.GetRequestHttpToken)),
+                    new ArgumentNullException("token"));
+
                 request.Headers.Authorization = new AuthenticationHeaderValue(authorization.Scheme, token);
             }
 

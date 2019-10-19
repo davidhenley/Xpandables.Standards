@@ -18,13 +18,18 @@
 namespace System.Http
 {
     /// <summary>
-    /// Defines a method used to retrieve the token string for the <see cref="HttpAuthorizationTokenHandler"/>.
+    /// Extensions methods for <see cref="IHttpRequestTokenAccessor"/>.
     /// </summary>
-    public interface IHttpAuthorizationTokenAccessor
+    public static class HttpRequestExtensions
     {
         /// <summary>
-        /// Provides the available token value.
+        /// Returns the current token value from the current HTTP request matching the "Authorization" key.
+        /// If not found, returns an empty optional.
         /// </summary>
-        Optional<string> GetToken();
+        public static Optional<string> GetRequestHttpToken(this IHttpRequestTokenAccessor tokenAccessor)
+        {
+            if (tokenAccessor is null) throw new ArgumentNullException(nameof(tokenAccessor));
+            return tokenAccessor.GetRequestHttpToken("Authorization");
+        }
     }
 }
