@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.0.10</Version>
-    <AssemblyVersion>3.0.10</AssemblyVersion>
-    <FileVersion>3.0.10</FileVersion>
-    <PackageVersion>3.0.10</PackageVersion>
+    <Version>3.1.0</Version>
+    <AssemblyVersion>3.1.0</AssemblyVersion>
+    <FileVersion>3.1.0</FileVersion>
+    <PackageVersion>3.1.0</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IMediator, IQuery{TResult}, Enumeration, Interception, Optional, Visitor, Database, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
@@ -36,7 +36,7 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DocumentationFile>bin\x64\Debug\netstandard2.1\Xpandables.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591;CA1715,CA1801</NoWarn>
+    <NoWarn>1701;1702;CS1591;CA1715,CA1801;CA1040;CA2225;</NoWarn>
     <CodeAnalysisRuleSet>Xpandables.Standards.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -46,12 +46,12 @@
     <OutputPath>bin\x64\Release\</OutputPath>
     <DocumentationFile>bin\x64\Release\netstandard2.1\Xpandables.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1701;1702;CS1591;CA1715;CA1801</NoWarn>
+    <NoWarn>1701;1702;CS1591;CA1715;CA1801;CA2225;</NoWarn>
     <CodeAnalysisRuleSet>Xpandables.Standards.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

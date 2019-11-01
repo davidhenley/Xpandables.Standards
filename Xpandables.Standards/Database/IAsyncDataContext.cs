@@ -32,7 +32,7 @@ namespace System.Design.Database
     /// When a value is not found, an optional empty value of the expected type will be returned.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    public partial interface IDataContext : IDisposable
+    public partial interface IDataContext
     {
         /// <summary>
         /// Finds a domain object matching the primary key values specified and returns its value.

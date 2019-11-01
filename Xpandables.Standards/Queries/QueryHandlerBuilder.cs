@@ -18,7 +18,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// A helper class used to implement the <see cref="IQueryHandler{TQuery, TResult}"/> interface.

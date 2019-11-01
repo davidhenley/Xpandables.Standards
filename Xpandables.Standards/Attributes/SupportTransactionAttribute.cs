@@ -21,6 +21,7 @@ namespace System
 {
     /// <summary>
     /// Specifies that the decorated command/query will be applied transaction behavior.
+    /// The target class must implement the <see cref="ITransactionBehavior"/> interface.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class SupportTransactionAttribute : Attribute

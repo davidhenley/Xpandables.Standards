@@ -15,10 +15,12 @@
  *
 ************************************************************************************************************/
 
-namespace System.Design.Command
+namespace System.Design
 {
     /// <summary>
     /// This interface is used as a marker for commands when using the command pattern.
+    /// Class implementation is used with the <see cref="ICommandHandler{TCommand}"/> where "TCommand" is <see cref="ICommand"/> class implementation.
+    /// This can also be enhanced with some useful interface decorators such as <see cref="IPersistenceBehavior"/> or <see cref="IValidationBehavior"/>.
     /// </summary>
     [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface ICommand { }

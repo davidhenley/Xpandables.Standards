@@ -18,7 +18,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// Implementation for <see cref="IQueryHandlerWrapper{TResult}"/>.
@@ -34,7 +34,7 @@ namespace System.Design.Query
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerWrapper<TQuery, TResult>),
-                    nameof(decoratee)));
+                    $"{decoratee} : {nameof(TQuery)}.{nameof(TResult)}"));
 
         public async ValueTask<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
             => await _decoratee.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);

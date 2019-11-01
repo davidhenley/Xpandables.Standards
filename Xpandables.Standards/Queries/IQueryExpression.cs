@@ -17,7 +17,7 @@
 
 using System.Linq.Expressions;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// Defines a methods that returns an <see cref="Expression{TDelegate}"/> that can be used to query

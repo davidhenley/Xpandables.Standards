@@ -23,8 +23,7 @@ using System.Linq;
 namespace System
 {
     /// <summary>
-    ///  When used with <see cref="Validator"/>, specifies that a data field value is required.
-    ///  <para>To be used only with nested type.</para>
+    ///  When used with <see cref="Validator"/>, specifies that the nested class as data field value is required.
     /// </summary>
     /// <seealso cref="RequiredAttribute"/>
     [Serializable]

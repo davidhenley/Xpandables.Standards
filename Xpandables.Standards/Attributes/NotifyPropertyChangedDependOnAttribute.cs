@@ -25,7 +25,7 @@ namespace System
     public sealed class NotifyPropertyChangedDependOnAttribute : Attribute
     {
         /// <summary>
-        /// Specifies that the decorated property will be notified when the specified one has changed.
+        /// Specifies that the decorated property will be notified when the target specified by name has changed.
         /// <para>We advise the use of <see langword="nameof(propertyName)"/> as value.</para>
         /// </summary>
         /// <param name="name">The name of the target property which changes are notified to the decorated property.</param>

@@ -18,13 +18,17 @@
 namespace System.Design.Database
 {
     /// <summary>
-    /// Allows an application author to dynamically seed a data context.
+    /// Allows an application author to dynamically seed a data context before it's retrieved.
     /// This is useful when you need a data context not to be empty.
+    /// The target data context should be decorated with the <see cref="ISeederBehavior"/> interface and the class seeder implementation should be
+    /// registered to services collections with the extension method <see langword="AddXDataContextSeederBehavior"/>.
     /// </summary>
     public interface IDataContextSeeder
     {
         /// <summary>
-        /// Seeds the specified data context.
+        /// Seeds the specified data context as you wish.
+        /// Warning : Do not throw exception from this method unless it's absolutely necessary.
+        /// This method get called by the <see cref="DataContextSeederBehavior"/>.
         /// </summary>
         /// <param name="dataContext">The data context instance to act on.</param>
         /// <returns>A seeded data context.</returns>

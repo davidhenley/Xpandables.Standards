@@ -10,7 +10,7 @@ namespace Xpandables.GraphQL.Api
         {
             services.AddXGraphQL();
             services.AddXDataContext<GraphQLContextProvider>();
-            services.AddXDataContextSeederDecorator<GraphQLContextSeeder>();
+            services.AddXDataContextSeederBehavior<GraphQLContextSeeder>();
         }
     }
 }

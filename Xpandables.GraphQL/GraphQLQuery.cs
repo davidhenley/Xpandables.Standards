@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-using System.Design.Query;
+using System.Design;
 using GraphQL;
 using Newtonsoft.Json.Linq;
 

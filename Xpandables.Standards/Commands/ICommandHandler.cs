@@ -18,10 +18,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Command
+namespace System.Design
 {
     /// <summary>
-    /// Defines a generic method that a class implements to asynchronously handle a type-specific command.
+    /// Defines a generic method that a class implements to asynchronously handle a type-specific command that implement <see cref="ICommand"/>.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to be handled.</typeparam>

@@ -18,7 +18,7 @@
 using System.Design.Linq;
 using System.Linq.Expressions;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// This class is a helper that provides a default implementation for <see cref="IQueryExpression{TSource}"/>.

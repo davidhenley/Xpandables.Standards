@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Xpandables.GraphQL.Api.Models
 {
-    public class GraphQLContextProvider : IDataContextProvider
+    public class GraphQLContextProvider : IDataContextAccessor
     {
         public Optional<IDataContext> GetDataContext()
         {

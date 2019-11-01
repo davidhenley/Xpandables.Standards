@@ -15,7 +15,7 @@
  *
 ************************************************************************************************************/
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// Defines a query that contains a specific-type result when using the query pattern.

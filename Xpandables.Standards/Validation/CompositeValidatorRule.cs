@@ -28,14 +28,14 @@ namespace System.ComponentModel.DataAnnotations
     public sealed class CompositeValidatorRule<TArgument> : ICompositeValidatorRule<TArgument>
         where TArgument : class
     {
-        private readonly IEnumerable<IValidatorRule<TArgument>> _validators;
+        private readonly IEnumerable<IValidationRule<TArgument>> _validators;
 
         /// <summary>
         /// Initializes the composite validator with all validators for the argument.
         /// </summary>
         /// <param name="validators">The collection of validators to act with.</param>
-        public CompositeValidatorRule(IEnumerable<IValidatorRule<TArgument>> validators)
-            => _validators = validators ?? Enumerable.Empty<IValidatorRule<TArgument>>();
+        public CompositeValidatorRule(IEnumerable<IValidationRule<TArgument>> validators)
+            => _validators = validators ?? Enumerable.Empty<IValidationRule<TArgument>>();
 
         public void Validate(TArgument argument)
         {
