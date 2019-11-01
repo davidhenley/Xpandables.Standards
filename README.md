@@ -138,13 +138,3 @@ public abstract class Enumeration :
 and from string representations.
 
 ```
-
-# Xpandables.GraphQL
-
-A starting point to generate GraphQL schema without *ObjectGraphType* implementation.
-Use of [GraphQL.Net](https://github.com/graphql-dotnet/graphql-dotnet).
-
-A working example can be found
-[here](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.GraphQL.Api).
-
-Feel free to fork this project, make your own changes and create a pull request.
