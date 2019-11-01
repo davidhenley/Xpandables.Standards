@@ -5,13 +5,9 @@ VisualStudioVersion = 16.0.29123.89
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Standards", "Xpandables.Standards\Xpandables.Standards.csproj", "{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Tests", "Xpandables.Tests\Xpandables.Tests.csproj", "{DDE473E7-4DE5-420B-914E-821AF5C5B93B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.EntityFrameworkCore", "Xpandables.EntityFrameworkCore\Xpandables.EntityFrameworkCore.csproj", "{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL", "Xpandables.GraphQL\Xpandables.GraphQL.csproj", "{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.GraphQL.Api", "Xpandables.GraphQL.Api\Xpandables.GraphQL.Api.csproj", "{EC643C8C-A1C2-4A58-9178-28F990E961B0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.DependencyInjection", "Xpandables.DependencyInjection\Xpandables.DependencyInjection.csproj", "{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}"
 EndProject
@@ -31,12 +27,6 @@ Global
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|Any CPU.ActiveCfg = Release|x64
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|x64.ActiveCfg = Release|x64
 		{C74CD16E-4655-4BD4-B7D5-2C5BA817AEBF}.Release|x64.Build.0 = Release|x64
-		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Debug|x64.ActiveCfg = Debug|x64
-		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Debug|x64.Build.0 = Debug|x64
-		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Release|Any CPU.ActiveCfg = Release|x64
-		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Release|x64.ActiveCfg = Release|x64
-		{DDE473E7-4DE5-420B-914E-821AF5C5B93B}.Release|x64.Build.0 = Release|x64
 		{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}.Debug|x64.ActiveCfg = Debug|x64
 		{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}.Debug|x64.Build.0 = Debug|x64
@@ -49,12 +39,6 @@ Global
 		{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}.Release|Any CPU.ActiveCfg = Release|x64
 		{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}.Release|x64.ActiveCfg = Release|x64
 		{6DE0FEF5-E8C8-4712-8687-1584E7B1EA3C}.Release|x64.Build.0 = Release|x64
-		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Debug|x64.ActiveCfg = Debug|x64
-		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Debug|x64.Build.0 = Debug|x64
-		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|Any CPU.ActiveCfg = Release|x64
-		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|x64.ActiveCfg = Release|x64
-		{EC643C8C-A1C2-4A58-9178-28F990E961B0}.Release|x64.Build.0 = Release|x64
 		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Debug|x64.ActiveCfg = Debug|x64
 		{4F83B3F4-D28E-4F44-A544-A432AFECBDF3}.Debug|x64.Build.0 = Debug|x64
