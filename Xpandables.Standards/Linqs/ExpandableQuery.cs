@@ -25,16 +25,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace System.Design.Linq
 {
-#pragma warning disable CA1710 // Les identificateurs doivent avoir un suffixe correct
     /// <summary>
     /// An IQueryable wrapper that allows us to visit the query's expression tree just before LINQ to SQL gets to it.
     /// This is based on the excellent work of Tomas Petricek: http://tomasp.net/blog/linq-expand.aspx
     /// </summary>
-    public class ExpandableQuery<T> : IQueryable<T>, IOrderedQueryable<T>, IOrderedQueryable, IAsyncEnumerable<T>
-#pragma warning restore CA1710 // Les identificateurs doivent avoir un suffixe correct
+    [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Les identificateurs doivent avoir un suffixe correct",
+        Justification = "<En attente>")]
+    public class ExpandableQuery<T> :  IOrderedQueryable<T>, IAsyncEnumerable<T>
     {
         public ExpandableQuery(IQueryable<T> innerQuery, Func<Expression, Expression> queryOptimizer)
         {
@@ -44,15 +45,16 @@ namespace System.Design.Linq
             InnerQueryProvider = new ExpandableQueryProvider<T>(this, queryOptimizer);
         }
 
-        protected internal IQueryable<T> InnerQuery { get; }
+        internal IQueryable<T> InnerQuery { get; }
         private ExpandableQueryProvider<T> InnerQueryProvider { get; }
         public Type ElementType => typeof(T);
         public Expression Expression => InnerQuery.Expression;
         public IQueryProvider Provider => InnerQueryProvider;
-        IAsyncEnumerator<T> IAsyncEnumerable<T>.GetEnumerator()
+
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
             if (InnerQuery is IAsyncEnumerable<T> asyncEnumerable)
-                return asyncEnumerable.GetEnumerator();
+                return asyncEnumerable.GetAsyncEnumerator(cancellationToken);
 
             throw new InvalidOperationException(ErrorMessageResources.LinqQueryDontImplementIAsyncEnumeratorAccessor);
         }

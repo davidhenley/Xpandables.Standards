@@ -21,6 +21,7 @@ namespace System
 {
     /// <summary>
     /// Specifies that the decorated command/query will be applied transaction behavior.
+    /// The target class must implement the <see cref="ITransactionBehavior"/> interface.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class SupportTransactionAttribute : Attribute
@@ -47,11 +48,10 @@ namespace System
         /// <summary>
         /// Returns the <see cref=" TransactionScope"/> matching the attribute.
         /// </summary>
-        /// <returns></returns>
         public TransactionScope GetTransactionScope()
             => new TransactionScope(
                 TransactionScopeOption,
-                TimeOut.GetValueOrDefault(0) > 0
+                (TimeOut ?? 0) > 0
                     ? new TransactionOptions
                     {
                         IsolationLevel = IsolationLevel,

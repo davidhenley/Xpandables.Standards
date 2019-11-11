@@ -16,10 +16,10 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
+#nullable disable
     /// <summary>
     ///  Contains static methods for representing program contracts that check for argument null or empty,
     ///  customs conditions and throws customs exceptions. If you don't want to use message,
@@ -36,7 +36,7 @@ namespace System
         /// <typeparam name="T">Type of the value.</typeparam>
         /// <returns>An instance of <see cref="Contract{T}"/>.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exceptionMessage"/> is null.</exception>
-        public static Contract<T> WhenNull<T>( this T source, string exceptionMessage)
+        public static Contract<T> WhenNull<T>(this T source, string exceptionMessage)
             => new Contract<T>(
                 source,
                 value => !EqualityComparer<T>.Default.Equals(value, default),
@@ -49,7 +49,7 @@ namespace System
         /// <param name="exceptionMessage">The exception message.</param>
         /// <returns>An instance of <see cref="Contract{T}"/> where T is <see cref="string"/>.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exceptionMessage"/> is null.</exception>
-        public static Contract<string> WhenNull( this string source, string exceptionMessage)
+        public static Contract<string> WhenNull(this string source, string exceptionMessage)
             => new Contract<string>(
                 source,
                 value => !string.IsNullOrWhiteSpace(value),
@@ -158,5 +158,6 @@ namespace System
                 actual,
                 value => value.CompareTo(min) >= 0 && value.CompareTo(max) <= 0,
                 exceptionMessage ?? throw new ArgumentNullException(nameof(exceptionMessage)));
-   }
+    }
+#nullable enable
 }

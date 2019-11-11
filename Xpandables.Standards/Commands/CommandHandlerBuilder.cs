@@ -18,14 +18,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Command
+namespace System.Design
 {
     /// <summary>
     /// A helper class used to implement the <see cref="ICommandHandler{TCommand}"/> interface.
     /// </summary>
     /// <typeparam name="TCommand">Type of argument to act on.</typeparam>
-    public sealed class CommandHandlerBuilder<TCommand> :
-        ObjectDescriptor<CommandHandlerBuilder<TCommand>>, ICommandHandler<TCommand>
+    public sealed class CommandHandlerBuilder<TCommand> : ICommandHandler<TCommand>
         where TCommand : class, ICommand
     {
         private readonly Func<TCommand, CancellationToken, Task> _handler;

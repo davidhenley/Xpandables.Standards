@@ -32,7 +32,7 @@ namespace System.Design.Database
     /// When a value is not found, an optional empty value of the expected type will be returned.
     /// The implementation must be thread-safe when working in a multi-threaded environment.
     /// </summary>
-    public partial interface IDataContext : IDisposable
+    public partial interface IDataContext
     {
         /// <summary>
         /// Finds a domain object matching the primary key values specified and returns its value.
@@ -46,7 +46,7 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous find operation.
         /// The task result contains the entity found, or optional empty.</returns>
-        Task<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues)
+        ValueTask<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues)
             where T : Entity;
 
         /// <summary>
@@ -58,6 +58,7 @@ namespace System.Design.Database
         /// <param name="selector">Describes the expression used to select the domain object.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<En attente>")]
         IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
             where T : Entity;
 
@@ -74,7 +75,7 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous get operation.
         /// The task result contains the matching anonymous value.</returns>
-        Task<Optional<TResult>> GetFirstAsync<T, TResult>(
+        ValueTask<Optional<TResult>> GetFirstAsync<T, TResult>(
             Func<IQueryable<T>, IQueryable<TResult>> selector,
             CancellationToken cancellationToken = default)
             where T : Entity;
@@ -90,7 +91,7 @@ namespace System.Design.Database
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<Optional<TResult>> GetLastAsync<T, TResult>(
+        ValueTask<Optional<TResult>> GetLastAsync<T, TResult>(
             Func<IQueryable<T>, IQueryable<TResult>> selector,
             CancellationToken cancellationToken = default)
             where T : Entity;

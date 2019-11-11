@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.Core", "Xpandabl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.EntityFrameworkCore", "Xpandables.EntityFrameworkCore\Xpandables.EntityFrameworkCore.csproj", "{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.DependencyInjection", "Xpandables.DependencyInjection\Xpandables.DependencyInjection.csproj", "{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xpandables.SeriLog", "Xpandables.SeriLog\Xpandables.SeriLog.csproj", "{5E5096E4-F0B4-41D5-95E6-1711BF995D31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,18 @@ Global
 		{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}.Release|Any CPU.ActiveCfg = Release|x64
 		{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}.Release|x64.ActiveCfg = Release|x64
 		{EC6D2AF5-DC07-4A8C-BBF7-A684F98C8A6A}.Release|x64.Build.0 = Release|x64
+		{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}.Debug|x64.ActiveCfg = Debug|x64
+		{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}.Debug|x64.Build.0 = Debug|x64
+		{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}.Release|Any CPU.ActiveCfg = Release|x64
+		{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}.Release|x64.ActiveCfg = Release|x64
+		{F1661AB5-CC82-4544-B9F4-A0BA3C71F3AA}.Release|x64.Build.0 = Release|x64
+		{5E5096E4-F0B4-41D5-95E6-1711BF995D31}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{5E5096E4-F0B4-41D5-95E6-1711BF995D31}.Debug|x64.ActiveCfg = Debug|x64
+		{5E5096E4-F0B4-41D5-95E6-1711BF995D31}.Debug|x64.Build.0 = Debug|x64
+		{5E5096E4-F0B4-41D5-95E6-1711BF995D31}.Release|Any CPU.ActiveCfg = Release|x64
+		{5E5096E4-F0B4-41D5-95E6-1711BF995D31}.Release|x64.ActiveCfg = Release|x64
+		{5E5096E4-F0B4-41D5-95E6-1711BF995D31}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

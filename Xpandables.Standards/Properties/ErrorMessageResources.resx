@@ -147,6 +147,9 @@
   <data name="LinqQueryDontImplementIAsyncEnumeratorAccessor" xml:space="preserve">
     <value>IAsyncEnumerableAccessor not implemented.</value>
   </data>
+  <data name="LocalizationFailed" xml:space="preserve">
+    <value>Localization of '{0}' from resource type '{1}' with '{2}' key failed.</value>
+  </data>
   <data name="PropertyChangedCircularDependency" xml:space="preserve">
     <value>Circular dependency found.</value>
   </data>

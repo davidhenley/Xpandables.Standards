@@ -18,7 +18,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// Defines a generic method that a class implements to asynchronously handle a type-specific query and
@@ -27,7 +27,7 @@ namespace System.Design.Query
     /// </summary>
     /// <typeparam name="TQuery">Type of the query that will be used as argument.</typeparam>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    public interface IQueryHandler<in TQuery, TResult> : IObjectDescriptor
+    public interface IQueryHandler<in TQuery, TResult>
         where TQuery : class, IQuery<TResult>
     {
         /// <summary>
@@ -38,6 +38,6 @@ namespace System.Design.Query
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
+        ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
     }
 }

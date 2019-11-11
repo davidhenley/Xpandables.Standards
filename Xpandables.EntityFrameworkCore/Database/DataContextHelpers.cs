@@ -66,8 +66,10 @@ namespace System.Design.Database
             var isPropertyTypeFunc = new Func<PropertyInfo, bool>(IsPropertyType);
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(isTypeEnumerationFunc))
+            {
                 foreach (var property in entityType.ClrType.GetProperties().Where(isPropertyTypeFunc))
                     modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion(valueConverter);
+            }
 
             return modelBuilder;
 

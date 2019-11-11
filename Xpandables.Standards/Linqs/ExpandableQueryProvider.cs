@@ -28,10 +28,10 @@ using System.Threading;
 
 namespace System.Design.Linq
 {
-    class ExpandableQueryProvider<T> : IQueryProvider, IAsyncQueryProvider
+    internal class ExpandableQueryProvider<T> : IQueryProvider, IAsyncQueryProvider
     {
-        readonly ExpandableQuery<T> _query;
-        readonly Func<Expression, Expression> _queryOptimizer;
+        private readonly ExpandableQuery<T> _query;
+        private readonly Func<Expression, Expression> _queryOptimizer;
 
         internal ExpandableQueryProvider(ExpandableQuery<T> query, Func<Expression, Expression> queryOptimizer)
         {
@@ -67,6 +67,7 @@ namespace System.Design.Linq
             return _query.InnerQuery.Provider.Execute(optimized);
         }
 
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<En attente>")]
         TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
             var expanded = expression.Expand();

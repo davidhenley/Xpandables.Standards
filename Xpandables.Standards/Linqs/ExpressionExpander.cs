@@ -32,10 +32,10 @@ namespace System.Design.Linq
     /// Custom expresssion visitor for ExpandableQuery. This expands calls to Expression.Compile() and
     /// collapses captured lambda references in subqueries which LINQ to SQL can't otherwise handle.
     /// </summary>
-    class ExpressionExpander : ExpressionVisitor
+    internal class ExpressionExpander : ExpressionVisitor
     {
         // Replacement parameters - for when invoking a lambda expression.
-        readonly Optional<Dictionary<ParameterExpression, Expression>> _replaceVars;
+        private readonly Optional<Dictionary<ParameterExpression, Expression>> _replaceVars;
 
         internal ExpressionExpander()
         {
@@ -148,19 +148,20 @@ namespace System.Design.Linq
         {
             if (node is null) throw new ArgumentNullException(nameof(node));
 
-            return node.Member.DeclaringType != null
-                && node.Member.DeclaringType.Name.StartsWith("<>", StringComparison.InvariantCulture)
+            return node.Member.DeclaringType?.Name.StartsWith("<>", StringComparison.InvariantCulture) == true
                     ? TransformExpr(node)
                     : base.VisitMember(node);
         }
 
-        Expression TransformExpr(MemberExpression member)
+        private Expression TransformExpr(MemberExpression member)
         {
             if (!(member.Member is FieldInfo field))
             {
                 if (_replaceVars.Any() && member.Expression is ParameterExpression parameterExpression)
+                {
                     if (_replaceVars.Single().ContainsKey(parameterExpression))
                         return base.VisitMember(member);
+                }
 
                 return member;
             }
@@ -199,7 +200,7 @@ namespace System.Design.Linq
         {
             var propertyInfo = member.Member as PropertyInfo;
             if (fieldInfo.FieldType.GetTypeInfo().IsSubclassOf(typeof(Expression))
-                || propertyInfo != null && propertyInfo.PropertyType.GetTypeInfo().IsSubclassOf(typeof(Expression)))
+                || (propertyInfo?.PropertyType.GetTypeInfo().IsSubclassOf(typeof(Expression)) == true))
             {
                 return Visit(Expression.Lambda<Func<Expression>>(member).Compile()());
             }

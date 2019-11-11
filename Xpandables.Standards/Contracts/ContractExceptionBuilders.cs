@@ -24,10 +24,13 @@ namespace System
     {
         internal static Func<Contract<T>, ArgumentNullException> BuildArgumentNullException<T>()
             => contract => new ArgumentNullException(contract.Message);
+
         internal static Func<Contract<T>, ArgumentException> BuildArgumentException<T>()
             => contract => new ArgumentException(contract.Message);
+
         internal static Func<Contract<T>, ArgumentOutOfRangeException> BuildArgumentOutOfRangeException<T>()
             => contract => new ArgumentOutOfRangeException(contract.Message);
+
         internal static Func<Contract<T>, InvalidOperationException> BuildInvalidOperationException<T>()
             => contract => new InvalidOperationException(contract.Message);
 

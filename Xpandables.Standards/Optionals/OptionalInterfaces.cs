@@ -19,6 +19,7 @@ using System.Collections.Generic;
 
 namespace System
 {
+#nullable disable
     public partial class Optional<T>
         : IEquatable<Optional<T>>, IEquatable<T>, IComparable<Optional<T>>, IComparable<T>, IFormattable
     {
@@ -87,7 +88,7 @@ namespace System
         /// </summary>
         public override int GetHashCode()
         {
-            var hash = 17;
+            const int hash = 17;
             if (IsValue())
                 return InternalValue.GetHashCode() ^ 31;
             if (IsException())
@@ -114,4 +115,5 @@ namespace System
                     ? string.Format(formatProvider, "{0:" + format + "}", InternalException)
                     : string.Empty;
     }
+#nullable enable
 }

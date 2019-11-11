@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Platforms>x64</Platforms>
+    <Nullable>enable</Nullable>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
+    <LangVersion>8.0</LangVersion>
+    <Authors>Francis-Black EWANE</Authors>
+    <Product>Xpandables SeriLog @ 2019</Product>
+    <Description>Contains some useful class for logging.</Description>
+    <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
+    <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
+    <PackageIcon>Xpandables.png</PackageIcon>
+    <Version>3.1.2</Version>
+    <AssemblyVersion>3.1.2</AssemblyVersion>
+    <FileVersion>3.1.2</FileVersion>
+    <PackageVersion>3.1.2</PackageVersion>
+    <PackageId>Xpandables.SeriLog</PackageId>
+    <PackageTags>Logging, logger, injection, Interception...</PackageTags>
+    <PackageOutputPath>..\Packages\</PackageOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageReleaseNotes>Update references.</PackageReleaseNotes>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AssemblyName>Xpandables.SeriLog</AssemblyName>
+    <RootNamespace>Xpandables.SeriLog</RootNamespace>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Xpandables.png" Pack="true" Visible="true" PackagePath="" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Xpandables.Standards\Xpandables.Standards.csproj" />
+  </ItemGroup>
+
+</Project>

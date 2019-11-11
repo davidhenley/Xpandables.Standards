@@ -18,7 +18,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// Implementation for <see cref="IQueryHandlerWrapper{TResult}"/>.
@@ -29,14 +29,15 @@ namespace System.Design.Query
         where TQuery : class, IQuery<TResult>
     {
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
+
         public QueryHandlerWrapper(IQueryHandler<TQuery, TResult> decoratee)
             => _decoratee = decoratee ?? throw new ArgumentNullException(
                 nameof(decoratee),
                 ErrorMessageResources.ArgumentExpected.StringFormat(
                     nameof(QueryHandlerWrapper<TQuery, TResult>),
-                    nameof(decoratee)));
+                    $"{decoratee} : {nameof(TQuery)}.{nameof(TResult)}"));
 
-        public async Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
+        public async ValueTask<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
             => await _decoratee.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);
     }
 }

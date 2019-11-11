@@ -18,7 +18,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Design.Query
+namespace System.Design
 {
     /// <summary>
     /// This interface allows application authors to avoid use of C# dynamics with query pattern.
@@ -37,6 +37,6 @@ namespace System.Design.Query
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default);
+        ValueTask<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default);
     }
 }

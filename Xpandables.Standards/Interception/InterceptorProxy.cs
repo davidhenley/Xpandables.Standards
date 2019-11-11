@@ -34,7 +34,6 @@ namespace System.Interception
         private TInstance _realInstance;
         private IInterceptor _interceptor;
 
-#pragma warning disable CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         /// <summary>
         /// Returns a new instance of <typeparamref name="TInstance"/> wrapped by a proxy.
         /// </summary>
@@ -44,7 +43,6 @@ namespace System.Interception
         /// <exception cref="ArgumentNullException">The <paramref name="instance"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="interceptor"/> is null.</exception>
         public static TInstance Create(TInstance instance, IInterceptor interceptor)
-#pragma warning restore CA1000 // Ne pas déclarer de membres comme étant static sur les types génériques
         {
             object proxy = Create<TInstance, InterceptorProxy<TInstance>>();
             ((InterceptorProxy<TInstance>)proxy).SetParameters(instance, interceptor);
@@ -56,8 +54,8 @@ namespace System.Interception
         /// </summary>
         public InterceptorProxy()
         {
-            _realInstance = default;
-            _interceptor = default;
+            _realInstance = default!;
+            _interceptor = default!;
         }
 
         /// <summary>
@@ -92,26 +90,29 @@ namespace System.Interception
                 : DoInvoke(targetMethod, args);
         }
 
+        [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<En attente>")]
         private object DoInvoke(MethodInfo method, params object[] args)
         {
             var invocation = new Invocation(method, _realInstance, args);
 
             if (_interceptor.WillExecute)
+            {
                 try
                 {
                     _interceptor.Intercept(invocation);
                 }
-#pragma warning disable CA1031 // Ne pas intercepter les types d'exception générale
                 catch (Exception exception)
-#pragma warning restore CA1031 // Ne pas intercepter les types d'exception générale
                 {
                     invocation.WithException(
                         new InvalidOperationException(
                             $"The interceptor {_interceptor.GetType().Name} throws an exception.",
                             exception));
                 }
+            }
             else
+            {
                 invocation.Proceed();
+            }
 
             if (invocation.Exception.Any())
                 ExceptionDispatchInfo.Capture(invocation.Exception.InternalValue).Throw();

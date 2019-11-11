@@ -25,7 +25,7 @@ namespace System
     /// <summary>
     /// Provides a type converter to convert <see cref="EnumerationType"/> objects to and from various other representations.
     /// </summary>
-    public class EnumerationTypeConverter : EnumConverter
+    public sealed class EnumerationTypeConverter : EnumConverter
     {
         /// <summary>Initializes a new instance of the <see cref="EnumConverter"></see> class for the given type.</summary>
         /// <param name="type">A <see cref="Type"></see> that represents the type of enumeration to associate

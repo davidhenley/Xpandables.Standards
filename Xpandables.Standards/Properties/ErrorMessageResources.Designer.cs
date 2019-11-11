@@ -151,6 +151,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Localization of &apos;{0}&apos; from resource type &apos;{1}&apos; with &apos;{2}&apos; key failed..
+        /// </summary>
+        public static string LocalizationFailed {
+            get {
+                return ResourceManager.GetString("LocalizationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Circular dependency found..
         /// </summary>
         public static string PropertyChangedCircularDependency {

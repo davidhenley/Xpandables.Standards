@@ -26,6 +26,7 @@ namespace Microsoft.EntityFrameworkCore.Query.Internal
         /// <summary>
         /// Just to not reference EntityFrameworkCore
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<En attente>")]
         TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default);
     }
 }

@@ -20,29 +20,43 @@ using System.ComponentModel.DataAnnotations;
 namespace System
 {
     /// <summary>
+    /// Provides with the extension method for <see cref="StringEscapeValidationAttribute"/>.
+    /// </summary>
+    public static class StringEscapeExtensions
+    {
+        /// <summary>
+        /// Escapes special characters from the target string.
+        /// </summary>
+        /// <param name="value">The string to act on.</param>
+        public static string StringEscape(this string value)
+            => new string(
+                Array.FindAll(
+                    value.ToCharArray(),
+                    c => char.IsLetterOrDigit(c)
+                        || char.IsWhiteSpace(c)
+                        || c == '-'));
+    }
+
+    /// <summary>
     /// Escapes special characters from the decorated property.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public abstract class StringEscapeValidationAttribute : ValidationAttribute
+    public sealed class StringEscapeValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (validationContext is null)
+            {
                 throw new ArgumentNullException(
                     nameof(validationContext),
                     ErrorMessageResources.ArgumentExpected.StringFormat(
                         nameof(StringEscapeValidationAttribute),
                         nameof(validationContext)));
+            }
 
             if (value is string stringValue)
             {
-                var validCharArray = Array.FindAll(
-                    stringValue.ToCharArray(),
-                    c => (char.IsLetterOrDigit(c)
-                        || char.IsWhiteSpace(c)
-                        || c == '-'));
-
-                value = new string(validCharArray);
+                value = stringValue.StringEscape();
 
                 validationContext
                     .ObjectType

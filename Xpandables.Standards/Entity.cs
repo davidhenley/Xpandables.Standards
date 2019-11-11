@@ -23,11 +23,11 @@ using System.Security.Cryptography;
 namespace System
 {
     /// <summary>
-    /// The domain object base implementation that provide an identifier and a key generator for derived class.
+    /// The domain object base implementation that provides an identifier and a key generator for derived class.
     /// This is an <see langword="abstract"/> and serializable class.
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("{Id}")]
+    [DebuggerDisplay("Id = {Id}")]
     public abstract class Entity
     {
         /// <summary>
@@ -47,6 +47,7 @@ namespace System
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2235:Mark all non-serializable fields", Justification = "<En attente>")]
         public string Id { get; protected set; }
 
         /// <summary>
@@ -71,6 +72,7 @@ namespace System
         /// Gets the row version for the underlying instance to handle concurrency.
         /// </summary>
         [Timestamp, ConcurrencyCheck]
+        [Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<En attente>")]
         public byte[] RowVersion { get; protected set; }
 
         /// <summary>
@@ -81,14 +83,12 @@ namespace System
         /// <returns>A string value as identifier.</returns>
         protected virtual string KeyGenerator()
         {
-            using (var rnd = RandomNumberGenerator.Create())
-            {
-                var salt = new byte[32];
-                var guid = Guid.NewGuid().ToString();
-                rnd.GetBytes(salt);
+            using var rnd = RandomNumberGenerator.Create();
+            var salt = new byte[32];
+            var guid = Guid.NewGuid().ToString();
+            rnd.GetBytes(salt);
 
-                return guid + BitConverter.ToString(salt);
-            }
+            return guid + BitConverter.ToString(salt);
         }
 
         /// <summary>
@@ -142,6 +142,6 @@ namespace System
         /// Serves as the default hash function.
         /// </summary>
         /// <returns>A hash code for the current entity.</returns>
-        public override int GetHashCode() => (GetType().ToString() + Id).GetHashCode();
+        public override int GetHashCode() => (GetType().ToString() + Id).GetHashCode(StringComparison.OrdinalIgnoreCase);
     }
 }

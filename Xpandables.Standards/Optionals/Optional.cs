@@ -17,9 +17,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
+#nullable disable
     /// <summary>
     /// Describes an object that contains a value or not of a specific type.
     /// You can make unconditional calls to its contents without testing whether the content is there or not.
@@ -35,12 +37,12 @@ namespace System
         /// <summary>
         /// Gets the underlying value if exists.
         /// </summary>
-        internal T InternalValue => IsValue() ? Values[0] : default;
+        internal T InternalValue => Values[0];
 
         /// <summary>
         /// Gets the underlying exception if exists.
         /// </summary>
-        internal Exception InternalException => IsException() ? Exceptions[0] : default;
+        internal Exception InternalException => Exceptions[0];
 
         /// <summary>
         /// Determines whether the instance contains a value or not.
@@ -72,7 +74,7 @@ namespace System
         /// <param name="value">The value to be used for optional.</param>
         /// <returns>An optional with a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public static Optional<T> Some(T value)
+        public static Optional<T> Some([NotNull] T value)
         {
             if (EqualityComparer<T>.Default.Equals(value, default)) throw new ArgumentNullException(nameof(value));
             return new Optional<T>(new T[] { value });
@@ -84,7 +86,7 @@ namespace System
         /// <param name="exception">The exception to store.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
-        public static Optional<T> Exception(Exception exception)
+        public static Optional<T> Exception([NotNull] Exception exception)
         {
             if (exception is null) throw new ArgumentNullException(nameof(exception));
             return new Optional<T>(new Exception[] { exception });
@@ -120,4 +122,5 @@ namespace System
             Exceptions = Array.Empty<Exception>();
         }
     }
+#nullable enable
 }

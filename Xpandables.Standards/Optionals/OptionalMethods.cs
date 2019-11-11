@@ -16,9 +16,11 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
+#nullable disable
     public partial class Optional<T>
     {
         /// <summary>
@@ -54,7 +56,7 @@ namespace System
         /// <param name="value">The value to be used.</param>
         /// <returns>An optional that contains a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public Optional<T> ToSome(T value) => Some(value);
+        public Optional<T> ToSome([NotNull] T value) => Some(value);
 
         /// <summary>
         /// Converts the current instance to an optional of the specified type with value.
@@ -62,7 +64,7 @@ namespace System
         /// <param name="value">The value to be used.</param>
         /// <returns>An optional that contains a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public Optional<U> ToSome<U>(U value) => Optional<U>.Some(value);
+        public Optional<U> ToSome<U>([NotNull] U value) => Optional<U>.Some(value);
 
         /// <summary>
         /// Converts the current instance to an optional with exception.
@@ -70,7 +72,7 @@ namespace System
         /// <param name="exception">The exception to be used.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
-        public Optional<T> ToException(Exception exception) => Exception(exception);
+        public Optional<T> ToException([NotNull] Exception exception) => Exception(exception);
 
         /// <summary>
         /// Converts the optional to optional pair.
@@ -259,8 +261,8 @@ namespace System
         /// Applies the function to the element only if the optional contains a value and matches the predicate.
         /// Otherwise returns the current optional.
         /// </summary>
-        /// <param name="some">The function to transform the element.</param>
         /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
@@ -294,7 +296,7 @@ namespace System
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
-        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
@@ -308,7 +310,22 @@ namespace System
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
-        /// The delegate get called only if the instance contains is empty, otherwise returns the current instance.
+        /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="empty">The empty map.</param>
+        /// <returns>The replacement value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
+        public Optional<U> WhenEmpty<U>(Func<U> empty)
+        {
+            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (!IsValue()) return empty();
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
         /// </summary>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
@@ -318,6 +335,21 @@ namespace System
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
             return this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the instance is empty.
+        /// The delegate get called only if the instance is empty, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="empty">The empty map.</param>
+        /// <returns>The replacement value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
+        public Optional<U> WhenEmptyOptional<U>(Func<Optional<U>> empty)
+        {
+            if (empty is null) throw new ArgumentNullException(nameof(empty));
+            if (!IsValue()) return empty();
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
         }
 
         /// <summary>
@@ -399,4 +431,5 @@ namespace System
             if (IsException()) action(InternalException);
         }
     }
+#nullable enable
 }
