@@ -46,7 +46,7 @@ namespace System.Design
                     nameof(QueryHandlerBuilder<TQuery, TResult>),
                     nameof(handler)));
 
-        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
             => await _handler(query, cancellationToken).ConfigureAwait(false);
     }
 }

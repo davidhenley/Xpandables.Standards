@@ -37,7 +37,7 @@ namespace System.Design
                     nameof(QueryHandlerWrapper<TQuery, TResult>),
                     $"{decoratee} : {nameof(TQuery)}.{nameof(TResult)}"));
 
-        public async ValueTask<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default)
             => await _decoratee.HandleAsync((TQuery)query, cancellationToken).ConfigureAwait(false);
     }
 }

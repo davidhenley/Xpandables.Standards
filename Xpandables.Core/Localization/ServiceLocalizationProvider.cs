@@ -67,36 +67,28 @@ namespace System.Design
 #nullable enable
 
         private void BindDisplayAttribute(DefaultModelMetadata modelMetadata)
-            => modelMetadata
-                .Attributes
-                .PropertyAttributes
-                .AsOptional()
-                .Map(attributes => attributes
-                    .FirstOrEmpty(attr => attr is DisplayAttribute)
-                    .CastOptional<DisplayAttribute>()
-                    .Map(attribute =>
-                    {
-                        attribute.Name = $"Display{modelMetadata.Name}";
-                        attribute.Prompt = $"Prompt{modelMetadata.Name}";
-                        attribute.Description = $"Description{modelMetadata.Name}";
-                        attribute.ResourceType = _localizationResourceAccessor.LocalizationTypes[modelMetadata.ContainerType.Name];
-                    }));
+        {
+            var displayAttribute = modelMetadata.Attributes.PropertyAttributes.AsOptional().Cast<DisplayAttribute>().FirstOrEmpty();
+            displayAttribute.Map(attribute =>
+            {
+                attribute.Name = $"Display{modelMetadata.Name}";
+                attribute.Prompt = $"Prompt{modelMetadata.Name}";
+                attribute.Description = $"Description{modelMetadata.Name}";
+                attribute.ResourceType = _localizationResourceAccessor.LocalizationTypes[modelMetadata.ContainerType.Name];
+            });
+        }
 
         private void BindDisplayFormatAttribute(DefaultModelMetadata modelMetadata)
-            => modelMetadata
-                .Attributes
-                .PropertyAttributes
-                .AsOptional()
-                .Map(attributes => attributes
-                    .FirstOrEmpty(attr => attr is LocalizedDisplayFormatAttribute)
-                    .CastOptional<LocalizedDisplayFormatAttribute>()
-                    .Map(attribute =>
-                    {
-                        attribute.DataFormatString = $"Format{modelMetadata.Name}";
-                        attribute.NullDisplayText = $"NullDisplay{modelMetadata.Name}";
-                        attribute.DataFormatStringResourceType = _localizationResourceAccessor.LocalizationTypes[modelMetadata.ContainerType.Name];
-                        attribute.NullDisplayTextResourceType = _localizationResourceAccessor.LocalizationTypes[modelMetadata.ContainerType.Name];
-                    }));
+        {
+            var displayFormat = modelMetadata.Attributes.PropertyAttributes.AsOptional().Cast<LocalizedDisplayFormatAttribute>().FirstOrEmpty();
+            displayFormat.Map(attribute =>
+            {
+                attribute.DataFormatString = $"Format{modelMetadata.Name}";
+                attribute.NullDisplayText = $"NullDisplay{modelMetadata.Name}";
+                attribute.DataFormatStringResourceType = _localizationResourceAccessor.LocalizationTypes[modelMetadata.ContainerType.Name];
+                attribute.NullDisplayTextResourceType = _localizationResourceAccessor.LocalizationTypes[modelMetadata.ContainerType.Name];
+            });
+        }
 
         private void BindValidationAttribute(ValidationAttribute validator)
         {

@@ -36,7 +36,7 @@ namespace System.Design
         public Dispatcher(IServiceProvider serviceProvider)
             => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
-        public async Task DispatchCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
+        public async Task SendCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
             where TCommand : class, ICommand
         {
             try
@@ -58,12 +58,12 @@ namespace System.Design
                                             && !(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException(
-                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(DispatchCommandAsync)),
+                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(SendCommandAsync)),
                     exception);
             }
         }
 
-        public async ValueTask<TResult> DispatchQueryResultAsync<TQuery, TResult>(
+        public async Task<TResult> SendQueryResultAsync<TQuery, TResult>(
             TQuery query,
             CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>
@@ -87,12 +87,12 @@ namespace System.Design
                                             && !(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException(
-                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(DispatchQueryResultAsync)),
+                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(SendQueryResultAsync)),
                     exception);
             }
         }
 
-        public async ValueTask<TResult> DispatchQueryAsync<TResult>(
+        public async Task<TResult> SendQueryAsync<TResult>(
             IQuery<TResult> query,
             CancellationToken cancellationToken = default)
         {
@@ -120,12 +120,12 @@ namespace System.Design
                                             && !(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException(
-                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(DispatchQueryAsync)),
+                    ErrorMessageResources.CommandQueryHandlerFailed.StringFormat(nameof(SendQueryAsync)),
                     exception);
             }
         }
 
-        public Task DispatchEventAsync<T>(T source, CancellationToken cancellationToken)
+        public Task SendEventAsync<T>(T source, CancellationToken cancellationToken)
                   where T : class, IEvent
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
@@ -137,7 +137,7 @@ namespace System.Design
             return Task.WhenAll(tasks);
         }
 
-        public Task DispatchEventAsync(IEvent source, CancellationToken cancellationToken)
+        public Task SendEventAsync(IEvent source, CancellationToken cancellationToken)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 

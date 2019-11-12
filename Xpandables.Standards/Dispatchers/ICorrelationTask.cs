@@ -30,11 +30,11 @@ namespace System
         /// <summary>
         /// The event that will be executed after the main one in the same control flow only if there is no exception.
         /// </summary>
-        event Func<ValueTask> PostEvent;
+        event Func<Task> PostEvent;
 
         /// <summary>
         /// The event that will be executed after the main one when exception. The event will received the control flow handled exception.
         /// </summary>
-        event Func<Exception, ValueTask> RollbackEvent;
+        event Func<Exception, Task> RollbackEvent;
     }
 }

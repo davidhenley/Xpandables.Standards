@@ -47,7 +47,7 @@ namespace System.Design
                     nameof(validator)));
         }
 
-        public ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             _validator.Validate(query);
             return _decoratee.HandleAsync(query, cancellationToken);

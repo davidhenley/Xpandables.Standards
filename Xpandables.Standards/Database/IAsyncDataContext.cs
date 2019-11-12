@@ -46,8 +46,7 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous find operation.
         /// The task result contains the entity found, or optional empty.</returns>
-        ValueTask<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues)
-            where T : Entity;
+        Task<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues) where T : Entity;
 
         /// <summary>
         /// Returns all domain objects matching the expression selector.
@@ -59,8 +58,7 @@ namespace System.Design.Database
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<En attente>")]
-        IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
-            where T : Entity;
+        IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
 
         /// <summary>
         /// Returns the first domain object matching the expression selector.
@@ -75,9 +73,7 @@ namespace System.Design.Database
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous get operation.
         /// The task result contains the matching anonymous value.</returns>
-        ValueTask<Optional<TResult>> GetFirstAsync<T, TResult>(
-            Func<IQueryable<T>, IQueryable<TResult>> selector,
-            CancellationToken cancellationToken = default)
+        Task<Optional<TResult>> GetFirstAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector, CancellationToken cancellationToken = default)
             where T : Entity;
 
         /// <summary>
@@ -91,9 +87,7 @@ namespace System.Design.Database
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        ValueTask<Optional<TResult>> GetLastAsync<T, TResult>(
-            Func<IQueryable<T>, IQueryable<TResult>> selector,
-            CancellationToken cancellationToken = default)
+        Task<Optional<TResult>> GetLastAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector, CancellationToken cancellationToken = default)
             where T : Entity;
 
         /// <summary>
@@ -106,8 +100,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task AddAsync<T>(T entity, CancellationToken cancellationToken = default)
-            where T : Entity;
+        Task AddAsync<T>(T entity, CancellationToken cancellationToken = default) where T : Entity;
 
         /// <summary>
         /// Adds a collection of domain objects to the data storage.
@@ -119,8 +112,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task AddRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken = default)
-            where T : Entity;
+        Task AddRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken = default) where T : Entity;
 
         /// <summary>
         /// Deletes a domain object from the data storage.
@@ -133,8 +125,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task DeleteAsync<T>(T entity, CancellationToken cancellationToken = default)
-            where T : Entity;
+        Task DeleteAsync<T>(T entity, CancellationToken cancellationToken = default) where T : Entity;
 
         /// <summary>
         /// Deletes the domain objects matching the collection of entities from the storage using the id.
@@ -147,8 +138,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task DeleteRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken = default)
-            where T : Entity;
+        Task DeleteRangeAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken = default) where T : Entity;
 
         /// <summary>
         /// Deletes the domain objects matching the predicate from the storage.
@@ -161,8 +151,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task DeleteAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-            where T : Entity;
+        Task DeleteAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : Entity;
 
         /// <summary>
         /// Updates the domain object matching the id in te updated value.
@@ -179,9 +168,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task UpdateAsync<T, TUpdated>(TUpdated updatedEntity, CancellationToken cancellationToken = default)
-            where T : Entity
-            where TUpdated : Entity;
+        Task UpdateAsync<T, TUpdated>(TUpdated updatedEntity, CancellationToken cancellationToken = default) where T : Entity where TUpdated : Entity;
 
         /// <summary>
         /// Updates the domain objects matching the collection of entities.
@@ -198,9 +185,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task UpdateRangeAsync<T, TUpdated>(
-            IReadOnlyList<TUpdated> updatedEntities,
-            CancellationToken cancellationToken = default)
+        Task UpdateRangeAsync<T, TUpdated>(IReadOnlyList<TUpdated> updatedEntities, CancellationToken cancellationToken = default)
             where T : Entity
             where TUpdated : Entity;
 
@@ -221,10 +206,7 @@ namespace System.Design.Database
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
         /// <returns>A task that represents the asynchronous add operation.</returns>
-        Task UpdateAsync<T, TUpdated>(
-            Expression<Func<T, bool>> predicate,
-            Func<T, TUpdated> updater,
-            CancellationToken cancellationToken = default)
+        Task UpdateAsync<T, TUpdated>(Expression<Func<T, bool>> predicate, Func<T, TUpdated> updater, CancellationToken cancellationToken = default)
             where T : Entity
             where TUpdated : class;
 

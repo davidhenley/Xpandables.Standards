@@ -17,7 +17,7 @@
     <LangVersion>8.0</LangVersion>
     <Authors>Francis-Black EWANE</Authors>
     <Product>Xpandables @ 2019</Product>
-    <Description>Provides with useful interface definitions and implementations classes for .Net Core.</Description>
+    <Description>A utility library in .Net Standard 2.1 to easily add patterns such as Command, Query, Disptacher, Interception..and use of Optional.</Description>
     <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>

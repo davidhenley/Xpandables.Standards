@@ -38,6 +38,6 @@ namespace System.Design
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been cancelled.</exception>
-        ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
+        Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
     }
 }

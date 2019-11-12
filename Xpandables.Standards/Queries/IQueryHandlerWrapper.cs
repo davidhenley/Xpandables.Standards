@@ -37,6 +37,6 @@ namespace System.Design
         /// <exception cref="ArgumentNullException">The <paramref name="query"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        ValueTask<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default);
+        Task<TResult> HandleAsync(IQuery<TResult> query, CancellationToken cancellationToken = default);
     }
 }

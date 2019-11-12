@@ -47,8 +47,7 @@ namespace System.Design.Database
         /// <param name="keyValues">The primary key values to be found.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="keyValues"/> is null or empty.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        Optional<T> Find<T>(params object[] keyValues)
-            where T : Entity;
+        Optional<T> Find<T>(params object[] keyValues) where T : Entity;
 
         /// <summary>
         /// Returns all domain objects matching the expression selector.
@@ -59,8 +58,7 @@ namespace System.Design.Database
         /// <param name="selector">Describes the expression used to select the domain object.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        IEnumerable<TResult> GetAll<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
-            where T : Entity;
+        IEnumerable<TResult> GetAll<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
 
         /// <summary>
         /// Returns the first domain object matching the expression selector.
@@ -71,8 +69,7 @@ namespace System.Design.Database
         /// <param name="selector">Describes the expression used to select the domain object.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        Optional<TResult> GetFirst<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
-            where T : Entity;
+        Optional<TResult> GetFirst<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
 
         /// <summary>
         /// Returns the last domain object matching the expression selector.
@@ -83,8 +80,7 @@ namespace System.Design.Database
         /// <param name="selector">Describes the expression used to select the domain object.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        Optional<TResult> GetLast<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector)
-            where T : Entity;
+        Optional<TResult> GetLast<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
 
         /// <summary>
         /// Adds a domain objects to the data storage.
@@ -102,8 +98,7 @@ namespace System.Design.Database
         /// <param name="entities">The domain objects collection to be added and persisted.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="entities"/> is null or empty.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void AddRange<T>(IEnumerable<T> entities)
-            where T : Entity;
+        void AddRange<T>(IEnumerable<T> entities) where T : Entity;
 
         /// <summary>
         /// Deletes a domain object from the data storage.
@@ -113,8 +108,7 @@ namespace System.Design.Database
         /// <param name="entity">Contains the domain object to be deleted.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="entity"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void Delete<T>(T entity)
-            where T : Entity;
+        void Delete<T>(T entity) where T : Entity;
 
         /// <summary>
         /// Deletes the domain objects matching the collection of entities from the storage using the id.
@@ -124,8 +118,7 @@ namespace System.Design.Database
         /// <param name="entities">Contains the domain objects to be deleted.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="entities"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void DeleteRange<T>(IEnumerable<T> entities)
-            where T : Entity;
+        void DeleteRange<T>(IEnumerable<T> entities) where T : Entity;
 
         /// <summary>
         /// Deletes the domain objects matching the predicate from the storage.
@@ -135,8 +128,7 @@ namespace System.Design.Database
         /// <param name="predicate">The predicate to be used to filter domain objects.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void Delete<T>(Expression<Func<T, bool>> predicate)
-            where T : Entity;
+        void Delete<T>(Expression<Func<T, bool>> predicate) where T : Entity;
 
         /// <summary>
         /// Updates the domain object matching the id in te updated value.
@@ -150,8 +142,7 @@ namespace System.Design.Database
         /// <param name="updatedEntity">Contains the updated values for the target domain.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="updatedEntity"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void Update<T, TUpdated>(TUpdated updatedEntity)
-            where T : Entity where TUpdated : Entity;
+        void Update<T, TUpdated>(TUpdated updatedEntity) where T : Entity where TUpdated : Entity;
 
         /// <summary>
         /// Updates the domain objects matching the collection of entities.
@@ -165,8 +156,7 @@ namespace System.Design.Database
         /// <param name="updatedEntities">Contains the collection of updated values.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="updatedEntities"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void UpdateRange<T, TUpdated>(IReadOnlyList<TUpdated> updatedEntities)
-            where T : Entity where TUpdated : Entity;
+        void UpdateRange<T, TUpdated>(IReadOnlyList<TUpdated> updatedEntities) where T : Entity where TUpdated : Entity;
 
         /// <summary>
         /// Updates the domain objects matching the predicate by using the updater.
@@ -182,8 +172,7 @@ namespace System.Design.Database
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="updater"/> is null.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        void Update<T, TUpdated>(Expression<Func<T, bool>> predicate, Func<T, TUpdated> updater)
-            where T : Entity where TUpdated : class;
+        void Update<T, TUpdated>(Expression<Func<T, bool>> predicate, Func<T, TUpdated> updater) where T : Entity where TUpdated : class;
 
         /// <summary>
         /// Persists all pending domain objects to the data storage.

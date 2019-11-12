@@ -16,10 +16,10 @@
 ************************************************************************************************************/
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
-#nullable disable
     /// <summary>
     /// Functionalities for optional pattern methods.
     /// </summary>
@@ -35,9 +35,11 @@ namespace System
         /// <param name="right">The right value to act on.</param>
         public static Optional<(T Left, U Right)> And<T, U>(this T left, U right)
         {
+#nullable disable
             return !EqualityComparer<U>.Default.Equals(right, default) && !EqualityComparer<T>.Default.Equals(left, default)
                 ? Optional<(T Left, U Right)>.Some((left, right))
                 : Optional<(T Left, U Right)>.Empty();
+#nullable enable
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace System
         /// <param name="predicate">The predicate to check.</param>
         /// <returns>An optional of <typeparamref name="T"/> value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
-        public static Optional<T> When<T>(this T source, Predicate<T> predicate)
+        public static Optional<T> When<T>(this T source, [NotNull] Predicate<T> predicate)
         {
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             return predicate(source) ? source.AsOptional() : Optional<T>.Empty();
@@ -74,7 +76,9 @@ namespace System
         /// <returns>An optional instance.</returns>
         public static Optional<T> AsOptional<T>(this T value)
         {
+#nullable disable
             if (EqualityComparer<T>.Default.Equals(value, default)) return Optional<T>.Empty();
+#nullable enable
             return Optional<T>.Some(value);
         }
 
@@ -87,7 +91,7 @@ namespace System
         /// <param name="value">The value to act on.</param>
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
-        public static Optional<(T Left, U Right)> AsOptional<T, U>(this T value, U right) => value.AsOptional().And(right);
+        public static Optional<(T Left, U Right)> AsOptional<T, U>([NotNull] this T value, U right) => value.AsOptional().And(right);
 
         /// <summary>
         /// Converts the specified optional to an optional pair instance.
@@ -99,11 +103,10 @@ namespace System
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
-        public static Optional<(T Left, U Right)> AsOptional<T, U>(this Optional<T> optional, U right)
+        public static Optional<(T Left, U Right)> AsOptional<T, U>([NotNull] this Optional<T> optional, U right)
         {
-            if (optional == null) throw new ArgumentNullException(nameof(optional));
+            if (optional is null) throw new ArgumentNullException(nameof(optional));
             return optional.And(right);
         }
     }
-#nullable enable
 }

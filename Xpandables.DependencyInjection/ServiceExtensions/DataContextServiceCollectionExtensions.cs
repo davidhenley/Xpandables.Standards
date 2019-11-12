@@ -17,6 +17,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Design.Database;
+using System.Linq;
 
 namespace System.Design.DependencyInjection
 {
@@ -44,7 +45,7 @@ namespace System.Design.DependencyInjection
                     .WhenException(exception => throw new InvalidOperationException(
                         ErrorMessageResources.DataContextProviderException,
                         exception))
-                    .Cast<IDataContext>();
+                    .Single();
             });
 
             return services;

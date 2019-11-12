@@ -252,7 +252,7 @@ namespace System
                     .Map(value => value);
             }
 
-            var exception = default(Exception);
+            var exception = default(Exception)!;
             resultFromAss.WhenException(ex => exception = ex);
 
             return Optional<Type>.Exception(exception);

@@ -42,7 +42,7 @@ namespace System.Design
                     nameof(decoratee)));
         }
 
-        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             var attribute = typeof(TQuery).GetAttribute<SupportTransactionAttribute>();
 

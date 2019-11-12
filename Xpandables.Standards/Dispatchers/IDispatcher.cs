@@ -38,7 +38,7 @@ namespace System.Design
         /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        ValueTask<TResult> DispatchQueryResultAsync<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default)
+        Task<TResult> SendQueryResultAsync<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default)
             where TQuery : class, IQuery<TResult>;
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace System.Design
         /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        ValueTask<TResult> DispatchQueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
+        Task<TResult> SendQueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously handles the specified command.
@@ -63,7 +63,7 @@ namespace System.Design
         /// <exception cref="NotImplementedException">The corresponding handler is missing.</exception>
         /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task DispatchCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
+        Task SendCommandAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
             where TCommand : class, ICommand;
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace System.Design
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> can not be null</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task DispatchEventAsync(IEvent source, CancellationToken cancellationToken = default);
+        Task SendEventAsync(IEvent source, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Resolves all types that matches the <see cref="IEventHandler{TEvent}"/>
@@ -86,7 +86,7 @@ namespace System.Design
         /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> can not be null</exception>
         /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task DispatchEventAsync<T>(T source, CancellationToken cancellationToken = default)
+        Task SendEventAsync<T>(T source, CancellationToken cancellationToken = default)
             where T : class, IEvent;
     }
 }

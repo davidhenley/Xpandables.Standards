@@ -15,28 +15,12 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
-#nullable disable
     public partial class Optional<T>
     {
-        /// <summary>
-        /// Casts the value of optional to the specified type and returns the new value.
-        /// if not, returns the default type of value.
-        /// </summary>
-        /// <typeparam name="U">The type to cast the value to.</typeparam>
-        public U Cast<U>() => IsValue() && InternalValue is U target ? target : default;
-
-        /// <summary>
-        /// Casts the element of optional to the specified type and returns an optional with the new value.
-        /// if not, returns an empty optional of the target typed.
-        /// </summary>
-        /// <typeparam name="U">The type to cast to.</typeparam>
-        public Optional<U> CastOptional<U>() => Cast<U>();
-
         /// <summary>
         /// Converts the current instance to an empty one.
         /// </summary>
@@ -82,8 +66,8 @@ namespace System
         /// <typeparam name="U">The type of the right side.</typeparam>
         /// <param name="right">The value to be used.</param>
         /// <returns>An optional pair.</returns>
-        public Optional<(T Left, U Right)> And<U>(U right)
-            => IsValue() && !EqualityComparer<U>.Default.Equals(right, default)
+        public Optional<(T Left, U Right)> And<U>([NotNull] U right)
+            => IsValue()
                 ? (Optional<(T Left, U Right)>)(InternalValue, right)
                 : IsException()
                     ? Optional<(T Left, U Right)>.Exception(InternalException)
@@ -97,22 +81,22 @@ namespace System
         /// <typeparam name="U">The type of the right side.</typeparam>
         /// <param name="right">The optional to be used.</param>
         /// <returns>An optional pair.</returns>
-        public Optional<(T Left, U Right)> AndOptional<U>(Optional<U> right)
+        /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
+        public Optional<(T Left, U Right)> AndOptional<U>([NotNull] Optional<U> right)
         {
-            if (!(right is null))
-            {
-                if (IsValue() && right.IsValue())
-                    return Optional<(T Left, U Right)>.Some((InternalValue, right.InternalValue));
+            if (right is null) throw new ArgumentNullException(nameof(right));
 
-                if (IsException() && !right.IsException())
-                    return Optional<(T Left, U Right)>.Exception(InternalException);
+            if (IsValue() && right.IsValue())
+                return Optional<(T Left, U Right)>.Some((InternalValue, right.InternalValue));
 
-                if (IsException() && right.IsException())
-                    return Optional<(T Left, U Right)>.Exception(new AggregateException(InternalException, right.InternalException));
+            if (IsException() && !right.IsException())
+                return Optional<(T Left, U Right)>.Exception(InternalException);
 
-                if (!IsException() && right.IsException())
-                    return Optional<(T Left, U Right)>.Exception(right.InternalException);
-            }
+            if (IsException() && right.IsException())
+                return Optional<(T Left, U Right)>.Exception(new AggregateException(InternalException, right.InternalException));
+
+            if (!IsException() && right.IsException())
+                return Optional<(T Left, U Right)>.Exception(right.InternalException);
 
             return Optional<(T Left, U Right)>.Empty();
         }
@@ -124,7 +108,7 @@ namespace System
         /// <param name="some">The function to call.</param>
         /// <returns>An optional of <typeparamref name="T"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<T> Map(Func<T> some)
+        public Optional<T> Map([NotNull] Func<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return some();
@@ -140,7 +124,7 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="U"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<U> Map<U>(Func<T, U> some)
+        public Optional<U> Map<U>([NotNull] Func<T, U> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return some(InternalValue);
@@ -156,7 +140,7 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="U"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<U> MapOptional<U>(Func<T, Optional<U>> some)
+        public Optional<U> MapOptional<U>([NotNull] Func<T, Optional<U>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return some(InternalValue);
@@ -168,7 +152,7 @@ namespace System
         /// </summary>
         /// <param name="some">The function to apply to the element.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public void Map(Action<T> some)
+        public void Map([NotNull] Action<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) some(InternalValue);
@@ -179,7 +163,7 @@ namespace System
         /// </summary>
         /// <param name="some">The function to apply to the instance.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public void MapOptional(Action<Optional<T>> some)
+        public void MapOptional([NotNull] Action<Optional<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             some(this);
@@ -193,7 +177,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, U Right)> And<U>(Func<U> right)
+        public Optional<(T Left, U Right)> And<U>([NotNull] Func<U> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return Optional<(T Left, U Right)>.Empty();
@@ -212,7 +196,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, U Right)> And<U>(Func<T, U> right)
+        public Optional<(T Left, U Right)> And<U>([NotNull] Func<T, U> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
             if (!IsValue()) return Optional<(T Left, U Right)>.Empty();
@@ -231,7 +215,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, U Right)> AndOptional<U>(Func<Optional<U>> right)
+        public Optional<(T Left, U Right)> AndOptional<U>([NotNull] Func<Optional<U>> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
             return AndOptional(right());
@@ -246,7 +230,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public Optional<T> When(Predicate<T> predicate, Func<T> some)
+        public Optional<T> When([NotNull] Predicate<T> predicate, [NotNull] Func<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -266,7 +250,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public Optional<T> When(Predicate<T> predicate, Func<T, T> some)
+        public Optional<T> When([NotNull] Predicate<T> predicate, [NotNull] Func<T, T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -285,7 +269,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public void When(Predicate<T> predicate, Action<T> some)
+        public void When([NotNull] Predicate<T> predicate, [NotNull] Action<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -301,7 +285,7 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<T> WhenEmpty(Func<T> empty)
+        public Optional<T> WhenEmpty([NotNull] Func<T> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
@@ -316,7 +300,7 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<U> WhenEmpty<U>(Func<U> empty)
+        public Optional<U> WhenEmpty<U>([NotNull] Func<U> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
@@ -330,7 +314,7 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<T> WhenEmptyOptional(Func<Optional<T>> empty)
+        public Optional<T> WhenEmptyOptional([NotNull] Func<Optional<T>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
@@ -345,7 +329,7 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<U> WhenEmptyOptional<U>(Func<Optional<U>> empty)
+        public Optional<U> WhenEmptyOptional<U>([NotNull] Func<Optional<U>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
@@ -357,7 +341,7 @@ namespace System
         /// </summary>
         /// <param name="action">The empty map.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public void WhenEmpty(Action action)
+        public void WhenEmpty([NotNull] Action action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (!IsValue()) action();
@@ -370,7 +354,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenException(Func<T> some)
+        public Optional<T> WhenException([NotNull] Func<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return some();
@@ -384,7 +368,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenExceptionOptional(Func<Optional<T>> some)
+        public Optional<T> WhenExceptionOptional([NotNull] Func<Optional<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return some();
@@ -398,7 +382,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenException(Func<Exception, T> some)
+        public Optional<T> WhenException([NotNull] Func<Exception, T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return some(InternalException);
@@ -412,7 +396,7 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenExceptionOptional(Func<Exception, Optional<T>> some)
+        public Optional<T> WhenExceptionOptional([NotNull] Func<Exception, Optional<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsException()) return some(InternalException);
@@ -425,11 +409,10 @@ namespace System
         /// </summary>
         /// <param name="action">The delegate to be executed.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public void WhenException(Action<Exception> action)
+        public void WhenException([NotNull] Action<Exception> action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (IsException()) action(InternalException);
         }
     }
-#nullable enable
 }

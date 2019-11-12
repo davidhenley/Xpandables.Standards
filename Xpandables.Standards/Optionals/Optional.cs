@@ -21,7 +21,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
-#nullable disable
     /// <summary>
     /// Describes an object that contains a value or not of a specific type.
     /// You can make unconditional calls to its contents without testing whether the content is there or not.
@@ -76,7 +75,9 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         public static Optional<T> Some([NotNull] T value)
         {
+#nullable disable
             if (EqualityComparer<T>.Default.Equals(value, default)) throw new ArgumentNullException(nameof(value));
+#nullable enable
             return new Optional<T>(new T[] { value });
         }
 
@@ -122,5 +123,4 @@ namespace System
             Exceptions = Array.Empty<Exception>();
         }
     }
-#nullable enable
 }

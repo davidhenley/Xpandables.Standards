@@ -26,7 +26,7 @@ namespace System.Design.Database
 {
     public abstract partial class DataContext
     {
-        async ValueTask<Optional<T>> IDataContext.FindAsync<T>(CancellationToken cancellationToken, params object[] keyValues)
+        async Task<Optional<T>> IDataContext.FindAsync<T>(CancellationToken cancellationToken, params object[] keyValues)
              => await FindAsync<T>(keyValues, cancellationToken).ConfigureAwait(false);
 
         [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.",
@@ -38,7 +38,7 @@ namespace System.Design.Database
             return selector(Set<T>()).AsAsyncEnumerable();
         }
 
-        public virtual async ValueTask<Optional<TResult>> GetFirstAsync<T, TResult>(
+        public virtual async Task<Optional<TResult>> GetFirstAsync<T, TResult>(
            Func<IQueryable<T>, IQueryable<TResult>> selector,
            CancellationToken cancellationToken)
             where T : Entity
@@ -47,7 +47,7 @@ namespace System.Design.Database
             return await selector(Set<T>()).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<Optional<TResult>> GetLastAsync<T, TResult>(
+        public virtual async Task<Optional<TResult>> GetLastAsync<T, TResult>(
           Func<IQueryable<T>, IQueryable<TResult>> selector,
           CancellationToken cancellationToken)
             where T : Entity

@@ -49,7 +49,7 @@ namespace System.Design
                     nameof(decoratee)));
         }
 
-        public async ValueTask<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
+        public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
         {
             var result = await _decoratee.HandleAsync(query, cancellationToken).ConfigureAwait(false);
             await _dataContext.PersistAsync(cancellationToken).ConfigureAwait(false);

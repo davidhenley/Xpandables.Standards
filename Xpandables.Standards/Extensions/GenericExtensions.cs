@@ -167,7 +167,7 @@ namespace System
                 .GetField($"{value}")
                 ?.GetAttribute<DescriptionAttribute>()
                 .Map(attr => attr.Description)
-                .WhenEmpty(() => $"{value}");
+                .WhenEmpty(() => $"{value}")!;
 
         /// <summary>
         /// Converts the current enumeration value to the target one.

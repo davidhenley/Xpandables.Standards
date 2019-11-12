@@ -32,17 +32,17 @@ namespace System
         /// <summary>
         /// The event that will be executed after the main one in the same control flow only if there is no exception.
         /// </summary>
-        public event Func<ValueTask> PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
+        public event Func<Task> PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
 
         /// <summary>
         /// The event that will be executed after the main one when exception. The event will received the control flow handled exception.
         /// </summary>
-        public event Func<Exception, ValueTask> RollbackEvent = async (_) => await Task.CompletedTask.ConfigureAwait(false);
+        public event Func<Exception, Task> RollbackEvent = async (_) => await Task.CompletedTask.ConfigureAwait(false);
 
         /// <summary>
         /// Raises the <see cref="PostEvent"/> event.
         /// </summary>
-        internal async ValueTask OnPostEventAsync()
+        internal async Task OnPostEventAsync()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace System
         /// Raises the <see cref="RollbackEvent"/> event.
         /// </summary>
         /// <param name="exception">The control flow handled exception.</param>
-        internal async ValueTask OnRollbackEventAsync(Exception exception)
+        internal async Task OnRollbackEventAsync(Exception exception)
         {
             try
             {

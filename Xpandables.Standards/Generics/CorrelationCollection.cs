@@ -43,7 +43,8 @@ namespace System
             }
             set
             {
-                Items.AddOrUpdate(key, value.Cast<TValue>(), (_, __) => value.Cast<TValue>());
+                TValue _value = value;
+                Items.AddOrUpdate(key, _value, (_, __) => _value);
             }
         }
 
