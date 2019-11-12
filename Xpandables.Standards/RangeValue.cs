@@ -22,23 +22,24 @@ namespace System
 {
     /// <summary>
     /// Defines a pair of values, representing a segment.
+    /// This class uses <see cref="RangeValueConverter"/> as type converter.
     /// </summary>
     /// <typeparam name="T">The Type of each of two values of range.</typeparam>
     [Serializable]
     [DebuggerDisplay("Min = {Min}, Max = {Max}")]
-    [TypeConverter(typeof(RangeValuesConverter))]
-    public struct RangeValues<T> : IFluent, IEquatable<RangeValues<T>>
+    [TypeConverter(typeof(RangeValueConverter))]
+    public struct RangeValue<T> : IFluent, IEquatable<RangeValue<T>>
         where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="RangeValues{TValue}"/> with the specified values.
+        /// Initializes a new instance of <see cref="RangeValue{TValue}"/> with the specified values.
         /// </summary>
         /// <param name="min">The minimal value of range.</param>
         /// <param name="max">The maximal value of range.</param>
-        public RangeValues(T min, T max) => (Min, Max) = (min, max);
+        public RangeValue(T min, T max) => (Min, Max) = (min, max);
 
         /// <summary>
-        /// Provides with deconstruction for <see cref="RangeValues{T}"/>.
+        /// Provides with deconstruction for <see cref="RangeValue{T}"/>.
         /// </summary>
         /// <param name="min">The output minimal value of range.</param>
         /// <param name="max">The output maximal value of range.</param>
@@ -55,13 +56,13 @@ namespace System
         public readonly T Max { get; }
 
         /// <summary>
-        /// Compares the <see cref="RangeValues{T}"/> with other object.
+        /// Compares the <see cref="RangeValue{T}"/> with other object.
         /// </summary>
         /// <param name="obj">Object to compare with.</param>
-        public override bool Equals(object obj) => obj is RangeValues<T> signedValues && Equals(signedValues);
+        public override bool Equals(object obj) => obj is RangeValue<T> signedValues && Equals(signedValues);
 
         /// <summary>
-        /// Computes the hash-code for the <see cref="RangeValues{T}"/> instance.
+        /// Computes the hash-code for the <see cref="RangeValue{T}"/> instance.
         /// </summary>
         public readonly override int GetHashCode()
         {
@@ -76,28 +77,28 @@ namespace System
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public static bool operator ==(RangeValues<T> left, RangeValues<T> right) => left.Equals(right);
+        public static bool operator ==(RangeValue<T> left, RangeValue<T> right) => left.Equals(right);
 
         /// <summary>
         /// Applies non equality operator.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public static bool operator !=(RangeValues<T> left, RangeValues<T> right) => !(left == right);
+        public static bool operator !=(RangeValue<T> left, RangeValue<T> right) => !(left == right);
 
         /// <summary>
-        /// Compares <see cref="RangeValues{T}"/> with the value of type <typeparamref name="T"/>.
+        /// Compares <see cref="RangeValue{T}"/> with the value of type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="other">Option to compare with.</param>
-        public bool Equals(RangeValues<T> other) => Min.Equals(other.Min) && Max.Equals(other.Max);
+        public bool Equals(RangeValue<T> other) => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         /// <summary>
-        /// Creates a string representation of the <see cref="RangeValues{T}"/> separated by ":".
+        /// Creates a string representation of the <see cref="RangeValue{T}"/> separated by ":".
         /// </summary>
         public readonly override string ToString() => $"{Min}:{Max}";
 
         /// <summary>
-        /// Creates a string representation of the <see cref="RangeValues{T}"/> using the specified format and provider.
+        /// Creates a string representation of the <see cref="RangeValue{T}"/> using the specified format and provider.
         /// </summary>
         /// <param name="format">A composite format string.</param>
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>

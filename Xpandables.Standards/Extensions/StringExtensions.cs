@@ -332,14 +332,14 @@ namespace System
         /// <param name="source">The value to be encrypted.</param>
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
-        public static Optional<EncryptedValues> Encrypt(this string source)
+        public static Optional<EncryptedValue> Encrypt(this string source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
             return lookupCharacters
                 .GenerateString(12)
                 .MapOptional(key => source.Encrypt(key).And(() => key))
-                .Map(pair => new EncryptedValues(pair.Right, pair.Left));
+                .Map(pair => new EncryptedValue(pair.Right, pair.Left));
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace System
         /// <param name="encrypted">The encrypted value.</param>
         /// <param name="value">The value to compare with.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public static bool Equals(this EncryptedValues encrypted, string value)
+        public static bool Equals(this EncryptedValue encrypted, string value)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 

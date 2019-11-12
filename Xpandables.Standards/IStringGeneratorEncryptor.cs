@@ -21,7 +21,7 @@ namespace System
 {
     /// <summary>
     /// Provides with a string generator and encryptor.
-    /// Contains a default implementation.
+    /// Contains a default implementation and uses <see cref="source"/> to generate values string.
     /// </summary>
     public interface IStringGeneratorEncryptor : IFluent
     {
@@ -36,7 +36,7 @@ namespace System
         /// <param name="encrypted">The encrypted value.</param>
         /// <param name="value">The value to compare with.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        bool Equals(EncryptedValues encrypted, string value)
+        bool Equals(EncryptedValue encrypted, string value)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -49,16 +49,21 @@ namespace System
         /// <para>The implementation uses the <see cref="SHA512Managed"/>.</para>
         /// </summary>
         /// <param name="value">The value to be encrypted.</param>
+        /// <param name="keySize">The size of the string key to be used to encrypt the string value.</param>
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        Optional<EncryptedValues> Encrypt(string value)
+        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="keySize"/> is lower than zero and greater than <see cref="byte.MaxValue"/>.</exception>
+        Optional<EncryptedValue> Encrypt(string value, int keySize = 12)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
+            keySize
+                .WhenNotInRange(1, byte.MaxValue, $"{keySize} must be between 1 and {byte.MaxValue}.")
+                .ThrowArgumentOutOfRangeException();
 
             return _stringGenerator
-                .Generate(12, source)
+                .Generate(keySize, source)
                 .MapOptional(key => _stringEncryptor.Encrypt(value, key).And(key))
-                .Map(pair => new EncryptedValues(pair.Right, pair.Left));
+                .Map(pair => new EncryptedValue(pair.Right, pair.Left));
         }
     }
 

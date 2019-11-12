@@ -22,32 +22,33 @@ namespace System
 {
     /// <summary>
     /// Defines a representation of an encrypted value with its key.
+    /// This class uses the <see cref="EncryptedValueConverter"/> type converter.
     /// </summary>
     [Serializable]
     [DebuggerDisplay("Key = {Key}, Value = {Value}")]
-    [TypeConverter(typeof(EncryptedValuesConverter))]
-    public struct EncryptedValues : IFluent, IEquatable<EncryptedValues>
+    [TypeConverter(typeof(EncryptedValueConverter))]
+    public struct EncryptedValue : IFluent, IEquatable<EncryptedValue>
     {
         /// <summary>
-        /// Returns a new instance of <see cref="EncryptedValues"/> with the key and value.
+        /// Returns a new instance of <see cref="EncryptedValue"/> with the key and value.
         /// </summary>
         /// <param name="key">The encrypted key.</param>
         /// <param name="value">The encrypted value.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public EncryptedValues(string key, string value)
+        public EncryptedValue(string key, string value)
         {
             Key = key ?? throw new ArgumentNullException(
                 nameof(key),
-                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(EncryptedValues), nameof(key)));
+                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(EncryptedValue), nameof(key)));
 
             Value = value ?? throw new ArgumentNullException(
                 nameof(value),
-                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(EncryptedValues), nameof(value)));
+                ErrorMessageResources.ArgumentExpected.StringFormat(nameof(EncryptedValue), nameof(value)));
         }
 
         /// <summary>
-        /// Provides with deconstruction for <see cref="EncryptedValues"/>.
+        /// Provides with deconstruction for <see cref="EncryptedValue"/>.
         /// </summary>
         /// <param name="key">The output key.</param>
         /// <param name="value">The output value.</param>
@@ -66,13 +67,13 @@ namespace System
         public readonly string Value { get; }
 
         /// <summary>
-        /// Compares the <see cref="EncryptedValues"/> with other object.
+        /// Compares the <see cref="EncryptedValue"/> with other object.
         /// </summary>
         /// <param name="obj">Object to compare with.</param>
-        public override bool Equals(object obj) => obj is EncryptedValues encryptedValues && Equals(encryptedValues);
+        public override bool Equals(object obj) => obj is EncryptedValue encryptedValues && Equals(encryptedValues);
 
         /// <summary>
-        /// Computes the hash-code for the <see cref="EncryptedValues"/> instance.
+        /// Computes the hash-code for the <see cref="EncryptedValue"/> instance.
         /// </summary>
         public override int GetHashCode()
         {
@@ -87,30 +88,30 @@ namespace System
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public static bool operator ==(EncryptedValues left, EncryptedValues right) => left.Equals(right);
+        public static bool operator ==(EncryptedValue left, EncryptedValue right) => left.Equals(right);
 
         /// <summary>
         /// Applies non equality operator.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public static bool operator !=(EncryptedValues left, EncryptedValues right) => !(left == right);
+        public static bool operator !=(EncryptedValue left, EncryptedValue right) => !(left == right);
 
         /// <summary>
-        /// Compares <see cref="EncryptedValues"/> with the value.
+        /// Compares <see cref="EncryptedValue"/> with the value.
         /// </summary>
         /// <param name="other">Option to compare with.</param>
-        public bool Equals(EncryptedValues other)
+        public bool Equals(EncryptedValue other)
             => Key.Equals(other.Key, StringComparison.OrdinalIgnoreCase)
                 && Value.Equals(other.Value, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Creates a string representation of the <see cref="EncryptedValues"/>.
+        /// Creates a string representation of the <see cref="EncryptedValue"/>.
         /// </summary>
         public readonly override string ToString() => $"{Key}:{Value}";
 
         /// <summary>
-        /// Creates a string representation of the <see cref="EncryptedValues"/> using the specified format and provider.
+        /// Creates a string representation of the <see cref="EncryptedValue"/> using the specified format and provider.
         /// </summary>
         /// <param name="format">A composite format string.</param>
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>

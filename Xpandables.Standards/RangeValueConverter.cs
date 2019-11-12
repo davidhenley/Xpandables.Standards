@@ -21,9 +21,9 @@ using System.Globalization;
 namespace System
 {
     /// <summary>
-    /// Provides a type converter to convert <see cref="RangeValues{T}"/> objects to and from various other representations.
+    /// Provides a type converter to convert <see cref="RangeValue{T}"/> objects to and from various other representations.
     /// </summary>
-    public sealed class RangeValuesConverter : TypeConverter
+    public sealed class RangeValueConverter : TypeConverter
     {
         /// <summary>
         /// Gets a value indicating whether this converter can convert an object in the given source type
@@ -72,19 +72,19 @@ namespace System
                 if (int.TryParse(minStr, NumberStyles.Integer, culture, out var minInt)
                     && int.TryParse(maxStr, NumberStyles.Integer, culture, out var maxInt))
                 {
-                    return new RangeValues<int>(minInt, maxInt);
+                    return new RangeValue<int>(minInt, maxInt);
                 }
 
                 if (double.TryParse(minStr, NumberStyles.Float, culture, out var minDouble)
                     && int.TryParse(maxStr, NumberStyles.Float, culture, out var maxDouble))
                 {
-                    return new RangeValues<double>(minDouble, maxDouble);
+                    return new RangeValue<double>(minDouble, maxDouble);
                 }
 
                 if (DateTime.TryParse(minStr, culture, DateTimeStyles.None, out var minDateTime)
                     && DateTime.TryParse(maxStr, culture, DateTimeStyles.None, out var maxDateTime))
                 {
-                    return new RangeValues<DateTime>(minDateTime, maxDateTime);
+                    return new RangeValue<DateTime>(minDateTime, maxDateTime);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace System
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (value?.GetType().IsSubclassOf(typeof(RangeValues<>)) == true && destinationType == typeof(string))
+            if (value?.GetType().IsSubclassOf(typeof(RangeValue<>)) == true && destinationType == typeof(string))
                 return value.ToString();
 
             return base.ConvertTo(context, culture, value, destinationType);

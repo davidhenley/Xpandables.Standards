@@ -21,9 +21,9 @@ using System.Globalization;
 namespace System
 {
     /// <summary>
-    /// Provides a type converter to convert <see cref="EncryptedValues"/> objects to and from various other representations.
+    /// Provides a type converter to convert <see cref="EncryptedValue"/> objects to and from various other representations.
     /// </summary>
-    public sealed class EncryptedValuesConverter : TypeConverter
+    public sealed class EncryptedValueConverter : TypeConverter
     {
         /// <summary>
         /// Gets a value indicating whether this converter can convert an object in the given source type
@@ -69,7 +69,7 @@ namespace System
                 var keyStr = parts[0];
                 var valueStr = parts[1];
 
-                return new EncryptedValues(keyStr, valueStr);
+                return new EncryptedValue(keyStr, valueStr);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -92,8 +92,8 @@ namespace System
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (value?.GetType() == typeof(EncryptedValues) && destinationType == typeof(string))
-                return ((EncryptedValues)value).ToString("{0}:{1}", culture);
+            if (value?.GetType() == typeof(EncryptedValue) && destinationType == typeof(string))
+                return ((EncryptedValue)value).ToString("{0}:{1}", culture);
 
             return base.ConvertTo(context, culture, value, destinationType);
         }
