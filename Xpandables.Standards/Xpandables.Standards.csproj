@@ -22,10 +22,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.1.2</Version>
-    <AssemblyVersion>3.1.3</AssemblyVersion>
-    <FileVersion>3.1.3</FileVersion>
-    <PackageVersion>3.1.3</PackageVersion>
+    <Version>3.1.4</Version>
+    <AssemblyVersion>3.1.4</AssemblyVersion>
+    <FileVersion>3.1.4</FileVersion>
+    <PackageVersion>3.1.4</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IDispatcher, IQuery{TResult}, Enumeration, Interception, Optional, DataContext, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
