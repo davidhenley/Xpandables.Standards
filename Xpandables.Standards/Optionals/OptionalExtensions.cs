@@ -69,6 +69,29 @@ namespace System
         }
 
         /// <summary>
+        /// When source is not null, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
+        /// otherwise applies the <paramref name="falseAction"/>.
+        /// If source is null, returns an empty optional of <typeparamref name="U"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the source.</typeparam>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="source">The value to act on.</param>
+        /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
+        /// <param name="falseAction">The delegate to be executed</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
+        /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
+        public static Optional<U> When<T, U>(this T source, [NotNull] Predicate<T> predicate, Func<T, U> trueAction, Func<T, U> falseAction)
+        {
+            if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
+
+            return source.AsOptional().When(predicate, trueAction, falseAction);
+        }
+
+        /// <summary>
         /// Converts the specified value to an optional instance.
         /// </summary>
         /// <typeparam name="T">The Type of the value.</typeparam>

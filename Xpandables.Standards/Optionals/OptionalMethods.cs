@@ -262,6 +262,35 @@ namespace System
         }
 
         /// <summary>
+        /// When the optional contains a value, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
+        /// otherwise applies the <paramref name="falseAction"/>.
+        /// If the optional contains no value, returns an empty optional of <typeparamref name="U"/>.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
+        /// <param name="falseAction">The delegate to be executed</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
+        /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
+        public Optional<U> When<U>([NotNull] Predicate<T> predicate, [NotNull] Func<T, U> trueAction, [NotNull] Func<T, U> falseAction)
+        {
+            if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
+
+            if (IsValue())
+            {
+                if (predicate(InternalValue))
+                    return trueAction(InternalValue);
+
+                return falseAction(InternalValue);
+            }
+
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+        }
+
+        /// <summary>
         /// Applies the function to the element only if the optional contains a value and matches the predicate.
         /// </summary>
         /// <param name="predicate">The predicate to be used.</param>

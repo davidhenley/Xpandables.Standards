@@ -148,6 +148,35 @@ namespace System
         }
 
         /// <summary>
+        /// When the optional contains a value, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
+        /// otherwise applies the <paramref name="falseAction"/>.
+        /// If the optional contains no value, returns an empty optional of <typeparamref name="U"/>.
+        /// </summary>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
+        /// <param name="falseAction">The delegate to be executed</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
+        /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
+        public async Task<Optional<U>> WhenAsync<U>([NotNull] Predicate<T> predicate, [NotNull] Func<T, Task<U>> trueAction, [NotNull] Func<T, Task<U>> falseAction)
+        {
+            if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
+
+            if (IsValue())
+            {
+                if (predicate(InternalValue))
+                    return await trueAction(InternalValue).ConfigureAwait(false);
+
+                return await falseAction(InternalValue).ConfigureAwait(false);
+            }
+
+            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+        }
+
+        /// <summary>
         /// Creates a new value that is the result of applying the given function when the instance is empty.
         /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>

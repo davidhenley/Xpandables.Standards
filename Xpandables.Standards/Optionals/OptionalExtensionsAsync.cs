@@ -15,6 +15,7 @@
  *
 ************************************************************************************************************/
 
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace System
@@ -144,6 +145,31 @@ namespace System
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             await (await optional.ConfigureAwait(false)).WhenAsync(predicate, some).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// When the optional contains a value, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
+        /// otherwise applies the <paramref name="falseAction"/>.
+        /// If the optional contains no value, returns an empty optional of <typeparamref name="U"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the source.</typeparam>
+        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <param name="optional">The optional to act on.</param>
+        /// <param name="predicate">The predicate to be used.</param>
+        /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
+        /// <param name="falseAction">The delegate to be executed</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
+        /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
+        public static async Task<Optional<U>> WhenAsync<T, U>(
+            this Task<Optional<T>> optional, [NotNull] Predicate<T> predicate, Func<T, Task<U>> trueAction, Func<T, Task<U>> falseAction)
+        {
+            if (optional is null) throw new ArgumentNullException(nameof(optional));
+            if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
+            return await (await optional.ConfigureAwait(false)).WhenAsync(predicate, trueAction, falseAction).ConfigureAwait(false);
         }
 
         /// <summary>
