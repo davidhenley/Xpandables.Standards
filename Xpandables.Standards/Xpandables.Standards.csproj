@@ -19,13 +19,13 @@
     <Product>Xpandables @ 2019</Product>
     <Description>A utility library in .Net Standard 2.1 to easily add patterns such as Command, Query, Disptacher, Interception..and use of Optional.</Description>
     <Copyright>Copyright © 2019 Francis-Black EWANE</Copyright>
-    <PackageProjectUrl>https://github.com/Francescolis/Xpandables</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Francescolis/Xpandables</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Francescolis/Xpandables.Standards</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Francescolis/Xpandables.Standards</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.1.4</Version>
-    <AssemblyVersion>3.1.4</AssemblyVersion>
-    <FileVersion>3.1.4</FileVersion>
-    <PackageVersion>3.1.4</PackageVersion>
+    <Version>3.1.5</Version>
+    <AssemblyVersion>3.1.5</AssemblyVersion>
+    <FileVersion>3.1.5</FileVersion>
+    <PackageVersion>3.1.5</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IDispatcher, IQuery{TResult}, Enumeration, Interception, Optional, DataContext, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
