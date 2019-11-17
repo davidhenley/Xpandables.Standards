@@ -17,79 +17,14 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Design.Database
 {
-    /// <summary>
-    /// Allows an application author to asynchronously manage domain objects.
-    /// It contains all the methods that describe the domain objects manager.
-    /// <para>When argument is null, an <see cref="ArgumentNullException"/> will be thrown.</para>
-    /// <para>When execution failed, an <see cref="InvalidOperationException"/> will be thrown.</para>
-    /// When a value is not found, an optional empty value of the expected type will be returned.
-    /// The implementation must be thread-safe when working in a multi-threaded environment.
-    /// </summary>
     public partial interface IDataContext
     {
-        /// <summary>
-        /// Finds a domain object matching the primary key values specified and returns its value.
-        /// If not found, returns an optional empty type value.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <param name="keyValues">The primary key values to be found.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="keyValues"/> is null or empty.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        /// <returns>A task that represents the asynchronous find operation.
-        /// The task result contains the entity found, or optional empty.</returns>
-        Task<Optional<T>> FindAsync<T>(CancellationToken cancellationToken = default, params object[] keyValues) where T : Entity;
-
-        /// <summary>
-        /// Returns all domain objects matching the expression selector.
-        /// If not found, returns an empty enumerable.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
-        /// <param name="selector">Describes the expression used to select the domain object.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<En attente>")]
-        IAsyncEnumerable<TResult> GetAllAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
-
-        /// <summary>
-        /// Returns the first domain object matching the expression selector.
-        /// If not found, returns an optional empty type value.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
-        /// <param name="selector">Describes the expression used to select the domain object.</param>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        /// <returns>A task that represents the asynchronous get operation.
-        /// The task result contains the matching anonymous value.</returns>
-        Task<Optional<TResult>> GetFirstAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector, CancellationToken cancellationToken = default)
-            where T : Entity;
-
-        /// <summary>
-        /// Returns the last domain object matching the expression selector.
-        /// If not found, returns an optional empty type value.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
-        /// <param name="selector">Describes the expression used to select the domain object.</param>
-        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        /// <exception cref="OperationCanceledException">The operation has been canceled.</exception>
-        Task<Optional<TResult>> GetLastAsync<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector, CancellationToken cancellationToken = default)
-            where T : Entity;
-
         /// <summary>
         /// Adds a domain objects to the data storage.
         /// </summary>

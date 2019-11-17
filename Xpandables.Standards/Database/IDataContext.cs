@@ -24,7 +24,7 @@ namespace System.Design.Database
 {
     /// <summary>
     /// Allows an application author to synchronously manage domain objects using EntityFrameworkCore.
-    /// It contains all the methods that describe the domain objects manager.
+    /// Use the <see langword="System.Design.Database.Extensions"/> namespace for extensions.
     /// <para>When argument is null, an <see cref="ArgumentNullException"/> will be thrown.</para>
     /// <para>When execution failed, an <see cref="InvalidOperationException"/> will be thrown.</para>
     /// When a value is not found, an optional empty value of the expected type will be returned.
@@ -38,49 +38,6 @@ namespace System.Design.Database
         /// <typeparam name="T">Type of entity.</typeparam>
         /// <returns>An <see cref="IQueryable{T}"/>.</returns>
         IQueryable<T> SetOf<T>() where T : Entity;
-
-        /// <summary>
-        /// Finds a domain object matching the primary key values specified and returns its value.
-        /// If not found, returns an optional empty type value.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <param name="keyValues">The primary key values to be found.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="keyValues"/> is null or empty.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        Optional<T> Find<T>(params object[] keyValues) where T : Entity;
-
-        /// <summary>
-        /// Returns all domain objects matching the expression selector.
-        /// If not found, returns an empty enumerable.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
-        /// <param name="selector">Describes the expression used to select the domain object.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        IEnumerable<TResult> GetAll<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
-
-        /// <summary>
-        /// Returns the first domain object matching the expression selector.
-        /// If not found, returns an optional empty type value.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
-        /// <param name="selector">Describes the expression used to select the domain object.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        Optional<TResult> GetFirst<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
-
-        /// <summary>
-        /// Returns the last domain object matching the expression selector.
-        /// If not found, returns an optional empty type value.
-        /// </summary>
-        /// <typeparam name="T">Domain object type.</typeparam>
-        /// <typeparam name="TResult">Anonymous result object type.</typeparam>
-        /// <param name="selector">Describes the expression used to select the domain object.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">The operation failed. See inner exception.</exception>
-        Optional<TResult> GetLast<T, TResult>(Func<IQueryable<T>, IQueryable<TResult>> selector) where T : Entity;
 
         /// <summary>
         /// Adds a domain objects to the data storage.
