@@ -30,7 +30,7 @@
     <PackageTags>ICommand, IDispatcher, IQuery{TResult}, Enumeration, Interception, Optional, DataContext, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Add Optional extensions.</PackageReleaseNotes>
+    <PackageReleaseNotes>Add IDataContext extensions.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables</AssemblyName>
     <RootNamespace>Xpandables</RootNamespace>
