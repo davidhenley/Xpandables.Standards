@@ -27,9 +27,6 @@ using System.Threading.Tasks;
 
 namespace System.Design.Database
 {
-    /// <summary>
-    /// Provides with extensions method links.
-    /// </summary>
     public partial interface IDataContext
     {
         internal Task<bool> AnyAsync<T>([NotNull] IQueryable<T> source, CancellationToken cancellationToken = default);
@@ -65,37 +62,37 @@ namespace System.Design.Database
         internal Task<TResult> MaxAsync<T, TResult>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, TResult>> selector, CancellationToken cancellationToken = default);
         internal Task<U> SumAsync<U>([NotNull] IQueryable<U> source, CancellationToken cancellationToken = default) where U : unmanaged;
         internal Task<U?> SumAsync<U>([NotNull] IQueryable<U?> source, CancellationToken cancellationToken = default) where U : unmanaged;
-        internal Task<U> SumAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U>> selector, CancellationToken cancellationToken = default) where T : Entity where U : unmanaged;
-        internal Task<U?> SumAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U?>> selector, CancellationToken cancellationToken = default) where T : Entity where U : unmanaged;
+        internal Task<U> SumAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U>> selector, CancellationToken cancellationToken = default) where T : class where U : unmanaged;
+        internal Task<U?> SumAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U?>> selector, CancellationToken cancellationToken = default) where T : class where U : unmanaged;
         internal Task<U> AverageAsync<U>([NotNull] IQueryable<U> source, CancellationToken cancellationToken = default) where U : unmanaged;
         internal Task<U?> AverageAsync<U>([NotNull] IQueryable<U?> source, CancellationToken cancellationToken = default) where U : unmanaged;
-        internal Task<U> AverageAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U>> selector, CancellationToken cancellationToken = default) where T : Entity where U : unmanaged;
-        internal Task<U?> AverageAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U?>> selector, CancellationToken cancellationToken = default) where U : unmanaged;
+        internal Task<U> AverageAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U>> selector, CancellationToken cancellationToken = default) where T : class where U : unmanaged;
+        internal Task<U?> AverageAsync<T, U>([NotNull] IQueryable<T> source, [NotNull] Expression<Func<T, U?>> selector, CancellationToken cancellationToken = default) where T : class where U : unmanaged;
         internal Task<bool> ContainsAsync<T>([NotNull] IQueryable<T> source, [NotNull] T item, CancellationToken cancellationToken = default);
         internal Task<List<T>> ToListAsync<T>([NotNull] IQueryable<T> source, CancellationToken cancellationToken = default);
         internal Task<T[]> ToArrayAsync<T>([NotNull] IQueryable<T> source, CancellationToken cancellationToken = default);
-        internal IQueryable<T> Include<T>([NotNull] IQueryable<T> source, [NotNull] string navigationPropertyPath) where T : Entity;
-        internal IQueryable<T> IgnoreQueryFilters<T>([NotNull] IQueryable<T> source) where T : Entity;
-        internal IQueryable<T> AsNoTracking<T>([NotNull] IQueryable<T> source) where T : Entity;
-        internal IQueryable<T> AsTracking<T>([NotNull] IQueryable<T> source) where T : Entity;
+        internal IQueryable<T> Include<T>([NotNull] IQueryable<T> source, [NotNull] string navigationPropertyPath) where T : class;
+        internal IQueryable<T> IgnoreQueryFilters<T>([NotNull] IQueryable<T> source) where T : class;
+        internal IQueryable<T> AsNoTracking<T>([NotNull] IQueryable<T> source) where T : class;
+        internal IQueryable<T> AsTracking<T>([NotNull] IQueryable<T> source) where T : class;
         internal IQueryable<T> TagWith<T>([NotNull] IQueryable<T> source, [NotNull] string tag);
-        internal void Load<T>([NotNull] IQueryable<T> source) where T : Entity;
-        internal Task LoadAsync<T>([NotNull] IQueryable<T> source, CancellationToken cancellationToken = default) where T : Entity;
+        internal void Load<T>([NotNull] IQueryable<T> source) where T : class;
+        internal Task LoadAsync<T>([NotNull] IQueryable<T> source, CancellationToken cancellationToken = default) where T : class;
 
         internal Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>([NotNull] IQueryable<T> source, [NotNull] Func<T, TKey> keySelector, CancellationToken cancellationToken = default)
-            where T : Entity;
+            where T : class;
 
         internal Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>([NotNull] IQueryable<T> source,
-            [NotNull] Func<T, TKey> keySelector, [NotNull] IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default) where T : Entity;
+            [NotNull] Func<T, TKey> keySelector, [NotNull] IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default) where T : class;
 
         internal Task<Dictionary<TKey, TElement>> ToDictionaryAsync<T, TKey, TElement>([NotNull] IQueryable<T> source,
-            [NotNull] Func<T, TKey> keySelector, [NotNull] Func<T, TElement> elementSelector, CancellationToken cancellationToken = default) where T : Entity;
+            [NotNull] Func<T, TKey> keySelector, [NotNull] Func<T, TElement> elementSelector, CancellationToken cancellationToken = default) where T : class;
 
         internal Task<Dictionary<TKey, TElement>> ToDictionaryAsync<T, TKey, TElement>([NotNull] IQueryable<T> source,
             [NotNull] Func<T, TKey> keySelector, [NotNull] Func<T, TElement> elementSelector, [NotNull] IEqualityComparer<TKey> comparer,
-            CancellationToken cancellationToken = default) where T : Entity;
+            CancellationToken cancellationToken = default) where T : class;
 
-        internal Task ForEachAsync<T>([NotNull] IQueryable<T> source, [NotNull] Action<T> action, CancellationToken cancellationToken = default) where T : Entity;
-        internal IAsyncEnumerable<T> AsAsyncEnumerable<T>([NotNull] IQueryable<T> source) where T : Entity;
+        internal Task ForEachAsync<T>([NotNull] IQueryable<T> source, [NotNull] Action<T> action, CancellationToken cancellationToken = default) where T : class;
+        internal IAsyncEnumerable<T> AsAsyncEnumerable<T>([NotNull] IQueryable<T> source) where T : class;
     }
 }
