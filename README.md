@@ -71,6 +71,28 @@ public interface IStringGeneratorEncryptor : IFluent
 }
 ```
 
+## Command/Query pattern
+### Query
+```C#
+public interface IQuery<out TResult> { }
+
+public class SignIn : QueryExpression<User>, IQuery<string>, IPersistenceBehavior
+{
+    public SignIn(string phone, string password) => (Phone, Password) = (phone, password);
+
+    protected override Expression<Func<User, bool>> BuildExpression()
+        => PredicateBuilder.New<User>(u => u.Phone == Phone);
+
+    [Required, Phone, DataType(DataType.PhoneNumber), StringLength(15, MinimumLength = 3)]
+    public string Phone { get; set; }
+
+    [Required, DataType(DataType.Password), StringLength(byte.MaxValue, MinimumLength = 3)]
+    public string Password { get; set; }
+}
+```
+**QueryExpression{T}** provides with an **Expression{Func{T, bool}}** to be used as predicate and contains implicit operators.
+**IPersistenceBehavior** is a marker interface specifying that the query handler will use database persistence.
+
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
 Use of [Optional{T}](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Optionals)
@@ -151,12 +173,5 @@ and from string representations.
 
 ```
 
-# Xpandables.GraphQL
-
-A starting point to generate GraphQL schema without *ObjectGraphType* implementation.
-Use of [GraphQL.Net](https://github.com/graphql-dotnet/graphql-dotnet).
-
-A working example can be found
-[here](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.GraphQL.Api).
 
 Feel free to fork this project, make your own changes and create a pull request.
