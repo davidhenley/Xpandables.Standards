@@ -24,6 +24,13 @@ public class Address : ValueObject
     }
 }
 ```
+
+### RangeValue<T>
+Defines a pair of values, representing a segment. This class uses a **RangeValueConverter** as type converter.
+
+### EncryptedValue
+Defines a representation of an encrypted value with its key. This class uses an **EncryptedValueConverter"** as type converter.
+
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
 Use of [Optional{T}](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Optionals)
