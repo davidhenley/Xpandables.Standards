@@ -49,6 +49,28 @@ public class User : NotifyPropertyChanged<User>
     // FullName will get notified everytime FirstName or LastName change.
 }
 ```
+
+### IInstanceCreator
+Provides with methods to create instance of specific type at runtime with cache, using lambda constructor.
+
+### IStringGeneratorEncryptor
+Provides with a string generator and encryptor using default interface implementation.
+
+```C#
+public interface IStringGeneratorEncryptor : IFluent
+{
+    bool Equals(EncryptedValue encrypted, string value)
+    {
+    
+    }
+
+    Optional<EncryptedValue> Encrypt(string value, int keySize = 12)
+    {
+    
+    }
+}
+```
+
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
 Use of [Optional{T}](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Optionals)
