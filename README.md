@@ -1,6 +1,6 @@
 # Xpandables
 
-## ValueObject
+### ValueObject
 
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
