@@ -1,5 +1,6 @@
 # Xpandables
-Contains some useful interface definitions and implementations classes for .NetStandard, mostly following the spirit of SOLID principles
+
+## ValueObject
 
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
