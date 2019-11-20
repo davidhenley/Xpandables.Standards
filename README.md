@@ -70,7 +70,6 @@ public interface IStringGeneratorEncryptor : IFluent
     }
 }
 ```
-
 ## Command/Query pattern
 ### Query
 ```C#
@@ -91,7 +90,44 @@ public class SignIn : QueryExpression<User>, IQuery<string>, IPersistenceBehavio
 }
 ```
 **QueryExpression{T}** provides with an **Expression{Func{T, bool}}** to be used as predicate and contains implicit operators.
-**IPersistenceBehavior** is a marker interface specifying that the query handler will use database persistence.
+**IPersistenceBehavior** is a marker interface specifying that the query handler will use database persistence with decorator pattern.
+
+### Command
+```C#
+public interface ICommand { }
+
+public class ImageUp : QueryExpression<User>, IDisposable, ICommand, IPersistenceBehavior, IValidationBehavior
+{ 
+    private bool isDisposed;
+
+    protected override Expression<Func<User, bool>> BuildExpression()
+    {
+        return PredicateBuilder.New<User>(u => u.Phone == Signed.Phone);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (isDisposed) return;
+
+        if (disposing) FileStream?.Dispose();
+        isDisposed = true;
+    }
+    
+    public FileStream FileStream { get; set; }  
+    
+    [Required, Phone, DataType(DataType.PhoneNumber), StringLength(15, MinimumLength = 3)]
+    public string Phone { get; set; }    
+}
+```
+**QueryExpression{T}** provides with an **Expression{Func{T, bool}}** to be used as predicate and contains implicit operators.
+**IPersistenceBehavior** is a marker interface specifying that the command handler will use database persistence with decorator pattern.
+**IValidationBehavior** is a marker interface specifying that the command handler will need command validation before execution with decorator pattern.
 
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
