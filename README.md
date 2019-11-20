@@ -9,12 +9,7 @@ public class Address : ValueObject
     public string City { get; }
     public string ZipCode { get; }
 
-    public Address(string street, string city, string zipCode)
-    {
-        Street = street;
-        City = city;
-        ZipCode = zipCode;
-    }
+    public Address(string street, string city, string zipCode) => (Street, City, ZipCode) = (street, city, zipCode);
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
@@ -25,12 +20,31 @@ public class Address : ValueObject
 }
 ```
 
-### RangeValue<T>
+### RangeValue{T}
 Defines a pair of values, representing a segment. This class uses a **RangeValueConverter** as type converter.
 
 ### EncryptedValue
 Defines a representation of an encrypted value with its key. This class uses an **EncryptedValueConverter"** as type converter.
 
+### NotifyPropertyChanged{T}
+Implementation of **INotifyPropertyChanged** that can be combined with th use of **NotifyPropertyChangedDependOnAttribute** to propagate notification.
+
+```C#
+public class User : NotifyPropertyChanged<User>
+{
+    public User() {}
+    public User(string firstName, string lastName) => (FirstName, LastName) = (firstName, lastName);
+    
+    public string FirstName { get; set; }   
+    public string LastName { get; set; }
+    
+    [NotifyPropertyChangedDependOn(nameof(FirstName))]
+    [NotifyPropertyChangedDependOn(nameof(LastName))]
+    public string FullName { get; }
+    
+    // FullName will get notified everytime FirstName or LastName change.
+}
+```
 Use of [Contracts](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Contracts)
 
 Use of [Optional{T}](https://github.com/Francescolis/Xpandables/tree/master/Xpandables.Standards/Optionals)
