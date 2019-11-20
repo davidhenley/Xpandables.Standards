@@ -9,7 +9,8 @@ public class Address : ValueObject
     public string City { get; }
     public string ZipCode { get; }
 
-    public Address(string street, string city, string zipCode) => (Street, City, ZipCode) = (street, city, zipCode);
+    public Address(string street, string city, string zipCode)
+        => (Street, City, ZipCode) = (street, city, zipCode);
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
@@ -35,12 +36,15 @@ public class User : NotifyPropertyChanged<User>
     public User() {}
     public User(string firstName, string lastName) => (FirstName, LastName) = (firstName, lastName);
     
-    public string FirstName { get; set; }   
-    public string LastName { get; set; }
+    private string _firstName;
+    public string FirstName { get => _firstName; set => SetProperty(ref _firstName, value); }   
+    
+    private string _lastName;
+    public string LastName { get => _lastName; set => SetProperty(ref _lastName, value); }
     
     [NotifyPropertyChangedDependOn(nameof(FirstName))]
     [NotifyPropertyChangedDependOn(nameof(LastName))]
-    public string FullName { get; }
+    public string FullName => $"{LastName} {FirstName}";
     
     // FullName will get notified everytime FirstName or LastName change.
 }
