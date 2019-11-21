@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -88,6 +89,19 @@ namespace System
         }
 
         /// <summary>
+        /// Returns the first element of the specified sequence or an empty optional if the sequence contains no elements.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">the source of the sequence.</param>
+        /// <returns>The first element from the sequence or an empty result if the sequence contains no elements.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static Optional<T> FirstOrEmpty<T>(this IQueryable<T> source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Returns the first element of the sequence that satisfies the predicate or an empty optional if no such element is found.
         /// </summary>
         /// <typeparam name="T">The type of the element in the sequence.</typeparam>
@@ -104,6 +118,22 @@ namespace System
         }
 
         /// <summary>
+        /// Returns the first element of the sequence that satisfies the predicate or an empty optional if no such element is found.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">the source of the sequence.</param>
+        /// <param name="predicate">A function to test each element fo a condition.</param>
+        /// <returns>The first element that satisfies the predicate or an empty optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        public static Optional<T> FirstOrEmpty<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            return source.FirstOrDefault(predicate);
+        }
+
+        /// <summary>
         /// Returns the last elements of a sequence or an empty optional if the sequence contains no elements.
         /// </summary>
         /// <typeparam name="T">The type of the element in the sequence.</typeparam>
@@ -111,6 +141,19 @@ namespace System
         /// <returns>The last element from the sequence or an empty result if the sequence contains no elements.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.LastOrDefault();
+        }
+
+        /// <summary>
+        /// Returns the last elements of a sequence or an empty optional if the sequence contains no elements.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">the source of the sequence.</param>
+        /// <returns>The last element from the sequence or an empty result if the sequence contains no elements.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static Optional<T> LastOrEmpty<T>(this IQueryable<T> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             return source.LastOrDefault();
@@ -133,6 +176,22 @@ namespace System
         }
 
         /// <summary>
+        /// Returns the last element of the sequence that satisfies the predicate or an empty optional if no such element is found.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">the source of the sequence.</param>
+        /// <param name="predicate">A function to test each element fo a condition.</param>
+        /// <returns>The last element that satisfies the predicate or an empty optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
+        public static Optional<T> LastOrEmpty<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            return source.LastOrDefault(predicate);
+        }
+
+        /// <summary>
         /// Returns the element at the specified index in a sequence or an empty optional if the index is out of range
         /// </summary>
         /// <typeparam name="T">The type of the element in the sequence.</typeparam>
@@ -140,6 +199,19 @@ namespace System
         /// <param name="index">The zero-based index of the element to retrieve.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         public static Optional<T> TryGetElementAtOptional<T>(this IEnumerable<T> source, int index)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            return source.ElementAtOrDefault(index);
+        }
+
+        /// <summary>
+        /// Returns the element at the specified index in a sequence or an empty optional if the index is out of range
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">the source of the sequence.</param>
+        /// <param name="index">The zero-based index of the element to retrieve.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static Optional<T> TryGetElementAtOptional<T>(this IQueryable<T> source, int index)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             return source.ElementAtOrDefault(index);
@@ -156,6 +228,26 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
         public static IEnumerable<TResult> SelectOptional<T, TResult>(this IEnumerable<T> source, Func<T, Optional<TResult>> selector)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (selector is null) throw new ArgumentNullException(nameof(selector));
+
+            return from item in source
+                   from result in selector(item)
+                   select result;
+        }
+
+        /// <summary>
+        /// Projects each element of the sequence in a new form.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <typeparam name="TResult">The type of the value returned by selector.</typeparam>
+        /// <param name="source">A sequence of values to invoke a transform function on.</param>
+        /// <param name="selector">A transform function to apply to each element.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> whose elements are the result of invoking the transform function on each element of source.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
+        public static IEnumerable<TResult> SelectOptional<T, TResult>(this IQueryable<T> source, Func<T, Optional<TResult>> selector)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (selector is null) throw new ArgumentNullException(nameof(selector));
@@ -275,10 +367,46 @@ namespace System
         /// Projects each element of the sequence in a new form.
         /// </summary>
         /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">A sequence of values to invoke a transform function on.</param>
+        /// <param name="selector">A transform function to apply to each element.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> whose elements are the result of invoking the transform function on each element of source.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
+        public static IEnumerable<T> SelectOptional<T>(this IQueryable<Optional<T>> source, Func<Optional<T>, bool> selector)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (selector is null) throw new ArgumentNullException(nameof(selector));
+
+            return from item in source
+                   where selector(item)
+                   from result in item
+                   select result;
+        }
+
+        /// <summary>
+        /// Projects each element of the sequence in a new form.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
         /// <param name="source">A sequence of values to return only the exist values.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> whose elements are the result of no empty optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         public static IEnumerable<T> SelectOptional<T>(this IEnumerable<Optional<T>> source)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+
+            return from item in source
+                   from result in item
+                   select result;
+        }
+
+        /// <summary>
+        /// Projects each element of the sequence in a new form.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the sequence.</typeparam>
+        /// <param name="source">A sequence of values to return only the exist values.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> whose elements are the result of no empty optional.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        public static IEnumerable<T> SelectOptional<T>(this IQueryable<Optional<T>> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
@@ -367,6 +495,27 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">An element of the collection has be modified
         /// outside the process.</exception>
+        public static IEnumerable<TResult> ForEach<T, TResult>(this IQueryable<T> source, Func<T, TResult> action)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (action is null) throw new ArgumentNullException(nameof(action));
+
+            return from item in source
+                   select action(item);
+        }
+
+        /// <summary>
+        /// Enumerates the sequence and invokes the given action for each value in the sequence.
+        /// </summary>
+        /// <typeparam name="T">Type of the element in the sequence.</typeparam>
+        /// <typeparam name="TResult">Type of the result element.</typeparam>
+        /// <param name="source">The source of the sequence.</param>
+        /// <param name="action">Action to invoke for each element.</param>
+        /// <returns>Collection of items.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">An element of the collection has be modified
+        /// outside the process.</exception>
         public static async IAsyncEnumerable<TResult> ForEachAsync<T, TResult>(this IAsyncEnumerable<T> source, Func<T, TResult> action)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
@@ -389,6 +538,27 @@ namespace System
         /// <exception cref="InvalidOperationException">An element of the collection has be modified
         /// outside the process.</exception>
         public static IEnumerable<TResult> ForEach<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> action)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (action is null) throw new ArgumentNullException(nameof(action));
+
+            return from item in source.Select((Value, Index) => new { Index, Value })
+                   select action(item.Value, item.Index);
+        }
+
+        /// <summary>
+        /// Enumerates the sequence and invokes the given action for each value in the sequence using an index.
+        /// </summary>
+        /// <typeparam name="T">Type of the element in the sequence.</typeparam>
+        /// <typeparam name="TResult">Type of the result element.</typeparam>
+        /// <param name="source">The source of the sequence.</param>
+        /// <param name="action">Action to invoke for each element.</param>
+        /// <returns>Collection of items.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">An element of the collection has be modified
+        /// outside the process.</exception>
+        public static IEnumerable<TResult> ForEach<T, TResult>(this IQueryable<T> source, Func<T, int, TResult> action)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (action is null) throw new ArgumentNullException(nameof(action));
