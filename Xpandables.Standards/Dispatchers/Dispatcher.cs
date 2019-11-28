@@ -102,9 +102,12 @@ namespace System.Design
 
                 Type wrapperType = typeof(QueryHandlerWrapper<,>)
                     .MakeGenericTypeSafe(new Type[] { query.GetType(), typeof(TResult) })
-                    .WhenException(exception => { throw new InvalidOperationException(
-                        "Building Query wrapper failed.",
-                        exception); });
+                    .WhenException(exception =>
+                    {
+                        throw new InvalidOperationException(
+"Building Query wrapper failed.",
+exception);
+                    });
 
                 return await _serviceProvider.XGetService<IQueryHandlerWrapper<TResult>>(wrapperType)
                     .WhenEmpty(() => throw new ArgumentException(

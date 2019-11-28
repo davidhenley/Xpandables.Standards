@@ -47,6 +47,8 @@ namespace System.Http
         /// <param name="request">The HTTP request message.</param>
         /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="request"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2208:Instancier les exceptions d'argument correctement",
+            Justification = "<En attente>")]
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request is null) throw new ArgumentNullException(nameof(request));
@@ -58,7 +60,7 @@ namespace System.Http
                         ErrorMessageResources.ArgumentExpected.StringFormat(
                             nameof(HttpAuthorizationTokenHandler),
                             nameof(IHttpRequestTokenAccessor.GetRequestHttpToken)),
-                    new ArgumentNullException("token"));
+                    new ArgumentNullException("Expected token not found."));
 
                 request.Headers.Authorization = new AuthenticationHeaderValue(authorization.Scheme, token);
             }

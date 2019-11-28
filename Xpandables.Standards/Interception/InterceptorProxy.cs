@@ -42,6 +42,7 @@ namespace System.Interception
         /// <returns>An instance that has been wrapped by a proxy.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="instance"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="interceptor"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques", Justification = "<En attente>")]
         public static TInstance Create(TInstance instance, IInterceptor interceptor)
         {
             object proxy = Create<TInstance, InterceptorProxy<TInstance>>();

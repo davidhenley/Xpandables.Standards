@@ -36,6 +36,7 @@ namespace System.ComponentModel.DataAnnotations
         /// <summary>
         ///  Gets or sets the format string, which may be a resource key string.
         /// </summary>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1721:Les noms de propriétés ne doivent pas correspondre à ceux des méthodes get", Justification = "<En attente>")]
         public new string DataFormatString
         {
             get => _dataFormatString.Value;
@@ -65,6 +66,7 @@ namespace System.ComponentModel.DataAnnotations
         /// but a public static property with a name matching the <see cref="DataFormatString" /> value couldn't be found
         /// on the <see cref="DataFormatStringResourceType" />.
         /// </exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1721:Les noms de propriétés ne doivent pas correspondre à ceux des méthodes get", Justification = "<En attente>")]
         public string GetDataFormatString() => _dataFormatString.GetLocalizableValue();
     }
 }

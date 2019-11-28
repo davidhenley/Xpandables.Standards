@@ -35,7 +35,7 @@ namespace System.Design.Linq
     /// </summary>
     [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Les identificateurs doivent avoir un suffixe correct",
         Justification = "<En attente>")]
-    public class ExpandableQuery<T> :  IOrderedQueryable<T>, IAsyncEnumerable<T>
+    public class ExpandableQuery<T> : IOrderedQueryable<T>, IAsyncEnumerable<T>
     {
         public ExpandableQuery(IQueryable<T> innerQuery, Func<Expression, Expression> queryOptimizer)
         {

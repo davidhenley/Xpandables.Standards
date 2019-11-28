@@ -30,6 +30,7 @@ namespace System
     /// You need to register the expected behavior to the service collections using the appropriate extension method 
     /// <see langword="AddXValidationBehavior"/> for the validation behavior and <see langword="AddXValidationRules"/> to register all your custom implementations..
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface IValidationBehavior { }
 
     /// <summary>
@@ -40,6 +41,7 @@ namespace System
     /// effective. You need to register the expected behavior to the service collections using the appropriate extension method :
     /// <see langword="AddXTransactionBehavior"/>.
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface ITransactionBehavior { }
 
     /// <summary>
@@ -53,6 +55,7 @@ namespace System
     /// <see cref="IQuery{TResult}"/> class implementation will be decorated with <see cref="QueryPersistenceBehavior{TQuery, TResult}"/> while
     /// <see cref="ICommand"/> class implementation will be decorated with <see cref="CommandPersistenceBehavior{TCommand}"/>.
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface IPersistenceBehavior { }
 
     /// <summary>
@@ -65,6 +68,7 @@ namespace System
     /// <see cref="IQuery{TResult}"/> class implementation will be decorated with <see cref="QueryCorrelationBehavior{TQuery, TResult}"/> while
     /// <see cref="ICommand"/> class implementation will be decorated with <see cref="CommandCorrelationBehavior{TCommand}"/>.
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface ICorrelationBehavior { }
 
     /// <summary>
@@ -73,5 +77,6 @@ namespace System
     /// and provide an implementation for <see cref="IDataContextSeeder"/>. The class implementation will be decorated with the 
     /// <see cref="DataContextSeederBehavior"/>.
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface ISeederBehavior { }
 }

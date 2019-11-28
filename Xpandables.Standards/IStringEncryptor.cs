@@ -34,6 +34,7 @@ namespace System
         /// <returns>An encrypted object that contains the encrypted value and its key.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="key"/> is null.</exception>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1307:Spécifier StringComparison", Justification = "<En attente>")]
         Optional<string> Encrypt(string value, string key)
         {
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));

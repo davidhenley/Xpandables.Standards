@@ -160,6 +160,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} must be a constant expression or a member expression..
+        /// </summary>
+        public static string NavigationParameterException {
+            get {
+                return ResourceManager.GetString("NavigationParameterException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Circular dependency found..
         /// </summary>
         public static string PropertyChangedCircularDependency {

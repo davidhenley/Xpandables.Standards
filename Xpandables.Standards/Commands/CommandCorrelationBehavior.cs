@@ -52,7 +52,7 @@ namespace System.Design
                 await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
                 await _eventRegister.OnPostEventAsync().ConfigureAwait(false);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 await _eventRegister.OnRollbackEventAsync(exception).ConfigureAwait(false);
                 throw;

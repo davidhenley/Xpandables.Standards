@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.Design.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace System.Design
@@ -35,10 +36,14 @@ namespace System.Design
         /// </summary>
         protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
 
-        public static implicit operator Expression<Func<TSource, bool>>(QueryExpression<TSource> criteria)
-             => criteria.Expression();
+        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
+            Justification = "<En attente>")]
+        public static implicit operator Expression<Func<TSource, bool>>([NotNull] QueryExpression<TSource> criteria)
+             => criteria?.Expression() ?? PredicateBuilder.New<TSource>();
 
+        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
+            Justification = "<En attente>")]
         public static implicit operator Func<TSource, bool>(QueryExpression<TSource> criteria)
-            => criteria.Expression().Compile();
+            => criteria?.Expression().Compile() ?? PredicateBuilder.New<TSource>();
     }
 }

@@ -21,5 +21,7 @@ namespace System
     /// Provides a collection of objects that need to be shared across asynchronous control flows.
     /// This interface must be used or injected as a scoped dependency.
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Les identificateurs doivent avoir un suffixe correct",
+        Justification = "<En attente>")]
     public interface ICorrelationContext : ICorrelationCollection<string, object> { }
 }

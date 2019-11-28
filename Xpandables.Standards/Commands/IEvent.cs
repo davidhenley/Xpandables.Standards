@@ -20,5 +20,6 @@ namespace System.Design
     /// <summary>
     /// Defines a marker interface to be used to mark an object to act as a event notification.
     /// </summary>
-    public interface IEvent {  }
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
+    public interface IEvent { }
 }

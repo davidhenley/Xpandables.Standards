@@ -30,15 +30,15 @@ namespace System
         /// If one of the value is null, returns an empty optional.
         /// </summary>
         /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <typeparam name="U">The type of the right value.</typeparam>
+        /// <typeparam name="TU">The type of the right value.</typeparam>
         /// <param name="left">The left value to act on.</param>
         /// <param name="right">The right value to act on.</param>
-        public static Optional<(T Left, U Right)> And<T, U>(this T left, U right)
+        public static Optional<(T Left, TU Right)> And<T, TU>(this T left, TU right)
         {
 #nullable disable
-            return !EqualityComparer<U>.Default.Equals(right, default) && !EqualityComparer<T>.Default.Equals(left, default)
-                ? Optional<(T Left, U Right)>.Some((left, right))
-                : Optional<(T Left, U Right)>.Empty();
+            return !EqualityComparer<TU>.Default.Equals(right, default) && !EqualityComparer<T>.Default.Equals(left, default)
+                ? Optional<(T Left, TU Right)>.Some((left, right))
+                : Optional<(T Left, TU Right)>.Empty();
 #nullable enable
         }
 
@@ -71,10 +71,10 @@ namespace System
         /// <summary>
         /// When source is not null, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
         /// otherwise applies the <paramref name="falseAction"/>.
-        /// If source is null, returns an empty optional of <typeparamref name="U"/>.
+        /// If source is null, returns an empty optional of <typeparamref name="TU"/>.
         /// </summary>
         /// <typeparam name="T">The type of the source.</typeparam>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="source">The value to act on.</param>
         /// <param name="predicate">The predicate to be used.</param>
         /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
@@ -82,7 +82,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
-        public static Optional<U> When<T, U>(this T source, [NotNull] Predicate<T> predicate, Func<T, U> trueAction, Func<T, U> falseAction)
+        public static Optional<TU> When<T, TU>(this T source, [NotNull] Predicate<T> predicate, Func<T, TU> trueAction, Func<T, TU> falseAction)
         {
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -110,23 +110,23 @@ namespace System
         /// if one of the value is null, returns an empty optional.
         /// </summary>
         /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <typeparam name="U">The type of the right value.</typeparam>
+        /// <typeparam name="TU">The type of the right value.</typeparam>
         /// <param name="value">The value to act on.</param>
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
-        public static Optional<(T Left, U Right)> AsOptional<T, U>([NotNull] this T value, U right) => value.AsOptional().And(right);
+        public static Optional<(T Left, TU Right)> AsOptional<T, TU>([NotNull] this T value, TU right) => value.AsOptional().And(right);
 
         /// <summary>
         /// Converts the specified optional to an optional pair instance.
         /// if one of the value is null, returns an empty optional.
         /// </summary>
         /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <typeparam name="U">The type of the right value.</typeparam>
+        /// <typeparam name="TU">The type of the right value.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="right">The right value to act on.</param>
         /// <returns>An optional pair instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
-        public static Optional<(T Left, U Right)> AsOptional<T, U>([NotNull] this Optional<T> optional, U right)
+        public static Optional<(T Left, TU Right)> AsOptional<T, TU>([NotNull] this Optional<T> optional, TU right)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             return optional.And(right);

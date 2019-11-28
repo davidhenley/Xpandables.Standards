@@ -39,33 +39,33 @@ namespace System
         /// <summary>
         /// Creates a new optional that is the result of applying the given function to the element.
         /// The delegate get called only if the instance contains a value,
-        /// otherwise returns an empty optional of <typeparamref name="U"/>.
+        /// otherwise returns an empty optional of <typeparamref name="TU"/>.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<U>> MapAsync<U>([NotNull] Func<T, Task<U>> some)
+        public async Task<Optional<TU>> MapAsync<TU>([NotNull] Func<T, Task<TU>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
-            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
         }
 
         /// <summary>
         /// Creates a new value that is the result of applying the given function to the element.
         /// The delegate get called only if the instance contains a value,
-        /// otherwise returns an empty optional of <typeparamref name="U"/>.
+        /// otherwise returns an empty optional of <typeparamref name="TU"/>.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="some">The function to transform the element.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<U>> MapOptionalAsync<U>([NotNull] Func<T, Task<Optional<U>>> some)
+        public async Task<Optional<TU>> MapOptionalAsync<TU>([NotNull] Func<T, Task<Optional<TU>>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
-            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
         }
 
         /// <summary>
@@ -150,16 +150,16 @@ namespace System
         /// <summary>
         /// When the optional contains a value, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
         /// otherwise applies the <paramref name="falseAction"/>.
-        /// If the optional contains no value, returns an empty optional of <typeparamref name="U"/>.
+        /// If the optional contains no value, returns an empty optional of <typeparamref name="TU"/>.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="predicate">The predicate to be used.</param>
         /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
         /// <param name="falseAction">The delegate to be executed</param>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
-        public async Task<Optional<U>> WhenAsync<U>([NotNull] Predicate<T> predicate, [NotNull] Func<T, Task<U>> trueAction, [NotNull] Func<T, Task<U>> falseAction)
+        public async Task<Optional<TU>> WhenAsync<TU>([NotNull] Predicate<T> predicate, [NotNull] Func<T, Task<TU>> trueAction, [NotNull] Func<T, Task<TU>> falseAction)
         {
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -173,7 +173,7 @@ namespace System
                 return await falseAction(InternalValue).ConfigureAwait(false);
             }
 
-            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
         }
 
         /// <summary>
@@ -194,15 +194,15 @@ namespace System
         /// Creates a new value that is the result of applying the given function when the instance is empty.
         /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<U>> WhenEmptyAsync<U>([NotNull] Func<Task<U>> empty)
+        public async Task<Optional<TU>> WhenEmptyAsync<TU>([NotNull] Func<Task<TU>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
-            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
         }
 
         /// <summary>
@@ -223,15 +223,15 @@ namespace System
         /// Creates a new value that is the result of applying the given function when the instance is empty.
         /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<U>> WhenEmptyOptionalAsync<U>([NotNull] Func<Task<Optional<U>>> empty)
+        public async Task<Optional<TU>> WhenEmptyOptionalAsync<TU>([NotNull] Func<Task<Optional<TU>>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
-            return IsException() ? Optional<U>.Exception(InternalException) : Optional<U>.Empty();
+            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
         }
 
         /// <summary>

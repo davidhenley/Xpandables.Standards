@@ -65,6 +65,8 @@ namespace System
         /// Provides with an optional of the specific type that is empty.
         /// </summary>
         /// <returns>An optional with no value nor exception.</returns>
+        [SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques",
+            Justification = "<En attente>")]
         public static Optional<T> Empty() => new Optional<T>();
 
         /// <summary>
@@ -73,6 +75,8 @@ namespace System
         /// <param name="value">The value to be used for optional.</param>
         /// <returns>An optional with a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
+        [SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques",
+            Justification = "<En attente>")]
         public static Optional<T> Some([NotNull] T value)
         {
 #nullable disable
@@ -87,6 +91,8 @@ namespace System
         /// <param name="exception">The exception to store.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
+        [SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques",
+            Justification = "<En attente>")]
         public static Optional<T> Exception([NotNull] Exception exception)
         {
             if (exception is null) throw new ArgumentNullException(nameof(exception));

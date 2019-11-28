@@ -29,6 +29,7 @@ namespace System
         /// Re declaration that hides the <see cref="object.GetType()"/> method from IntelliSense.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Les identificateurs ne doivent pas correspondre à des mots clés", Justification = "<En attente>")]
         Type GetType();
 
         /// <summary>
@@ -48,6 +49,8 @@ namespace System
         /// </summary>
         /// <param name="obj"></param>
         [EditorBrowsable(EditorBrowsableState.Never)]
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1720:L'identificateur contient le nom de type",
+            Justification = "<En attente>")]
         bool Equals(object obj);
     }
 }

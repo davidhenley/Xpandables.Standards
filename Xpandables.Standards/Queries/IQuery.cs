@@ -21,7 +21,6 @@ namespace System.Design
     /// Defines a query that contains a specific-type result when using the query pattern.
     /// </summary>
     /// <typeparam name="TResult">Type of the result of the query.</typeparam>
-    public interface IQuery<out TResult>
-    {
-    }
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
+    public interface IQuery<out TResult> { }
 }

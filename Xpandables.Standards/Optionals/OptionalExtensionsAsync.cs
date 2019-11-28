@@ -60,16 +60,16 @@ namespace System
         /// <summary>
         /// Creates a new optional that is the result of applying the given function to the element.
         /// The delegate get called only if the instance contains a value,
-        /// otherwise returns an empty optional of <typeparamref name="U"/>.
+        /// otherwise returns an empty optional of <typeparamref name="TU"/>.
         /// </summary>
         /// <typeparam name="T">The type of the optional value.</typeparam>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="some">The function to transform the element.</param>
-        /// <returns>An optional of <typeparamref name="U"/> type.</returns>
+        /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public static async Task<Optional<U>> MapAsync<T, U>(this Task<Optional<T>> optional, Func<T, Task<U>> some)
+        public static async Task<Optional<TU>> MapAsync<T, TU>(this Task<Optional<T>> optional, Func<T, Task<TU>> some)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
@@ -98,12 +98,12 @@ namespace System
         /// otherwise returns an empty optional of <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the optional value.</typeparam>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="some">The function to apply to the element.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public static async Task<Optional<U>> MapOptionalAsync<T, U>(this Task<Optional<T>> optional, Func<T, Task<Optional<U>>> some)
+        public static async Task<Optional<TU>> MapOptionalAsync<T, TU>(this Task<Optional<T>> optional, Func<T, Task<Optional<TU>>> some)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
@@ -150,10 +150,10 @@ namespace System
         /// <summary>
         /// When the optional contains a value, applies the <paramref name="trueAction"/> to the element if the value matches the predicate,
         /// otherwise applies the <paramref name="falseAction"/>.
-        /// If the optional contains no value, returns an empty optional of <typeparamref name="U"/>.
+        /// If the optional contains no value, returns an empty optional of <typeparamref name="TU"/>.
         /// </summary>
         /// <typeparam name="T">The type of the source.</typeparam>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="predicate">The predicate to be used.</param>
         /// <param name="trueAction">The delegate to be executed on true predicate with value.</param>
@@ -162,8 +162,8 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
-        public static async Task<Optional<U>> WhenAsync<T, U>(
-            this Task<Optional<T>> optional, [NotNull] Predicate<T> predicate, Func<T, Task<U>> trueAction, Func<T, Task<U>> falseAction)
+        public static async Task<Optional<TU>> WhenAsync<T, TU>(
+            this Task<Optional<T>> optional, [NotNull] Predicate<T> predicate, Func<T, Task<TU>> trueAction, Func<T, Task<TU>> falseAction)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
@@ -193,13 +193,13 @@ namespace System
         /// The delegate get called only if the instance is empty, otherwise returns an empty instance.
         /// </summary>
         /// <typeparam name="T">The type of the optional value.</typeparam>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public static async Task<Optional<U>> WhenEmptyAsync<T, U>(this Task<Optional<T>> optional, Func<Task<U>> empty)
+        public static async Task<Optional<TU>> WhenEmptyAsync<T, TU>(this Task<Optional<T>> optional, Func<Task<TU>> empty)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (empty is null) throw new ArgumentNullException(nameof(empty));
@@ -228,13 +228,13 @@ namespace System
         /// The delegate get called only if the instance is empty, otherwise returns the current instance.
         /// </summary>
         /// <typeparam name="T">The type of the optional value.</typeparam>
-        /// <typeparam name="U">The type of the result.</typeparam>
+        /// <typeparam name="TU">The type of the result.</typeparam>
         /// <param name="optional">The optional to act on.</param>
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public static async Task<Optional<U>> WhenEmptyOptionalAsync<T, U>(this Task<Optional<T>> optional, Func<Task<Optional<U>>> empty)
+        public static async Task<Optional<TU>> WhenEmptyOptionalAsync<T, TU>(this Task<Optional<T>> optional, Func<Task<Optional<TU>>> empty)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (empty is null) throw new ArgumentNullException(nameof(empty));

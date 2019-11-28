@@ -246,6 +246,8 @@ namespace System
         /// Implicit returns the <see cref="int"/> value.
         /// </summary>
         /// <param name="enumeration">current instance.</param>
+        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
+            Justification = "<En attente>")]
         public static implicit operator int(EnumerationType enumeration) => enumeration?.Value ?? default;
 
         /// <inheritdoc />

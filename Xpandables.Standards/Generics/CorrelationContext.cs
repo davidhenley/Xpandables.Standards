@@ -21,5 +21,7 @@ namespace System
     /// Provides a collection of objects that need to be shared across asynchronous control flows.
     /// See <see cref="ICorrelationCollection{TKey, TValue}"/>.
     /// </summary>
+    [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1710:Les identificateurs doivent avoir un suffixe correct",
+        Justification = "<En attente>")]
     public sealed class CorrelationContext : CorrelationCollection<string, object>, ICorrelationContext { }
 }

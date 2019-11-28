@@ -16,6 +16,7 @@
 ************************************************************************************************************/
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
@@ -28,10 +29,11 @@ namespace System
         /// Escapes special characters from the target string.
         /// </summary>
         /// <param name="value">The string to act on.</param>
-        public static string StringEscape(this string value)
+        /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
+        public static string StringEscape([NotNull] this string value)
             => new string(
                 Array.FindAll(
-                    value.ToCharArray(),
+                    value?.ToCharArray() ?? throw new ArgumentNullException(nameof(value)),
                     c => char.IsLetterOrDigit(c)
                         || char.IsWhiteSpace(c)
                         || c == '-'));

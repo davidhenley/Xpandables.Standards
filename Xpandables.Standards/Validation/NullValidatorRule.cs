@@ -29,6 +29,8 @@ namespace System.ComponentModel.DataAnnotations
         /// </summary>
         /// <param name="_">The argument to be validated.</param>
         [Diagnostics.CodeAnalysis.SuppressMessage("Redundancy", "RCS1163:Unused parameter.", Justification = "<En attente>")]
+        [Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Les identificateurs ne doivent pas contenir de traits de soulignement",
+            Justification = "<En attente>")]
         public void Validate(TArgument _)
         {
             // Class intentionally left empty.
