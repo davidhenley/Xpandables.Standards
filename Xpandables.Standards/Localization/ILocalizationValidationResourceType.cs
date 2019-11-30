@@ -15,24 +15,24 @@
  *
 ************************************************************************************************************/
 
+using System.ComponentModel.DataAnnotations;
+
 namespace System.Design
 {
     /// <summary>
-    /// Using with <see langword="ServiceLocazationProvider"/>, gives access to a dictionary of application resources types
-    /// to be used for localization. The resource type is identified by its string type name and behave as the data annotations
-    /// attributes localization. For internal use.
+    /// Using with <see langword="IServiceLocalizationProvider"/>, gives access to the validation resource type attribute
+    /// to be used for localization. The resource type is identified as a type.
     /// </summary>
-    public interface ILocalizationResourceAccessor : IFluent
+    public interface ILocalizationValidationResourceType
     {
-        /// <summary>
-        /// Contains a collection of resource types to add localization for application viewmodels.
-        /// Each viewmodel is associated with a resource type name that matches the viewmodel name.
-        /// </summary>
-        ICorrelationCollection<string, Type> LocalizationTypes { get; }
-
+#pragma warning disable CS1574
         /// <summary>
         /// Contains the resource type for all validation attributes localization using the attribute name as a key.
+        /// <para>For example :</para>
+        /// <see cref="RequiredAttribute.ErrorMessageResourceName"/> will be bounded to the <see langword="RequiredAttribute"/>
+        /// as key in the resource file.
         /// </summary>
-        Type LocalizationValidationType { get; }
+        Type ValidationAttributeResourceType { get; }
     }
+#pragma warning restore CS1574
 }
