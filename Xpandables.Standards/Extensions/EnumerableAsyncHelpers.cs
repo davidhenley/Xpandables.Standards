@@ -114,8 +114,7 @@ namespace System
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (action is null) throw new ArgumentNullException(nameof(action));
 
-            foreach (var item in source)
-                await item.ForEachAsync(action, cancellationToken).ConfigureAwait(false);
+            await source.GetEnumerable().ForEachAsync(action, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -22,15 +22,15 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables.Standards</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables.Standards</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.2.4</Version>
-    <AssemblyVersion>3.2.4</AssemblyVersion>
-    <FileVersion>3.2.4</FileVersion>
-    <PackageVersion>3.2.4</PackageVersion>
+    <Version>3.2.7</Version>
+    <AssemblyVersion>3.2.7</AssemblyVersion>
+    <FileVersion>3.2.7</FileVersion>
+    <PackageVersion>3.2.7</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IDispatcher, IQuery{TResult}, Enumeration, Interception, Optional, DataContext, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Fix localization errors.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix optional errors.</PackageReleaseNotes>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AssemblyName>Xpandables</AssemblyName>
     <RootNamespace>Xpandables</RootNamespace>

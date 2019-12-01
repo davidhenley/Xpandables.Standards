@@ -645,24 +645,22 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">An element of the collection has be modified outside the process.</exception>
-        public static Optional<IEnumerable<TResult>> ForEachOptional<T, TResult>(this Optional<IEnumerable<T>> source, Func<T, Optional<TResult>> action)
+        public static Optional<IEnumerable<TResult>> ForEachOptional<T, TResult>(
+            this Optional<IEnumerable<T>> source, Func<T, Optional<TResult>> action)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (action is null) throw new ArgumentNullException(nameof(action));
 
-            foreach (var item in source)
+            var results = new HashSet<TResult>();
+            foreach (var item in source.GetEnumerable())
             {
-                var results = new HashSet<TResult>();
-                foreach (var element in item)
-                {
-                    foreach (var result in action(element))
-                        results.Add(result);
-                }
-
-                return Optional<IEnumerable<TResult>>.Some(results.AsEnumerable());
+                foreach (var result in action(item))
+                    results.Add(result);
             }
 
-            return Optional<IEnumerable<TResult>>.Empty();
+            return results.Count > 0
+                ? Optional<IEnumerable<TResult>>.Some(results.AsEnumerable())
+                : Optional<IEnumerable<TResult>>.Empty();
         }
 
         /// <summary>
@@ -679,8 +677,7 @@ namespace System
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (action is null) throw new ArgumentNullException(nameof(action));
 
-            foreach (var item in source)
-                item.ForEach(action);
+            source.GetEnumerable().ForEach(action);
         }
     }
 }

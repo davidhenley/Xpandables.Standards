@@ -18,6 +18,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 
 namespace System
 {
@@ -30,6 +32,8 @@ namespace System
     /// <typeparam name="T">The Type of the value.</typeparam>
     public sealed partial class Optional<T> : IEnumerable<T>
     {
+        private static readonly MethodInfo ArrayEmpty = typeof(Array).GetMethod("Empty");
+        private readonly Type[] GenericType = typeof(T).IsEnumerable() ? typeof(T).GetGenericArguments() : Type.EmptyTypes;
         private readonly T[] Values;
         private readonly Exception[] Exceptions;
 
@@ -101,12 +105,32 @@ namespace System
 
         /// <summary>
         /// Returns an enumerator that iterates through the values.
+        /// Do not use when <typeparamref name="T"/> is an enumerable, see <see cref="GetEnumerable"/>.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the values.</returns>
         public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)Values).GetEnumerator();
 
         /// <summary>
+        /// Returns the available value when <typeparamref name="T"/> is an enumerable.
+        /// Otherwise, its will throw an exception.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The <typeparamref name="T"/> is not an enumerable.</exception>
+        public T GetEnumerable()
+        {
+            if (typeof(T).IsEnumerable())
+            {
+                if (IsValue()) return Values[0];
+
+                var runtimeMethod = ArrayEmpty.MakeGenericMethod(GenericType[0]);
+                return (T)runtimeMethod.Invoke(null, null);
+            }
+
+            throw new InvalidOperationException(ErrorMessageResources.GetEnumerableInvalidOperation.StringFormat(typeof(T).Name));
+        }
+
+        /// <summary>
         /// Returns an System.Collections.IEnumerator for the System.Array.
+        /// Do not use when <typeparamref name="T"/> is an enumerable, see <see cref="GetEnumerable"/>.
         /// </summary>
         /// <returns>An System.Collections.IEnumerator for the System.Array.</returns>
         IEnumerator IEnumerable.GetEnumerator() => Values.GetEnumerator();

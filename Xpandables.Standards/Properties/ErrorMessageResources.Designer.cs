@@ -115,6 +115,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} type is not an enumerable..
+        /// </summary>
+        public static string GetEnumerableInvalidOperation {
+            get {
+                return ResourceManager.GetString("GetEnumerableInvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Sequence contains no elements..
         /// </summary>
         public static string LinqAggregateBalanceNoItems {

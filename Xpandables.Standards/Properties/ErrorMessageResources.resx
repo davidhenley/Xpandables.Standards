@@ -135,6 +135,9 @@
   <data name="EnumerationTypeDerivedClassExpected" xml:space="preserve">
     <value>EnumerationType derived class expected.</value>
   </data>
+  <data name="GetEnumerableInvalidOperation" xml:space="preserve">
+    <value>{0} type is not an enumerable.</value>
+  </data>
   <data name="LinqAggregateBalanceNoItems" xml:space="preserve">
     <value>Sequence contains no elements.</value>
   </data>
