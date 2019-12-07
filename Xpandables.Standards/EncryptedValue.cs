@@ -78,8 +78,8 @@ namespace System
         public override int GetHashCode()
         {
             var hash = 17;
-            hash += Key.GetHashCode(StringComparison.InvariantCultureIgnoreCase) ^ 31;
-            hash += Value.GetHashCode(StringComparison.InvariantCultureIgnoreCase) ^ 31;
+            hash += Key.GetHashCode(StringComparison.InvariantCulture) ^ 31;
+            hash += Value.GetHashCode(StringComparison.InvariantCulture) ^ 31;
             return hash ^ 29;
         }
 
@@ -102,8 +102,8 @@ namespace System
         /// </summary>
         /// <param name="other">Option to compare with.</param>
         public bool Equals(EncryptedValue other)
-            => Key.Equals(other.Key, StringComparison.OrdinalIgnoreCase)
-                && Value.Equals(other.Value, StringComparison.OrdinalIgnoreCase);
+            => Key.Equals(other.Key, StringComparison.InvariantCulture)
+                && Value.Equals(other.Value, StringComparison.InvariantCulture);
 
         /// <summary>
         /// Creates a string representation of the <see cref="EncryptedValue"/>.

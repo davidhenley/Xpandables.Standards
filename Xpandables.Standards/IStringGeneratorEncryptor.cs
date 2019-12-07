@@ -20,7 +20,7 @@ using System.Security.Cryptography;
 namespace System
 {
     /// <summary>
-    /// Provides with a string generator and encryptor.
+    /// Provides with a string generator and encryption.
     /// Contains a default implementation and uses <see cref="source"/> to generate values string.
     /// </summary>
     public interface IStringGeneratorEncryptor : IFluent

@@ -22,10 +22,10 @@
     <PackageProjectUrl>https://github.com/Francescolis/Xpandables.Standards</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Francescolis/Xpandables.Standards</RepositoryUrl>
     <PackageIcon>Xpandables.png</PackageIcon>
-    <Version>3.2.8</Version>
-    <AssemblyVersion>3.2.8</AssemblyVersion>
-    <FileVersion>3.2.8</FileVersion>
-    <PackageVersion>3.2.8</PackageVersion>
+    <Version>3.2.9</Version>
+    <AssemblyVersion>3.2.9</AssemblyVersion>
+    <FileVersion>3.2.9</FileVersion>
+    <PackageVersion>3.2.9</PackageVersion>
     <PackageId>Xpandables</PackageId>
     <PackageTags>ICommand, IDispatcher, IQuery{TResult}, Enumeration, Interception, Optional, DataContext, EntityFramework, Event, ICommandHandler{TCommand}, IQueryHandler{TQuery, TResult}, ValueObject...</PackageTags>
     <PackageOutputPath>..\Packages\</PackageOutputPath>
@@ -60,7 +60,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>

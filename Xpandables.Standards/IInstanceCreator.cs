@@ -23,41 +23,41 @@ namespace System
     public interface IInstanceCreator
     {
         /// <summary>
-        /// Definew an event that will be raized in case of handled exception during a create method execution.
+        /// Define an event that will be raised in case of handled exception during a create method execution.
         /// </summary>
         event Action<Exception> OnException;
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
-        /// In case of exception, the <see cref="OnException"/> will be raized.
+        /// In case of exception, the <see cref="OnException"/> will be raised.
         /// </summary>
         /// <param name="type">The type to be created.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok.</returns>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         object Create(Type type);
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
-        /// In case of exception, the <see cref="OnException"/> will be raized.
+        /// In case of exception, the <see cref="OnException"/> will be raised.
         /// </summary>
         /// <typeparam name="TParam">The type of the parameter to pass to the constructor.</typeparam>
         /// <param name="type">The type to be created.</param>
         /// <param name="param">The parameter to pass to the constructor.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok.</returns>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param"/> is null.</exception>
         object Create<TParam>(Type type, TParam param);
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
-        /// In case of exception, the <see cref="OnException"/> will be raized.
+        /// In case of exception, the <see cref="OnException"/> will be raised.
         /// </summary>
         /// <typeparam name="TParam1">The type of the first parameter to pass to the constructor.</typeparam>
         /// <typeparam name="TParam2">The type of the second parameter to pass to the constructor.</typeparam>
         /// <param name="type">The type to be created.</param>
         /// <param name="param1">The first parameter to pass to the constructor.</param>
         /// <param name="param2">The first parameter to pass to the constructor.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok.</returns>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param2"/> is null.</exception>
@@ -65,7 +65,7 @@ namespace System
 
         /// <summary>
         /// Returns an instance of the <paramref name="type"/>.
-        /// In case of exception, the <see cref="OnException"/> will be raized.
+        /// In case of exception, the <see cref="OnException"/> will be raised.
         /// </summary>
         /// <typeparam name="TParam1">The type of the first parameter to pass to the constructor.</typeparam>
         /// <typeparam name="TParam2">The type of the second parameter to pass to the constructor.</typeparam>
@@ -74,7 +74,7 @@ namespace System
         /// <param name="param1">The first parameter to pass to the constructor.</param>
         /// <param name="param2">The first parameter to pass to the constructor.</param>
         /// <param name="param3">The first parameter to pass to the constructor.</param>
-        /// <returns>An execution result with an instance of the <paramref name="type"/> if ok.</returns>
+        /// <returns>An execution result with an instance of the <paramref name="type"/> if OK.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param1"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="param2"/> is null.</exception>

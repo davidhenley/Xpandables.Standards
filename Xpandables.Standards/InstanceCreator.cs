@@ -30,7 +30,8 @@ namespace System
     /// </summary>
     public class InstanceCreator : IInstanceCreator
     {
-        private readonly ConcurrentDictionary<string, Delegate> _cache = new ConcurrentDictionary<string, Delegate>();
+        private readonly ConcurrentDictionary<EncryptedValue, Delegate> _cache = new ConcurrentDictionary<EncryptedValue, Delegate>();
+        private static readonly IStringGeneratorEncryptor _stringGeneratorEncryptor = new InstanceGeneratorEncryptor();
 
         public event Action<Exception> OnException = _ => { };
 
@@ -120,6 +121,14 @@ namespace System
 
             static TDelegate ConstructDelegate(Type t, params Type[] types)
             {
+                if (types?.Any() != true)
+                {
+                    var body = Expression.New(t);
+                    return Expression
+                        .Lambda<TDelegate>(body)
+                        .Compile();
+                }
+
                 var constructor = GetConstructorInfo(t, types);
                 var parameterExpression = GetParameterExpression(types);
                 var constructorExpression = GetConstructorExpression(constructor, parameterExpression);
@@ -157,13 +166,15 @@ namespace System
            => Expression.New(constructorInfo, parameterExpressions);
 
         // Build a key for a type
-        private static string KeyBuilder(Type type, params Type[] parameterTypes)
+        private static EncryptedValue KeyBuilder(Type type, params Type[] parameterTypes)
         {
-            var key = type.Name;
+            var key = type.FullName;
             if (parameterTypes.Length > 0) key += string.Concat(parameterTypes.Select(t => t.Name));
 
-            return key;
+            return _stringGeneratorEncryptor.Encrypt(key);
         }
+
+        private class InstanceGeneratorEncryptor : IStringGeneratorEncryptor { }
     }
 #nullable enable
 }
