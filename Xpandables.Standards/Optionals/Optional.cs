@@ -28,6 +28,7 @@ namespace System
     /// You can make unconditional calls to its contents without testing whether the content is there or not.
     /// It can also contain an exception if available. The enumerator will only return the available value.
     /// It provides implicit operator for the expected <typeparamref name="T"/> value and <see cref="System.Exception"/>.
+    /// If <typeparamref name="T"/> is an enumerable, use the <see cref="GetEnumerable"/> function to access its contain.
     /// </summary>
     /// <typeparam name="T">The Type of the value.</typeparam>
     public sealed partial class Optional<T> : IEnumerable<T>

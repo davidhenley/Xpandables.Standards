@@ -15,34 +15,37 @@
  *
 ************************************************************************************************************/
 
-namespace System.Http
+using System.Http;
+
+namespace System.Design
 {
     /// <summary>
-    /// The default implementation for <see cref="IHttpRequestUserClaimAccessor"/> that uses <see cref="IHttpRequestTokenAccessor"/>
+    /// The default implementation for <see cref="ISecurityUserProvider{TUser}"/> that uses <see cref="IHttpRequestTokenAccessor"/>
     /// and <see cref="ITokenEngine"/>.
+    /// You must implement your own class to customize the behavior.
     /// </summary>
-    public class HttpRequestUserClaimAccessor : IHttpRequestUserClaimAccessor
+    public sealed class SecurityUserProvider<TUser> : ISecurityUserProvider<TUser>
+       where TUser : class
     {
         private readonly IHttpRequestTokenAccessor _httpRequestTokenAccessor;
         private readonly ITokenEngine _tokenEngine;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="HttpRequestUserClaimAccessor"/> with specified arguments.
+        /// Initializes a new instance of <see cref="SecurityUser{TUser}"/> with specified arguments.
         /// </summary>
         /// <param name="httpRequestTokenAccessor">The token accessor instance.</param>
         /// <param name="tokenEngine">The token engine.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="httpRequestTokenAccessor"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="tokenEngine"/> is null.</exception>
-        public HttpRequestUserClaimAccessor(IHttpRequestTokenAccessor httpRequestTokenAccessor, ITokenEngine tokenEngine)
+        public SecurityUserProvider(IHttpRequestTokenAccessor httpRequestTokenAccessor, ITokenEngine tokenEngine)
         {
             _httpRequestTokenAccessor = httpRequestTokenAccessor ?? throw new ArgumentNullException(nameof(httpRequestTokenAccessor));
             _tokenEngine = tokenEngine ?? throw new ArgumentNullException(nameof(tokenEngine));
         }
 
-        public Optional<TUserClaim> GetRequestUserClaim<TUserClaim>()
-            where TUserClaim : class
+        public Optional<TUser> GetUser()
             => _httpRequestTokenAccessor
               .GetRequestHttpToken()
-              .MapOptional(token => _tokenEngine.Read<TUserClaim>(token));
+              .MapOptional(token => _tokenEngine.Read<TUser>(token));
     }
 }

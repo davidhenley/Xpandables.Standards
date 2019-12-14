@@ -22,11 +22,39 @@ using System.Linq.Expressions;
 namespace System.Design
 {
     /// <summary>
-    /// This class is a helper that provides a default implementation for <see cref="IQueryExpression{TSource}"/>.
+    /// Provides with a class that holds information of user of specific type.
+    /// This class is used with <see cref="ISecurityUserBehavior"/>
+    /// and its decorator class.
+    /// </summary>
+    /// <typeparam name="TUser">The type of the user class.</typeparam>
+    public abstract class SecurityUser<TUser> : IFluent
+        where TUser : class
+    {
+        /// <summary>
+        /// May contains the principal if exist.
+        /// This value is provided by the
+        /// </summary>
+        protected Optional<TUser> User { get; private set; } = Optional<TUser>.Empty();
+
+        /// <summary>
+        /// Sets the <see cref="User"/> with the specified value.
+        /// This method get called by the decorator class.
+        /// </summary>
+        /// <param name="user">The user to be used.</param>
+        internal void SetUser(TUser user) => User = user;
+    }
+
+    /// <summary>
+    /// Provides with a principal that holds information of user of specific type.
+    /// This class is used with <see cref="ISecurityUserBehavior"/>
+    /// and its decorator class.
+    /// This class implements the <see cref="IQueryExpression{TSource}"/> interface.
     /// You must override the <see cref="BuildExpression"/> method in order to provide a custom behavior.
     /// </summary>
+    /// <typeparam name="TUser">The type of the user.</typeparam>
     /// <typeparam name="TSource">The data source type.</typeparam>
-    public class QueryExpression<TSource> : IQueryExpression<TSource>
+    public abstract class SecurityUser<TUser, TSource> : SecurityUser<TUser>, IQueryExpression<TSource>
+        where TUser : class
         where TSource : class
     {
         public Expression<Func<TSource, bool>> Expression() => BuildExpression();
@@ -37,14 +65,14 @@ namespace System.Design
         /// </summary>
         protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
 
-        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
+        [SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
             Justification = "<En attente>")]
-        public static implicit operator Expression<Func<TSource, bool>>([NotNull] QueryExpression<TSource> criteria)
+        public static implicit operator Expression<Func<TSource, bool>>([NotNull] SecurityUser<TUser, TSource> criteria)
              => criteria?.Expression() ?? PredicateBuilder.New<TSource>();
 
-        [Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
+        [SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
             Justification = "<En attente>")]
-        public static implicit operator Func<TSource, bool>(QueryExpression<TSource> criteria)
+        public static implicit operator Func<TSource, bool>(SecurityUser<TUser, TSource> criteria)
             => criteria?.Expression().Compile() ?? PredicateBuilder.New<TSource>();
     }
 }

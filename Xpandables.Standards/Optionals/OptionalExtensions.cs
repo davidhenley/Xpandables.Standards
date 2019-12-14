@@ -106,6 +106,18 @@ namespace System
         }
 
         /// <summary>
+        /// Converts the specified value to an optional instance of the specific type.
+        /// </summary>
+        /// <typeparam name="T">The Type of the value.</typeparam>
+        /// <param name="value">The value to act on.</param>
+        /// <returns>An optional instance.</returns>
+        public static Optional<T> AsOptional<T>(this object value)
+        {
+            if (value is T target) return Optional<T>.Some(target);
+            return Optional<T>.Empty();
+        }
+
+        /// <summary>
         /// Converts the specified value to an optional pair instance.
         /// if one of the value is null, returns an empty optional.
         /// </summary>

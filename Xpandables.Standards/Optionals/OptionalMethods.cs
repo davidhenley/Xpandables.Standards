@@ -35,6 +35,20 @@ namespace System
         public Optional<TU> ToEmpty<TU>() => Optional<TU>.Empty();
 
         /// <summary>
+        /// Converts the current instance to the specific type if possible.
+        /// Otherwise returns an empty optional if the current is empty or an exception optional if the current is an exception.
+        /// </summary>
+        /// <typeparam name="TU">The type to convert to.</typeparam>
+        public Optional<TU> ToOptional<TU>()
+        {
+            if (IsValue() && InternalValue is TU target)
+                return target;
+            if (IsException())
+                return Optional<TU>.Exception(InternalException);
+            return Optional<TU>.Empty();
+        }
+
+        /// <summary>
         /// Converts the current instance to an optional with the specified value.
         /// </summary>
         /// <param name="value">The value to be used.</param>
