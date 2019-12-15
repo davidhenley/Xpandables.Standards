@@ -20,18 +20,17 @@ using System.Http;
 namespace System.Design
 {
     /// <summary>
-    /// The default implementation for <see cref="ISecurityUserProvider{TUser}"/> that uses <see cref="IHttpRequestTokenAccessor"/>
+    /// The default implementation for <see cref="ISecurityUserProvider"/> that uses <see cref="IHttpRequestTokenAccessor"/>
     /// and <see cref="ITokenEngine"/>.
     /// You must implement your own class to customize the behavior.
     /// </summary>
-    public sealed class SecurityUserProvider<TUser> : ISecurityUserProvider<TUser>
-       where TUser : class
+    public sealed class SecurityUserProvider : ISecurityUserProvider
     {
         private readonly IHttpRequestTokenAccessor _httpRequestTokenAccessor;
         private readonly ITokenEngine _tokenEngine;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="SecurityUser{TUser}"/> with specified arguments.
+        /// Initializes a new instance of <see cref="SecurityUserProvider"/> with specified arguments.
         /// </summary>
         /// <param name="httpRequestTokenAccessor">The token accessor instance.</param>
         /// <param name="tokenEngine">The token engine.</param>
@@ -43,9 +42,9 @@ namespace System.Design
             _tokenEngine = tokenEngine ?? throw new ArgumentNullException(nameof(tokenEngine));
         }
 
-        public Optional<TUser> GetUser()
+        public Optional<IUser> GetUser()
             => _httpRequestTokenAccessor
               .GetRequestHttpToken()
-              .MapOptional(token => _tokenEngine.Read<TUser>(token));
+              .MapOptional(token => _tokenEngine.Read<IUser>(token));
     }
 }

@@ -26,22 +26,20 @@ namespace System.Design
     /// This class is used with <see cref="ISecurityUserBehavior"/>
     /// and its decorator class.
     /// </summary>
-    /// <typeparam name="TUser">The type of the user class.</typeparam>
-    public abstract class SecurityUser<TUser> : IFluent
-        where TUser : class
+    public abstract class SecurityUser : IFluent
     {
         /// <summary>
         /// May contains the principal if exist.
-        /// This value is provided by the
+        /// This value is provided by an implementation of <see cref="ISecurityUserProvider"/>.
         /// </summary>
-        protected Optional<TUser> User { get; private set; } = Optional<TUser>.Empty();
+        protected Optional<IUser> User { get; private set; } = Optional<IUser>.Empty();
 
         /// <summary>
         /// Sets the <see cref="User"/> with the specified value.
         /// This method get called by the decorator class.
         /// </summary>
         /// <param name="user">The user to be used.</param>
-        internal void SetUser(TUser user) => User = user;
+        internal void SetUser(Optional<IUser> user) => User = user;
     }
 
     /// <summary>
@@ -51,10 +49,8 @@ namespace System.Design
     /// This class implements the <see cref="IQueryExpression{TSource}"/> interface.
     /// You must override the <see cref="BuildExpression"/> method in order to provide a custom behavior.
     /// </summary>
-    /// <typeparam name="TUser">The type of the user.</typeparam>
     /// <typeparam name="TSource">The data source type.</typeparam>
-    public abstract class SecurityUser<TUser, TSource> : SecurityUser<TUser>, IQueryExpression<TSource>
-        where TUser : class
+    public abstract class SecurityUser<TSource> : SecurityUser, IQueryExpression<TSource>
         where TSource : class
     {
         public Expression<Func<TSource, bool>> Expression() => BuildExpression();
@@ -67,12 +63,12 @@ namespace System.Design
 
         [SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
             Justification = "<En attente>")]
-        public static implicit operator Expression<Func<TSource, bool>>([NotNull] SecurityUser<TUser, TSource> criteria)
+        public static implicit operator Expression<Func<TSource, bool>>([NotNull] SecurityUser<TSource> criteria)
              => criteria?.Expression() ?? PredicateBuilder.New<TSource>();
 
         [SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
             Justification = "<En attente>")]
-        public static implicit operator Func<TSource, bool>(SecurityUser<TUser, TSource> criteria)
+        public static implicit operator Func<TSource, bool>(SecurityUser<TSource> criteria)
             => criteria?.Expression().Compile() ?? PredicateBuilder.New<TSource>();
     }
 }

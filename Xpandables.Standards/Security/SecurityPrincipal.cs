@@ -50,26 +50,26 @@ namespace System.Design
     /// This class implements the <see cref="IQueryExpression{TSource}"/> interface.
     /// You must override the <see cref="BuildExpression"/> method in order to provide a custom behavior.
     /// </summary>
-    /// <typeparam name="T">The data source type.</typeparam>
-    public abstract class SecurityPrincipal<T> : SecurityPrincipal, IQueryExpression<T>
-        where T : class
+    /// <typeparam name="TSource">The data source type.</typeparam>
+    public abstract class SecurityPrincipal<TSource> : SecurityPrincipal, IQueryExpression<TSource>
+        where TSource : class
     {
-        public Expression<Func<T, bool>> Expression() => BuildExpression();
+        public Expression<Func<TSource, bool>> Expression() => BuildExpression();
 
         /// <summary>
         /// When implemented in derived class, this method will return the expression
         /// to be used for the clause <see langword="Where"/> in a query.
         /// </summary>
-        protected virtual Expression<Func<T, bool>> BuildExpression() => PredicateBuilder.New<T>();
+        protected virtual Expression<Func<TSource, bool>> BuildExpression() => PredicateBuilder.New<TSource>();
 
         [SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
             Justification = "<En attente>")]
-        public static implicit operator Expression<Func<T, bool>>([NotNull] SecurityPrincipal<T> criteria)
-             => criteria?.Expression() ?? PredicateBuilder.New<T>();
+        public static implicit operator Expression<Func<TSource, bool>>([NotNull] SecurityPrincipal<TSource> criteria)
+             => criteria?.Expression() ?? PredicateBuilder.New<TSource>();
 
         [SuppressMessage("Usage", "CA2225:Les surcharges d'opérateur offrent d'autres méthodes nommées",
             Justification = "<En attente>")]
-        public static implicit operator Func<T, bool>(SecurityPrincipal<T> criteria)
-            => criteria?.Expression().Compile() ?? PredicateBuilder.New<T>();
+        public static implicit operator Func<TSource, bool>(SecurityPrincipal<TSource> criteria)
+            => criteria?.Expression().Compile() ?? PredicateBuilder.New<TSource>();
     }
 }

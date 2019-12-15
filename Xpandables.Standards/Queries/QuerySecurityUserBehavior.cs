@@ -25,18 +25,16 @@ namespace System.Design
     /// <para>This decorator uses the <see cref="ISecurityUserBehavior"/>
     /// before a query execution.</para>
     /// </summary>
-    /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TQuery"></typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public sealed class QuerySecurityUserBehavior<TUser, TQuery, TResult> : IQueryHandler<TQuery, TResult>
-        where TUser : class
-        where TQuery : SecurityUser<TUser>, IQuery<TResult>, ISecurityPrincipalBehavior
+    public sealed class QuerySecurityUserBehavior<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+        where TQuery : SecurityUser, IQuery<TResult>, ISecurityUserBehavior
     {
-        private readonly ISecurityUserProvider<TUser> _securutyUserProvider;
+        private readonly ISecurityUserProvider _securutyUserProvider;
         private readonly IQueryHandler<TQuery, TResult> _decoratee;
 
         public QuerySecurityUserBehavior(
-            ISecurityUserProvider<TUser> securityUserProvider,
+            ISecurityUserProvider securityUserProvider,
             IQueryHandler<TQuery, TResult> decoratee)
         {
             _securutyUserProvider = securityUserProvider

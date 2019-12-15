@@ -18,13 +18,9 @@
 namespace System.Design
 {
     /// <summary>
-    /// Provides with a method to retrieve the actual user. An implementation of this interface is used by the decorator.
+    /// A marker interface that allows the class implementation to be filled with a user definition when
+    /// using <see cref="SecurityUser"/>.
     /// </summary>
-    public interface ISecurityUserProvider
-    {
-        /// <summary>
-        /// Returns an instance that contains information on the user.
-        /// </summary>
-        Optional<IUser> GetUser();
-    }
+    [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
+    public interface IUser { }
 }

@@ -25,17 +25,15 @@ namespace System.Design
     /// <para>This decorator uses the <see cref="ISecurityUserBehavior"/>
     /// before a command execution.</para>
     /// </summary>
-    /// <typeparam name="TUser">The type of the user.</typeparam>
     /// <typeparam name="TCommand">Type of the command.</typeparam>
-    public sealed class CommandSecurityUserBehavior<TUser, TCommand> : ICommandHandler<TCommand>
-        where TUser : class
-        where TCommand : SecurityUser<TUser>, ICommand, ISecurityUserBehavior
+    public sealed class CommandSecurityUserBehavior<TCommand> : ICommandHandler<TCommand>
+        where TCommand : SecurityUser, ICommand, ISecurityUserBehavior
     {
-        private readonly ISecurityUserProvider<TUser> _securityUserProvider;
+        private readonly ISecurityUserProvider _securityUserProvider;
         private readonly ICommandHandler<TCommand> _decoratee;
 
         public CommandSecurityUserBehavior(
-            ISecurityUserProvider<TUser> securityUserProvider,
+            ISecurityUserProvider securityUserProvider,
             ICommandHandler<TCommand> decoratee)
         {
             _securityUserProvider = securityUserProvider
