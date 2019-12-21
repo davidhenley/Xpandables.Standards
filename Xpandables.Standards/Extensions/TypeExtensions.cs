@@ -196,7 +196,7 @@ namespace System
                                             || exception is FileLoadException
                                             || exception is BadImageFormatException)
             {
-                return Optional<Assembly>.Exception(exception);
+                return OptionalBuilder.Exception<Assembly>(exception);
             }
         }
 
@@ -221,7 +221,7 @@ namespace System
                                             || exception is FileLoadException
                                             || exception is BadImageFormatException)
             {
-                return Optional<Type>.Exception(exception);
+                return OptionalBuilder.Exception<Type>(exception);
             }
         }
 
@@ -255,7 +255,7 @@ namespace System
             var exception = default(Exception)!;
             resultFromAss.WhenException(ex => exception = ex);
 
-            return Optional<Type>.Exception(exception);
+            return OptionalBuilder.Exception<Type>(exception);
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace System
                                             || exception is AmbiguousMatchException
                                             || exception is InvalidOperationException)
             {
-                return Optional<object>.Exception(exception);
+                return OptionalBuilder.Exception<object>(exception);
             }
         }
 
@@ -330,7 +330,7 @@ namespace System
                                                 || exception is ArgumentException
                                                 || exception is NotSupportedException)
             {
-                return Optional<Type>.Exception(exception);
+                return OptionalBuilder.Exception<Type>(exception);
             }
         }
 
@@ -350,9 +350,9 @@ namespace System
                 var lambdaConstructor = GetLambdaConstructor<Func<object>>(type, Array.Empty<Type>());
                 return lambdaConstructor.Invoke();
             }
-            catch (Exception exception) when (exception is ArgumentException || exception is ArgumentNullException)
+            catch (Exception exception) when (exception is ArgumentException)
             {
-                return Optional<object>.Exception(exception);
+                return OptionalBuilder.Exception<object>(exception);
             }
         }
 
@@ -375,9 +375,9 @@ namespace System
                 var lambdaConstructor = GetLambdaConstructor<Func<TParam, object>>(type, new[] { typeof(TParam) });
                 return lambdaConstructor.Invoke(param);
             }
-            catch (Exception exception) when (exception is ArgumentException || exception is ArgumentNullException)
+            catch (Exception exception) when (exception is ArgumentException)
             {
-                return Optional<object>.Exception(exception);
+                return OptionalBuilder.Exception<object>(exception);
             }
         }
 
@@ -409,9 +409,9 @@ namespace System
 
                 return lambdaConstructor.Invoke(param1, param2);
             }
-            catch (Exception exception) when (exception is ArgumentException || exception is ArgumentNullException)
+            catch (Exception exception) when (exception is ArgumentException)
             {
-                return Optional<object>.Exception(exception);
+                return OptionalBuilder.Exception<object>(exception);
             }
         }
 
@@ -450,9 +450,9 @@ namespace System
 
                 return lambdaConstructor.Invoke(param1, param2, param3);
             }
-            catch (Exception exception) when (exception is ArgumentException || exception is ArgumentNullException)
+            catch (Exception exception) when (exception is ArgumentException)
             {
-                return Optional<object>.Exception(exception);
+                return OptionalBuilder.Exception<object>(exception);
             }
         }
 

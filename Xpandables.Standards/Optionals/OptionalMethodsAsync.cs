@@ -15,7 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace System
@@ -29,11 +28,10 @@ namespace System
         /// <param name="some">The function to call.</param>
         /// <returns>An optional of <typeparamref name="T"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> MapAsync([NotNull] Func<Task<T>> some)
+        public async Task<Optional<T>> MapAsync(Func<Task<T>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
-            if (IsValue()) return await some().ConfigureAwait(false);
-            return this;
+            return IsValue() ? await some().ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -45,11 +43,11 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<TU>> MapAsync<TU>([NotNull] Func<T, Task<TU>> some)
+        public async Task<Optional<TU>> MapAsync<TU>(Func<T, Task<TU>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
         }
 
         /// <summary>
@@ -61,11 +59,11 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<TU>> MapOptionalAsync<TU>([NotNull] Func<T, Task<Optional<TU>>> some)
+        public async Task<Optional<TU>> MapOptionalAsync<TU>(Func<T, Task<Optional<TU>>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return await some(InternalValue).ConfigureAwait(false);
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
         }
 
         /// <summary>
@@ -73,7 +71,7 @@ namespace System
         /// </summary>
         /// <param name="some">The function to apply to the element.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task MapAsync([NotNull] Func<T, Task> some)
+        public async Task MapAsync(Func<T, Task> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) await some(InternalValue).ConfigureAwait(false);
@@ -84,10 +82,10 @@ namespace System
         /// </summary>
         /// <param name="some">The function to apply to the element.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Task MapOptionalAsync([NotNull] Func<Optional<T>, Task> some)
+        public async Task MapOptionalAsync(Func<Optional<T>, Task> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
-            return some(this);
+            await some(this).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -99,15 +97,12 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public async Task<Optional<T>> WhenAsync([NotNull] Predicate<T> predicate, [NotNull] Func<Task<T>> some)
+        public async Task<Optional<T>> WhenAsync(Predicate<T> predicate, Func<Task<T>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (IsValue() && predicate(InternalValue))
-                return await some().ConfigureAwait(false);
-
-            return this;
+            return IsValue() && predicate(InternalValue) ? await some().ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -119,15 +114,14 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public async Task<Optional<T>> WhenAsync([NotNull] Predicate<T> predicate, [NotNull] Func<T, Task<T>> some)
+        public async Task<Optional<T>> WhenAsync(Predicate<T> predicate, Func<T, Task<T>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            if (IsValue() && predicate(InternalValue))
-                return await some(InternalValue).ConfigureAwait(false);
-
-            return this;
+            return IsValue() && predicate(InternalValue)
+                ? await some(InternalValue).ConfigureAwait(false)
+                : this;
         }
 
         /// <summary>
@@ -138,7 +132,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public async Task WhenAsync([NotNull] Predicate<T> predicate, [NotNull] Func<T, Task> some)
+        public async Task WhenAsync(Predicate<T> predicate, Func<T, Task> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -159,21 +153,17 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
-        public async Task<Optional<TU>> WhenAsync<TU>([NotNull] Predicate<T> predicate, [NotNull] Func<T, Task<TU>> trueAction, [NotNull] Func<T, Task<TU>> falseAction)
+        public async Task<Optional<TU>> WhenAsync<TU>(Predicate<T> predicate, Func<T, Task<TU>> trueAction, Func<T, Task<TU>> falseAction)
         {
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
 
-            if (IsValue())
-            {
-                if (predicate(InternalValue))
-                    return await trueAction(InternalValue).ConfigureAwait(false);
+            if (!IsValue()) return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
+            if (predicate(InternalValue))
+                return await trueAction(InternalValue).ConfigureAwait(false);
 
-                return await falseAction(InternalValue).ConfigureAwait(false);
-            }
-
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return await falseAction(InternalValue).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -183,11 +173,10 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<T>> WhenEmptyAsync([NotNull] Func<Task<T>> empty)
+        public async Task<Optional<T>> WhenEmptyAsync(Func<Task<T>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            if (!IsValue()) return await empty().ConfigureAwait(false);
-            return this;
+            return !IsValue() ? await empty().ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -198,11 +187,11 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<TU>> WhenEmptyAsync<TU>([NotNull] Func<Task<TU>> empty)
+        public async Task<Optional<TU>> WhenEmptyAsync<TU>(Func<Task<TU>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
         }
 
         /// <summary>
@@ -212,11 +201,10 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<T>> WhenEmptyOptionalAsync([NotNull] Func<Task<Optional<T>>> empty)
+        public async Task<Optional<T>> WhenEmptyOptionalAsync(Func<Task<Optional<T>>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            if (!IsValue()) return await empty().ConfigureAwait(false);
-            return this;
+            return !IsValue() ? await empty().ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -227,11 +215,11 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public async Task<Optional<TU>> WhenEmptyOptionalAsync<TU>([NotNull] Func<Task<Optional<TU>>> empty)
+        public async Task<Optional<TU>> WhenEmptyOptionalAsync<TU>(Func<Task<Optional<TU>>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return await empty().ConfigureAwait(false);
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
         }
 
         /// <summary>
@@ -239,7 +227,7 @@ namespace System
         /// </summary>
         /// <param name="action">The empty map.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public async Task WhenEmptyAsync([NotNull] Func<Task> action)
+        public async Task WhenEmptyAsync(Func<Task> action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (!IsValue()) await action().ConfigureAwait(false);
@@ -252,11 +240,25 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionAsync([NotNull] Func<Task<T>> some)
+        public async Task<Optional<T>> WhenExceptionAsync(Func<Task<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return await some().ConfigureAwait(false);
-            return this;
+            return IsException() ? await some().ConfigureAwait(false) : this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception is of the specified type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
+        public async Task<Optional<T>> WhenExceptionAsync<TException>(Func<Task<T>> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException ? await some().ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -266,11 +268,25 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionOptionalAsync([NotNull] Func<Task<Optional<T>>> some)
+        public async Task<Optional<T>> WhenExceptionOptionalAsync(Func<Task<Optional<T>>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return await some().ConfigureAwait(false);
-            return this;
+            return IsException() ? await some().ConfigureAwait(false) : (this);
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception is of the specified type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
+        public async Task<Optional<T>> WhenExceptionOptionalAsync<TException>(Func<Task<Optional<T>>> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException ? await some().ConfigureAwait(false) : (this);
         }
 
         /// <summary>
@@ -280,11 +296,26 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionAsync([NotNull] Func<Exception, Task<T>> some)
+        public async Task<Optional<T>> WhenExceptionAsync(Func<Exception, Task<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return await some(InternalException).ConfigureAwait(false);
-            return this;
+            return IsException() ? await some(InternalException).ConfigureAwait(false) : this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception is of the specified type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
+        public async Task<Optional<T>> WhenExceptionAsync<TException>(Func<TException, Task<T>> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException exception
+                ? await some(exception).ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -294,11 +325,26 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public async Task<Optional<T>> WhenExceptionOptionalAsync([NotNull] Func<Exception, Task<Optional<T>>> some)
+        public async Task<Optional<T>> WhenExceptionOptionalAsync(Func<Exception, Task<Optional<T>>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return await some(InternalException).ConfigureAwait(false);
-            return this;
+            return IsException() ? await some(InternalException).ConfigureAwait(false) : this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception is of the specified type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
+        public async Task<Optional<T>> WhenExceptionOptionalAsync<TException>(Func<TException, Task<Optional<T>>> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException exception
+                ? await some(exception).ConfigureAwait(false) : this;
         }
 
         /// <summary>
@@ -307,10 +353,24 @@ namespace System
         /// </summary>
         /// <param name="action">The delegate to be executed.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public async Task WhenExceptionAsync([NotNull] Func<Exception, Task> action)
+        public async Task WhenExceptionAsync(Func<Exception, Task> action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (IsException()) await action(InternalException).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Applies the function only if the optional is exception is of the specified type.
+        /// The delegate get called only if the instance is an exception.
+        /// </summary>
+        /// <typeparam name="TException">the type of exception.</typeparam>
+        /// <param name="action">The delegate to be executed.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
+        public async Task WhenExceptionAsync<TException>(Func<TException, Task> action)
+            where TException : Exception
+        {
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            if (IsException() && InternalException is TException exception) await action(exception).ConfigureAwait(false);
         }
     }
 }

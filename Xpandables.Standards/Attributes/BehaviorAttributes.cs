@@ -89,7 +89,7 @@ namespace System
 
     /// <summary>
     /// A marker interface that allows the class implementation to be filled with a user definition when
-    /// using <see cref="SecurityPrincipal"/>.
+    /// using <see cref="SecurityUser"/> or <see cref="SecurityUser{TSource}"/>.
     /// </summary>
     [Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Éviter les interfaces vides", Justification = "<En attente>")]
     public interface ISecurityUserBehavior { }

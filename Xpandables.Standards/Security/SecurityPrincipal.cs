@@ -33,14 +33,14 @@ namespace System.Design
         /// May contains the principal if exist.
         /// This value is provided by the
         /// </summary>
-        protected Optional<ClaimsPrincipal> Principal { get; private set; } = Optional<ClaimsPrincipal>.Empty();
+        protected Optional<ClaimsPrincipal> Principal { get; private set; } = OptionalBuilder.Empty<ClaimsPrincipal>();
 
         /// <summary>
         /// Sets the <see cref="Principal"/> with the specified value.
         /// This method get called by the decorator class.
         /// </summary>
         /// <param name="principal">The principal to be used.</param>
-        internal void SetPrincipal(ClaimsPrincipal principal) => Principal = principal;
+        internal void SetPrincipal(Optional<ClaimsPrincipal> principal) => Principal = principal;
     }
 
     /// <summary>

@@ -31,7 +31,7 @@ namespace System
     public class InstanceCreator : IInstanceCreator
     {
         private readonly ConcurrentDictionary<EncryptedValue, Delegate> _cache = new ConcurrentDictionary<EncryptedValue, Delegate>();
-        private static readonly IStringGeneratorEncryptor _stringGeneratorEncryptor = new InstanceGeneratorEncryptor();
+        private static readonly IStringGeneratorEncryptor StringGeneratorEncryptor = new InstanceGeneratorEncryptor();
 
         public event Action<Exception> OnException = _ => { };
 
@@ -171,7 +171,7 @@ namespace System
             var key = type.FullName;
             if (parameterTypes.Length > 0) key += string.Concat(parameterTypes.Select(t => t.Name));
 
-            return _stringGeneratorEncryptor.Encrypt(key);
+            return StringGeneratorEncryptor.Encrypt(key).GetValueOrDefault();
         }
 
         private class InstanceGeneratorEncryptor : IStringGeneratorEncryptor { }

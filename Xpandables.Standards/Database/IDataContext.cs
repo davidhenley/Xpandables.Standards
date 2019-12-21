@@ -88,7 +88,7 @@ namespace System.Design.Database
         void Delete<T>(Expression<Func<T, bool>> predicate) where T : Entity;
 
         /// <summary>
-        /// Updates the domain object matching the id in te updated value.
+        /// Updates the domain object matching the id in the updated value.
         /// <para>Only the columns corresponding to properties you set in the object will be updated -- any properties
         /// you don't set will be left alone.</para>
         /// <para>If you have property you want to set to its default,

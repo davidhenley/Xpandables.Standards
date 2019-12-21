@@ -71,14 +71,15 @@ namespace System.Design
             try
             {
                 if (query is null) throw new ArgumentNullException(nameof(query));
-
-                return await _serviceProvider
+                var execution = await _serviceProvider
                     .XGetService<IQueryHandler<TQuery, TResult>>()
                     .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(nameof(TQuery))))
                     .MapAsync(handler => handler.HandleAsync(query, cancellationToken))
                     .ConfigureAwait(false);
+
+                return execution.GetValueOrDefault();
             }
             catch (Exception exception) when (!(exception is ArgumentException)
                                             && !(exception is ValidationException)
@@ -105,16 +106,20 @@ namespace System.Design
                     .WhenException(exception =>
                     {
                         throw new InvalidOperationException(
-"Building Query wrapper failed.",
-exception);
-                    });
+                            "Building Query wrapper failed.",
+                            exception);
+                    })
+                    .GetValueOrDefault();
 
-                return await _serviceProvider.XGetService<IQueryHandlerWrapper<TResult>>(wrapperType)
+                var execution = await _serviceProvider
+                    .XGetService<IQueryHandlerWrapper<TResult>>(wrapperType)
                     .WhenEmpty(() => throw new ArgumentException(
                         ErrorMessageResources.CommandQueryHandlerMissingImplementation
                             .StringFormat(query.GetType().Name)))
                     .MapAsync(handler => handler.HandleAsync(query, cancellationToken))
                     .ConfigureAwait(false);
+
+                return execution.GetValueOrDefault();
             }
             catch (Exception exception) when (!(exception is ArgumentException)
                                             && !(exception is ValidationException)
@@ -128,29 +133,29 @@ exception);
             }
         }
 
-        public Task SendEventAsync<T>(T source, CancellationToken cancellationToken)
+        public async Task SendEventAsync<T>(T source, CancellationToken cancellationToken)
                   where T : class, IEvent
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
             var tasks = _serviceProvider
-                .XGetService<IEventHandler<T>>()
+                .XGetServices<IEventHandler<T>>()
                 .Select(handler => handler.HandleAsync(source));
 
-            return Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        public Task SendEventAsync(IEvent source, CancellationToken cancellationToken)
+        public async Task SendEventAsync(IEvent source, CancellationToken cancellationToken)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
             var typeHandler = typeof(IEventHandler<>).MakeGenericType(new Type[] { source.GetType() });
 
             var tasks = _serviceProvider
-                .XGetService<IEventHandler>(typeHandler)
+                .XGetServices<IEventHandler>(typeHandler)
                 .Select(handler => handler.HandleAsync(source));
 
-            return Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace System
         where TKey : notnull
         where TValue : notnull
     {
-        protected ConcurrentDictionary<TKey, TValue> Items { get; }
+        private ConcurrentDictionary<TKey, TValue> Items { get; }
 
         /// <summary>
         /// Constructs a new instance that initializes the collection.
@@ -37,14 +37,12 @@ namespace System
 
         public virtual Optional<TValue> this[TKey key]
         {
-            get
-            {
-                return Items.TryGetValue(key, out var found) ? found.AsOptional() : Optional<TValue>.Empty();
-            }
+            get => Items.TryGetValue(key, out var found) ? found.AsOptional() : OptionalBuilder.Empty<TValue>();
             set
             {
-                TValue _value = value;
-                Items.AddOrUpdate(key, _value, (_, __) => _value);
+                if(value is null) return;
+                var source = value.GetValueOrDefault();
+                Items.AddOrUpdate(key, source, (_, __) => source);
             }
         }
 

@@ -15,8 +15,6 @@
  *
 ************************************************************************************************************/
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace System
 {
     public partial class Optional<T>
@@ -25,14 +23,14 @@ namespace System
         /// Converts the current instance to an empty one.
         /// </summary>
         /// <returns>An empty optional.</returns>
-        public Optional<T> ToEmpty() => Empty();
+        public Optional<T> ToEmpty() => OptionalBuilder.Empty<T>();
 
         /// <summary>
-        /// Converts the current instance to an empty of the specific type.
+        /// Converts the current instance to an empty of another type.
         /// </summary>
         /// <typeparam name="TU">The type to store.</typeparam>
         /// <returns>An empty optional of the specific type.</returns>
-        public Optional<TU> ToEmpty<TU>() => Optional<TU>.Empty();
+        public Optional<TU> ToEmpty<TU>() => OptionalBuilder.Empty<TU>();
 
         /// <summary>
         /// Converts the current instance to the specific type if possible.
@@ -41,11 +39,8 @@ namespace System
         /// <typeparam name="TU">The type to convert to.</typeparam>
         public Optional<TU> ToOptional<TU>()
         {
-            if (IsValue() && InternalValue is TU target)
-                return target;
-            if (IsException())
-                return Optional<TU>.Exception(InternalException);
-            return Optional<TU>.Empty();
+            if (IsValue() && InternalValue is TU target) return target;
+            return IsException() ? OptionalBuilder.Exception<TU>(InternalException) : OptionalBuilder.Empty<TU>();
         }
 
         /// <summary>
@@ -54,15 +49,16 @@ namespace System
         /// <param name="value">The value to be used.</param>
         /// <returns>An optional that contains a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public Optional<T> ToSome([NotNull] T value) => Some(value);
+        public Optional<T> ToSome(T value) => value.AsOptional();
 
         /// <summary>
         /// Converts the current instance to an optional of the specified type with value.
         /// </summary>
+        /// <typeparam name="TU">The specific type of optional.</typeparam>
         /// <param name="value">The value to be used.</param>
         /// <returns>An optional that contains a value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        public Optional<TU> ToSome<TU>([NotNull] TU value) => Optional<TU>.Some(value);
+        public Optional<TU> ToSome<TU>(TU value) => OptionalBuilder.Some(value);
 
         /// <summary>
         /// Converts the current instance to an optional with exception.
@@ -70,7 +66,16 @@ namespace System
         /// <param name="exception">The exception to be used.</param>
         /// <returns>An optional with exception value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
-        public Optional<T> ToException([NotNull] Exception exception) => Exception(exception);
+        public Optional<T> ToException(Exception exception) => exception.AsOptional<T>();
+
+        /// <summary>
+        /// Converts the current instance to an optional of specific type with exception.
+        /// </summary>
+        /// <typeparam name="TU">The specific type of optional.</typeparam>
+        /// <param name="exception">The exception to be used.</param>
+        /// <returns>An optional with exception value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
+        public Optional<TU> ToException<TU>(Exception exception) => exception.AsOptional<TU>();
 
         /// <summary>
         /// Converts the optional to optional pair.
@@ -80,12 +85,12 @@ namespace System
         /// <typeparam name="TU">The type of the right side.</typeparam>
         /// <param name="right">The value to be used.</param>
         /// <returns>An optional pair.</returns>
-        public Optional<(T Left, TU Right)> And<TU>([NotNull] TU right)
-            => IsValue()
-                ? (Optional<(T Left, TU Right)>)(InternalValue, right)
+        public Optional<(T Left, TU Right)> And<TU>(TU right)
+            => IsValue() && !(right is null)
+                ? (InternalValue, right)
                 : IsException()
-                    ? Optional<(T Left, TU Right)>.Exception(InternalException)
-                    : Optional<(T Left, TU Right)>.Empty();
+                    ? InternalException.AsOptional<(T Left, TU Right)>()
+                    : OptionalBuilder.Empty<(T Left, TU Right)>();
 
         /// <summary>
         /// Converts the optional to optional pair.
@@ -96,23 +101,26 @@ namespace System
         /// <param name="right">The optional to be used.</param>
         /// <returns>An optional pair.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, TU Right)> AndOptional<TU>([NotNull] Optional<TU> right)
+        public Optional<(T Left, TU Right)> AndOptional<TU>(Optional<TU> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
 
             if (IsValue() && right.IsValue())
-                return Optional<(T Left, TU Right)>.Some((InternalValue, right.InternalValue));
+                return OptionalBuilder.Some((InternalValue, right.InternalValue));
 
             if (IsException() && !right.IsException())
-                return Optional<(T Left, TU Right)>.Exception(InternalException);
+                return OptionalBuilder.Exception<(T Left, TU Right)>(InternalException);
 
             if (IsException() && right.IsException())
-                return Optional<(T Left, TU Right)>.Exception(new AggregateException(InternalException, right.InternalException));
+            {
+                return OptionalBuilder.Exception<(T Left, TU Right)>(
+                    new AggregateException(InternalException, right.InternalException));
+            }
 
             if (!IsException() && right.IsException())
-                return Optional<(T Left, TU Right)>.Exception(right.InternalException);
+                return OptionalBuilder.Exception<(T Left, TU Right)>(right.InternalException);
 
-            return Optional<(T Left, TU Right)>.Empty();
+            return OptionalBuilder.Empty<(T Left, TU Right)>();
         }
 
         /// <summary>
@@ -122,7 +130,7 @@ namespace System
         /// <param name="some">The function to call.</param>
         /// <returns>An optional of <typeparamref name="T"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<T> Map([NotNull] Func<T> some)
+        public Optional<T> Map(Func<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return some();
@@ -138,11 +146,11 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<TU> Map<TU>([NotNull] Func<T, TU> some)
+        public Optional<TU> Map<TU>(Func<T, TU> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return some(InternalValue);
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? InternalException.AsOptional<TU>() : OptionalBuilder.Empty<TU>();
         }
 
         /// <summary>
@@ -154,11 +162,11 @@ namespace System
         /// <param name="some">The function to transform the element.</param>
         /// <returns>An optional of <typeparamref name="TU"/> type.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<TU> MapOptional<TU>([NotNull] Func<T, Optional<TU>> some)
+        public Optional<TU> MapOptional<TU>(Func<T, Optional<TU>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) return some(InternalValue);
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? InternalException.AsOptional<TU>() : OptionalBuilder.Empty<TU>();
         }
 
         /// <summary>
@@ -166,7 +174,7 @@ namespace System
         /// </summary>
         /// <param name="some">The function to apply to the element.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public void Map([NotNull] Action<T> some)
+        public void Map(Action<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (IsValue()) some(InternalValue);
@@ -177,7 +185,7 @@ namespace System
         /// </summary>
         /// <param name="some">The function to apply to the instance.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public void MapOptional([NotNull] Action<Optional<T>> some)
+        public void MapOptional(Action<Optional<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             some(this);
@@ -191,15 +199,15 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, TU Right)> And<TU>([NotNull] Func<TU> right)
+        public Optional<(T Left, TU Right)> And<TU>(Func<TU> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
-            if (!IsValue()) return Optional<(T Left, TU Right)>.Empty();
-            if (IsException()) return Optional<(T Left, TU Right)>.Exception(InternalException);
+            if (!IsValue()) return ToEmpty<(T Left, TU Right)>();
+            if (IsException()) return ToException<(T Left, TU Right)>(InternalException);
 
-            return right() is TU result
-                ? Optional<(T Left, TU Right)>.Some((InternalValue, result))
-                : Optional<(T Left, TU Right)>.Empty();
+            return right() is { } result
+                ? ToSome<(T Left, TU Right)>((InternalValue, result))
+                : ToEmpty<(T Left, TU Right)>();
         }
 
         /// <summary>
@@ -210,15 +218,15 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, TU Right)> And<TU>([NotNull] Func<T, TU> right)
+        public Optional<(T Left, TU Right)> And<TU>(Func<T, TU> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
-            if (!IsValue()) return Optional<(T Left, TU Right)>.Empty();
-            if (IsException()) return Optional<(T Left, TU Right)>.Exception(InternalException);
+            if (!IsValue()) return ToEmpty<(T Left, TU Right)>();
+            if (IsException()) return ToException<(T Left, TU Right)>(InternalException);
 
-            return right(InternalValue) is TU result
-                ? Optional<(T Left, TU Right)>.Some((InternalValue, result))
-                : Optional<(T Left, TU Right)>.Empty();
+            return right(InternalValue) is { } result
+                ? ToSome<(T Left, TU Right)>((InternalValue, result))
+                : ToEmpty<(T Left, TU Right)>();
         }
 
         /// <summary>
@@ -229,7 +237,7 @@ namespace System
         /// <param name="right">The instance to be added.</param>
         /// <returns>An optional of pair instance of optional.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="right"/> is null.</exception>
-        public Optional<(T Left, TU Right)> AndOptional<TU>([NotNull] Func<Optional<TU>> right)
+        public Optional<(T Left, TU Right)> AndOptional<TU>(Func<Optional<TU>> right)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
             return AndOptional(right());
@@ -244,15 +252,12 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public Optional<T> When([NotNull] Predicate<T> predicate, [NotNull] Func<T> some)
+        public Optional<T> When(Predicate<T> predicate, Func<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            if (IsValue() && predicate(InternalValue))
-                return some();
-
-            return this;
+            return IsValue() && predicate(InternalValue) ? some() : this;
         }
 
         /// <summary>
@@ -264,15 +269,12 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public Optional<T> When([NotNull] Predicate<T> predicate, [NotNull] Func<T, T> some)
+        public Optional<T> When(Predicate<T> predicate, Func<T, T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            if (IsValue() && predicate(InternalValue))
-                return some(InternalValue);
-
-            return this;
+            return IsValue() && predicate(InternalValue) ? some(InternalValue) : this;
         }
 
         /// <summary>
@@ -287,21 +289,14 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
-        public Optional<TU> When<TU>([NotNull] Predicate<T> predicate, [NotNull] Func<T, TU> trueAction, [NotNull] Func<T, TU> falseAction)
+        public Optional<TU> When<TU>(Predicate<T> predicate, Func<T, TU> trueAction, Func<T, TU> falseAction)
         {
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
 
-            if (IsValue())
-            {
-                if (predicate(InternalValue))
-                    return trueAction(InternalValue);
-
-                return falseAction(InternalValue);
-            }
-
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            if (!IsValue()) return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
+            return predicate(InternalValue) ? trueAction(InternalValue) : falseAction(InternalValue);
         }
 
         /// <summary>
@@ -312,7 +307,7 @@ namespace System
         /// <returns>An optional instance.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null</exception>
-        public void When([NotNull] Predicate<T> predicate, [NotNull] Action<T> some)
+        public void When(Predicate<T> predicate, Action<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
@@ -328,11 +323,10 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<T> WhenEmpty([NotNull] Func<T> empty)
+        public Optional<T> WhenEmpty(Func<T> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            if (!IsValue()) return empty();
-            return this;
+            return !IsValue() ? empty() : this;
         }
 
         /// <summary>
@@ -343,11 +337,10 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<TU> WhenEmpty<TU>([NotNull] Func<TU> empty)
+        public Optional<TU> WhenEmpty<TU>(Func<TU> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            if (!IsValue()) return empty();
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return !IsValue() ? empty() : IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
         }
 
         /// <summary>
@@ -357,11 +350,10 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<T> WhenEmptyOptional([NotNull] Func<Optional<T>> empty)
+        public Optional<T> WhenEmptyOptional(Func<Optional<T>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            if (!IsValue()) return empty();
-            return this;
+            return !IsValue() ? empty() : this;
         }
 
         /// <summary>
@@ -372,11 +364,11 @@ namespace System
         /// <param name="empty">The empty map.</param>
         /// <returns>The replacement value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="empty"/> is null.</exception>
-        public Optional<TU> WhenEmptyOptional<TU>([NotNull] Func<Optional<TU>> empty)
+        public Optional<TU> WhenEmptyOptional<TU>(Func<Optional<TU>> empty)
         {
             if (empty is null) throw new ArgumentNullException(nameof(empty));
             if (!IsValue()) return empty();
-            return IsException() ? Optional<TU>.Exception(InternalException) : Optional<TU>.Empty();
+            return IsException() ? ToException<TU>(InternalException) : ToEmpty<TU>();
         }
 
         /// <summary>
@@ -384,7 +376,7 @@ namespace System
         /// </summary>
         /// <param name="action">The empty map.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public void WhenEmpty([NotNull] Action action)
+        public void WhenEmpty(Action action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (!IsValue()) action();
@@ -397,11 +389,25 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenException([NotNull] Func<T> some)
+        public Optional<T> WhenException(Func<T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return some();
-            return this;
+            return IsException() ? some() : this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception is of the specific type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
+        public Optional<T> WhenException<TException>(Func<T> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException ? some() : this;
         }
 
         /// <summary>
@@ -411,11 +417,25 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenExceptionOptional([NotNull] Func<Optional<T>> some)
+        public Optional<T> WhenExceptionOptional(Func<Optional<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return some();
-            return this;
+            return IsException() ? some() : (this);
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception is of the specific type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">the <paramref name="some"/> is null.</exception>
+        public Optional<T> WhenExceptionOptional<TException>(Func<Optional<T>> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException ? some() : (this);
         }
 
         /// <summary>
@@ -425,25 +445,53 @@ namespace System
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenException([NotNull] Func<Exception, T> some)
+        public Optional<T> WhenException(Func<Exception, T> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return some(InternalException);
-            return this;
+            return IsException() ? some(InternalException) : this;
         }
 
         /// <summary>
-        /// Creates a new value that is the result of applying the given function.
+        /// Creates a new value that is the result of applying the given function when exception is of the specific type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
+        public Optional<T> WhenException<TException>(Func<TException, T> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException exception ? some(exception) : this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when exception.
         /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
         /// </summary>
         /// <param name="some">The function to return the element.</param>
         /// <returns>An optional with value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
-        public Optional<T> WhenExceptionOptional([NotNull] Func<Exception, Optional<T>> some)
+        public Optional<T> WhenExceptionOptional(Func<Exception, Optional<T>> some)
         {
             if (some is null) throw new ArgumentNullException(nameof(some));
-            if (IsException()) return some(InternalException);
-            return this;
+            return IsException() ? some(InternalException) : this;
+        }
+
+        /// <summary>
+        /// Creates a new value that is the result of applying the given function when the exception is of the specific type.
+        /// The delegate get called only if the instance is an exception, otherwise returns the current instance.
+        /// </summary>
+        /// <typeparam name="TException">the type of exception.</typeparam>
+        /// <param name="some">The function to return the element.</param>
+        /// <returns>An optional with value.</returns>
+        /// <exception cref="ArgumentNullException">The <paramref name="some"/> is null.</exception>
+        public Optional<T> WhenExceptionOptional<TException>(Func<TException, Optional<T>> some)
+            where TException : Exception
+        {
+            if (some is null) throw new ArgumentNullException(nameof(some));
+            return IsException() && InternalException is TException exception ? some(exception) : this;
         }
 
         /// <summary>
@@ -452,10 +500,24 @@ namespace System
         /// </summary>
         /// <param name="action">The delegate to be executed.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
-        public void WhenException([NotNull] Action<Exception> action)
+        public void WhenException(Action<Exception> action)
         {
             if (action is null) throw new ArgumentNullException(nameof(action));
             if (IsException()) action(InternalException);
+        }
+
+        /// <summary>
+        /// Applies the function only if the optional is exception of the specific type.
+        /// The delegate get called only if the instance is an exception.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        /// <param name="action">The delegate to be executed.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
+        public void WhenException<TException>(Action<TException> action)
+            where TException : Exception
+        {
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            if (IsException() && InternalException is TException exception) action(exception);
         }
     }
 }

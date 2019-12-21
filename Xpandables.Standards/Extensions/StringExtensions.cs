@@ -158,7 +158,7 @@ namespace System
                                             || exception is FormatException
                                             || exception is OverflowException)
             {
-                return Optional<T>.Exception(exception);
+                return OptionalBuilder.Exception<T>(exception);
             }
         }
 
@@ -212,11 +212,11 @@ namespace System
                 if (DateTime.TryParseExact(source, formats, provider, styles, out var dateTime))
                     return dateTime;
 
-                return Optional<DateTime>.Empty();
+                return OptionalBuilder.Empty<DateTime>();
             }
             catch (Exception exception) when (exception is ArgumentException)
             {
-                return Optional<DateTime>.Exception(exception);
+                return OptionalBuilder.Exception<DateTime>(exception);
             }
         }
 
@@ -244,7 +244,7 @@ namespace System
             catch (Exception exception) when (exception is FormatException
                                             || exception is ArgumentOutOfRangeException)
             {
-                return Optional<string>.Exception(exception);
+                return OptionalBuilder.Exception<string>(exception);
             }
         }
 
@@ -271,7 +271,7 @@ namespace System
             }
             catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
             {
-                return Optional<string>.Exception(exception);
+                return OptionalBuilder.Exception<string>(exception);
             }
         }
 
@@ -282,26 +282,26 @@ namespace System
         /// <remarks>
         /// Inspiration from https://stackoverflow.com/questions/32932679/using-rngcryptoserviceprovider-to-generate-random-string
         /// </remarks>
-        /// <param name="lookupCharacters">The string to be used to pick characters from.</param>
+        /// <param name="lookupChar">The string to be used to pick characters from.</param>
         /// <param name="length">The length of the expected string value.</param>
         /// <returns>A new string of the specified length with random characters.</returns>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="length"/> is lower or equal to zero.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="lookupCharacters"/> is null.</exception>
-        public static Optional<string> GenerateString(this string lookupCharacters, int length)
+        /// <exception cref="ArgumentNullException">The <paramref name="lookupChar"/> is null.</exception>
+        public static Optional<string> GenerateString(this string lookupChar, int length)
         {
             if (length <= 0) throw new ArgumentOutOfRangeException(nameof(length));
-            if (string.IsNullOrWhiteSpace(lookupCharacters)) throw new ArgumentNullException(nameof(lookupCharacters));
+            if (string.IsNullOrWhiteSpace(lookupChar)) throw new ArgumentNullException(nameof(lookupChar));
 
             try
             {
                 var stringResult = new StringBuilder(length);
                 using (var random = new RNGCryptoServiceProvider())
                 {
-                    var count = (int)Math.Ceiling(Math.Log(lookupCharacters.Length, 2) / 8.0);
+                    var count = (int)Math.Ceiling(Math.Log(lookupChar.Length, 2) / 8.0);
                     Diagnostics.Debug.Assert(count <= sizeof(uint));
 
                     var offset = BitConverter.IsLittleEndian ? 0 : sizeof(uint) - count;
-                    var max = (int)(Math.Pow(2, count * 8) / lookupCharacters.Length) * lookupCharacters.Length;
+                    var max = (int)(Math.Pow(2, count * 8) / lookupChar.Length) * lookupChar.Length;
 
                     var uintBuffer = new byte[sizeof(uint)];
                     while (stringResult.Length < length)
@@ -309,21 +309,20 @@ namespace System
                         random.GetBytes(uintBuffer, offset, count);
                         var number = BitConverter.ToUInt32(uintBuffer, 0);
                         if (number < max)
-                            stringResult.Append(lookupCharacters[(int)(number % lookupCharacters.Length)]);
+                            stringResult.Append(lookupChar[(int)(number % lookupChar.Length)]);
                     }
                 }
 
                 return stringResult.ToString();
             }
             catch (Exception exception) when (exception is ArgumentOutOfRangeException
-                                            || exception is ArgumentException
-                                            || exception is ArgumentNullException)
+                                            || exception is ArgumentException)
             {
-                return Optional<string>.Exception(exception);
+                return OptionalBuilder.Exception<string>(exception);
             }
         }
 
-        private const string lookupCharacters = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,;!(-è_çàà)=@%µ£¨//?§/.?";
+        private const string LookupCharacters = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,;!(-è_çàà)=@%µ£¨//?§/.?";
 
         /// <summary>
         /// Returns an encrypted string from the value using a randomize key.
@@ -336,7 +335,7 @@ namespace System
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
-            return lookupCharacters
+            return LookupCharacters
                 .GenerateString(12)
                 .MapOptional(key => source.Encrypt(key).And(() => key))
                 .Map(pair => new EncryptedValue(pair.Right, pair.Left));
@@ -353,7 +352,7 @@ namespace System
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
-            string compare = value.Encrypt(encrypted.Key);
+            var compare = value.Encrypt(encrypted.Key).GetValueOrDefault();
             return compare == encrypted.Value;
         }
     }

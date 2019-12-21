@@ -55,7 +55,7 @@ namespace System.Http
 
             if (request.Headers.Authorization is AuthenticationHeaderValue authorization)
             {
-                string token = _httpRequestTokenAccessor.GetRequestHttpToken()
+                string token = _httpRequestTokenAccessor.GetRequestHttpToken().GetValueOrDefault()
                     ?? throw new InvalidOperationException(
                         ErrorMessageResources.ArgumentExpected.StringFormat(
                             nameof(HttpAuthorizationTokenHandler),

@@ -32,7 +32,7 @@ namespace System.Design
         /// May contains the principal if exist.
         /// This value is provided by an implementation of <see cref="ISecurityUserProvider"/>.
         /// </summary>
-        protected Optional<IUser> User { get; private set; } = Optional<IUser>.Empty();
+        protected Optional<IUser> User { get; private set; } = OptionalBuilder.Empty<IUser>();
 
         /// <summary>
         /// Sets the <see cref="User"/> with the specified value.

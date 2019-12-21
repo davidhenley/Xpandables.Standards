@@ -138,6 +138,9 @@
   <data name="GetEnumerableInvalidOperation" xml:space="preserve">
     <value>{0} type is not an enumerable.</value>
   </data>
+  <data name="GetEnumeratorInvalidOperation" xml:space="preserve">
+    <value>The {0} type is an enumerable, use {1}.</value>
+  </data>
   <data name="LinqAggregateBalanceNoItems" xml:space="preserve">
     <value>Sequence contains no elements.</value>
   </data>

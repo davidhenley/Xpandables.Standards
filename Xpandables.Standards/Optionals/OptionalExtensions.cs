@@ -15,13 +15,10 @@
  *
 ************************************************************************************************************/
 
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
 namespace System
 {
     /// <summary>
-    /// Functionalities for optional pattern methods.
+    /// Functionality for optional pattern methods.
     /// </summary>
     public static partial class OptionalExtensions
     {
@@ -33,14 +30,7 @@ namespace System
         /// <typeparam name="TU">The type of the right value.</typeparam>
         /// <param name="left">The left value to act on.</param>
         /// <param name="right">The right value to act on.</param>
-        public static Optional<(T Left, TU Right)> And<T, TU>(this T left, TU right)
-        {
-#nullable disable
-            return !EqualityComparer<TU>.Default.Equals(right, default) && !EqualityComparer<T>.Default.Equals(left, default)
-                ? Optional<(T Left, TU Right)>.Some((left, right))
-                : Optional<(T Left, TU Right)>.Empty();
-#nullable enable
-        }
+        public static Optional<(T Left, TU Right)> And<T, TU>(this T left, TU right) => left.AsOptional().And(right);
 
         /// <summary>
         /// Returns an optional that contains the value if that value matches the predicate.
@@ -50,8 +40,7 @@ namespace System
         /// <param name="source">The value to act on.</param>
         /// <param name="predicate">The predicate to check.</param>
         /// <returns>An optional of <typeparamref name="T"/> value.</returns>
-        public static Optional<T> When<T>(this T source, bool predicate)
-            => predicate ? source.AsOptional() : Optional<T>.Empty();
+        public static Optional<T> When<T>(this T source, bool predicate) => predicate ? source.AsOptional() : OptionalBuilder.Empty<T>();
 
         /// <summary>
         /// Returns an optional that contains the value if that value matches the predicate.
@@ -62,10 +51,10 @@ namespace System
         /// <param name="predicate">The predicate to check.</param>
         /// <returns>An optional of <typeparamref name="T"/> value.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
-        public static Optional<T> When<T>(this T source, [NotNull] Predicate<T> predicate)
+        public static Optional<T> When<T>(this T source, Predicate<T> predicate)
         {
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            return predicate(source) ? source.AsOptional() : Optional<T>.Empty();
+            return source.When(predicate(source));
         }
 
         /// <summary>
@@ -82,66 +71,13 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
-        public static Optional<TU> When<T, TU>(this T source, [NotNull] Predicate<T> predicate, Func<T, TU> trueAction, Func<T, TU> falseAction)
+        public static Optional<TU> When<T, TU>(this T source, Predicate<T> predicate, Func<T, TU> trueAction, Func<T, TU> falseAction)
         {
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
 
             return source.AsOptional().When(predicate, trueAction, falseAction);
-        }
-
-        /// <summary>
-        /// Converts the specified value to an optional instance.
-        /// </summary>
-        /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <param name="value">The value to act on.</param>
-        /// <returns>An optional instance.</returns>
-        public static Optional<T> AsOptional<T>(this T value)
-        {
-#nullable disable
-            if (EqualityComparer<T>.Default.Equals(value, default)) return Optional<T>.Empty();
-#nullable enable
-            return Optional<T>.Some(value);
-        }
-
-        /// <summary>
-        /// Converts the specified value to an optional instance of the specific type.
-        /// </summary>
-        /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <param name="value">The value to act on.</param>
-        /// <returns>An optional instance.</returns>
-        public static Optional<T> AsOptional<T>(this object value)
-        {
-            if (value is T target) return Optional<T>.Some(target);
-            return Optional<T>.Empty();
-        }
-
-        /// <summary>
-        /// Converts the specified value to an optional pair instance.
-        /// if one of the value is null, returns an empty optional.
-        /// </summary>
-        /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <typeparam name="TU">The type of the right value.</typeparam>
-        /// <param name="value">The value to act on.</param>
-        /// <param name="right">The right value to act on.</param>
-        /// <returns>An optional pair instance.</returns>
-        public static Optional<(T Left, TU Right)> AsOptional<T, TU>([NotNull] this T value, TU right) => value.AsOptional().And(right);
-
-        /// <summary>
-        /// Converts the specified optional to an optional pair instance.
-        /// if one of the value is null, returns an empty optional.
-        /// </summary>
-        /// <typeparam name="T">The Type of the value.</typeparam>
-        /// <typeparam name="TU">The type of the right value.</typeparam>
-        /// <param name="optional">The optional to act on.</param>
-        /// <param name="right">The right value to act on.</param>
-        /// <returns>An optional pair instance.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="optional"/> is null.</exception>
-        public static Optional<(T Left, TU Right)> AsOptional<T, TU>([NotNull] this Optional<T> optional, TU right)
-        {
-            if (optional is null) throw new ArgumentNullException(nameof(optional));
-            return optional.And(right);
         }
     }
 }

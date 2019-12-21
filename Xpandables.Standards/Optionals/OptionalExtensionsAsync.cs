@@ -15,48 +15,15 @@
  *
 ************************************************************************************************************/
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace System
 {
     /// <summary>
-    /// Functionalities for optional pattern methods.
+    /// Functionality for optional pattern methods.
     /// </summary>
     public static partial class OptionalExtensions
     {
-        /// <summary>
-        /// Returns an optional that contains the value if that value matches the predicate.
-        /// Otherwise returns an empty optional.
-        /// </summary>
-        /// <typeparam name="T">The type of the value.</typeparam>
-        /// <param name="source">The value to act on.</param>
-        /// <param name="predicate">The predicate to check.</param>
-        /// <returns>An optional of <typeparamref name="T"/> value.</returns>
-        public static async Task<Optional<T>> WhenAsync<T>(this T source, bool predicate)
-        {
-            return predicate
-                ? await Task.FromResult(source.AsOptional()).ConfigureAwait(false)
-                : Optional<T>.Empty();
-        }
-
-        /// <summary>
-        /// Returns an optional that contains the value if that value matches the predicate.
-        /// Otherwise returns an empty optional.
-        /// </summary>
-        /// <typeparam name="T">The type of the value.</typeparam>
-        /// <param name="source">The value to act on.</param>
-        /// <param name="predicate">The predicate to check.</param>
-        /// <returns>An optional of <typeparamref name="T"/> value.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="predicate"/> is null.</exception>
-        public static async Task<Optional<T>> WhenAsync<T>(this T source, Predicate<T> predicate)
-        {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            return predicate(source)
-                ? await Task.FromResult(source.AsOptional()).ConfigureAwait(false)
-                : Optional<T>.Empty();
-        }
-
         /// <summary>
         /// Creates a new optional that is the result of applying the given function to the element.
         /// The delegate get called only if the instance contains a value,
@@ -107,7 +74,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
-            return await (await optional.ConfigureAwait(false)).MapOptionalAsync(some).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .MapOptionalAsync(some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -126,7 +94,8 @@ namespace System
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            return await (await optional.ConfigureAwait(false)).WhenAsync(predicate, some).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -144,7 +113,8 @@ namespace System
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            await (await optional.ConfigureAwait(false)).WhenAsync(predicate, some).ConfigureAwait(false);
+            await (await optional.ConfigureAwait(false)).
+                WhenAsync(predicate, some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -163,13 +133,14 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="trueAction"/> is null</exception>
         /// /// <exception cref="ArgumentNullException">The <paramref name="falseAction"/> is null</exception>
         public static async Task<Optional<TU>> WhenAsync<T, TU>(
-            this Task<Optional<T>> optional, [NotNull] Predicate<T> predicate, Func<T, Task<TU>> trueAction, Func<T, Task<TU>> falseAction)
+            this Task<Optional<T>> optional, Predicate<T> predicate, Func<T, Task<TU>> trueAction, Func<T, Task<TU>> falseAction)
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (trueAction is null) throw new ArgumentNullException(nameof(trueAction));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             if (falseAction is null) throw new ArgumentNullException(nameof(falseAction));
-            return await (await optional.ConfigureAwait(false)).WhenAsync(predicate, trueAction, falseAction).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenAsync(predicate, trueAction, falseAction).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -185,7 +156,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            return await (await optional.ConfigureAwait(false)).WhenEmptyAsync(empty).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenEmptyAsync(empty).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -203,7 +175,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            return await (await optional.ConfigureAwait(false)).WhenEmptyAsync(empty).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenEmptyAsync(empty).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -220,7 +193,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            return await (await optional.ConfigureAwait(false)).WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -238,7 +212,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (empty is null) throw new ArgumentNullException(nameof(empty));
-            return await (await optional.ConfigureAwait(false)).WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenEmptyOptionalAsync(empty).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -253,7 +228,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (action is null) throw new ArgumentNullException(nameof(action));
-            await (await optional.ConfigureAwait(false)).WhenEmptyAsync(action).ConfigureAwait(false);
+            await (await optional.ConfigureAwait(false))
+                .WhenEmptyAsync(action).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -270,7 +246,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
-            return await (await optional.ConfigureAwait(false)).WhenExceptionAsync(some).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenExceptionAsync(some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -287,7 +264,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
-            return await (await optional.ConfigureAwait(false)).WhenExceptionOptionalAsync(some).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenExceptionOptionalAsync(some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -304,7 +282,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
-            return await (await optional.ConfigureAwait(false)).WhenExceptionAsync(some).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenExceptionAsync(some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -321,7 +300,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
-            return await (await optional.ConfigureAwait(false)).WhenExceptionOptionalAsync(some).ConfigureAwait(false);
+            return await (await optional.ConfigureAwait(false))
+                .WhenExceptionOptionalAsync(some).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -337,7 +317,8 @@ namespace System
         {
             if (optional is null) throw new ArgumentNullException(nameof(optional));
             if (some is null) throw new ArgumentNullException(nameof(some));
-            await (await optional.ConfigureAwait(false)).WhenExceptionAsync(some).ConfigureAwait(false);
+            await (await optional.ConfigureAwait(false))
+                .WhenExceptionAsync(some).ConfigureAwait(false);
         }
     }
 }

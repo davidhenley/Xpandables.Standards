@@ -98,7 +98,7 @@ namespace System
                                             || exception is AmbiguousMatchException
                                             || exception is TypeLoadException)
             {
-                return Optional<TAttribute>.Exception(exception);
+                return OptionalBuilder.Exception<TAttribute>(exception);
             }
         }
 
@@ -124,7 +124,7 @@ namespace System
                                             || exception is AmbiguousMatchException
                                             || exception is TypeLoadException)
             {
-                return Optional<TAttribute>.Exception(exception);
+                return OptionalBuilder.Exception<TAttribute>(exception);
             }
         }
 
@@ -150,7 +150,7 @@ namespace System
                                             || exception is AmbiguousMatchException
                                             || exception is TypeLoadException)
             {
-                return Optional<TAttribute>.Exception(exception);
+                return OptionalBuilder.Exception<TAttribute>(exception);
             }
         }
 
@@ -165,9 +165,11 @@ namespace System
             where TEnum : Enum
             => typeof(TEnum)
                 .GetField($"{value}")
-                ?.GetAttribute<DescriptionAttribute>()
+                .AsOptional()
+                .MapOptional(field => field.GetAttribute<DescriptionAttribute>())
                 .Map(attr => attr.Description)
-                .WhenEmpty(() => $"{value}")!;
+                .WhenEmpty(() => $"{value}")
+                .GetValueOrDefault();
 
         /// <summary>
         /// Converts the current enumeration value to the target one.
@@ -184,7 +186,7 @@ namespace System
             }
             catch (OverflowException exception)
             {
-                return Optional<TEnum>.Exception(exception);
+                return OptionalBuilder.Exception<TEnum>(exception);
             }
         }
 
@@ -204,7 +206,7 @@ namespace System
             }
             catch (OverflowException exception)
             {
-                return Optional<TEnum>.Exception(exception);
+                return OptionalBuilder.Exception<TEnum>(exception);
             }
         }
     }

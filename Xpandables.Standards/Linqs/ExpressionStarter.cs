@@ -40,8 +40,8 @@ namespace System.Design.Linq
         {
             var expression = defaultExpression ? (_ => true) : (Expression<Func<T, bool>>)(_ => false);
 
-            DefaultExpression = Optional<Expression<Func<T, bool>>>.Some(expression);
-            _predicate = Optional<Expression<Func<T, bool>>>.Empty();
+            DefaultExpression = expression;
+            _predicate = OptionalBuilder.Empty<Expression<Func<T, bool>>>();
         }
 
         internal ExpressionStarter(Expression<Func<T, bool>> expression)
@@ -71,7 +71,7 @@ namespace System.Design.Linq
             if (IsStarted)
                 throw new InvalidOperationException(ErrorMessageResources.LinqPredicateAlreadyStarted);
 
-            return _predicate = exp;
+            return (_predicate = exp).GetValueOrDefault();
         }
 
         /// <summary>Or</summary>
@@ -79,10 +79,7 @@ namespace System.Design.Linq
         {
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
 
-            if (IsStarted)
-                return _predicate = _predicate.InternalValue.Or(expr2);
-
-            return Start(expr2);
+            return IsStarted ? (_predicate = _predicate.GetValueOrDefault().Or(expr2)).GetValueOrDefault() : Start(expr2);
         }
 
         /// <summary>And</summary>
@@ -90,15 +87,12 @@ namespace System.Design.Linq
         {
             if (expr2 is null) throw new ArgumentNullException(nameof(expr2));
 
-            if (IsStarted)
-                return _predicate = _predicate.InternalValue.And(expr2);
-
-            return Start(expr2);
+            return IsStarted ? (_predicate = _predicate.GetValueOrDefault().And(expr2)).GetValueOrDefault() : Start(expr2);
         }
 
         /// <summary> Show predicate string </summary>
         public override string ToString()
-            => Predicate.Map(value => value.ToString()).WhenEmpty(() => string.Empty);
+            => Predicate.Map(value => value.ToString()).WhenEmpty(() => string.Empty).GetValueOrDefault();
 
 #pragma warning disable CA2225 // Les surcharges d'opérateur offrent d'autres méthodes nommées
         /// <summary>
@@ -106,14 +100,15 @@ namespace System.Design.Linq
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator Expression<Func<T, bool>>(ExpressionStarter<T> right)
-            => right.AsOptional().MapOptional(value => value.Predicate);
+            => right.AsOptional().MapOptional(value => value.Predicate).GetValueOrDefault();
 
         /// <summary>
         /// Allows this object to be implicitly converted to an Expression{Func{T, bool}}.
         /// </summary>
         /// <param name="right"></param>
         public static implicit operator Func<T, bool>(ExpressionStarter<T> right)
-            => right.AsOptional().MapOptional<Func<T, bool>>(value => value.Predicate.Single().Compile());
+            => right.AsOptional().MapOptional<Func<T, bool>>(value => value.Predicate.Single()
+                .Compile()).GetValueOrDefault();
 
         /// <summary>
         /// Allows this object to be implicitly converted to an Expression{Func{T, bool}}.

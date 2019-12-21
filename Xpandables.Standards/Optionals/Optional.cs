@@ -17,14 +17,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
 
 namespace System
 {
     /// <summary>
-    /// Describes an object that contains a value or not of a specific type.
+    /// Describes an object that can contain a value or not of a specific type.
     /// You can make unconditional calls to its contents without testing whether the content is there or not.
     /// It can also contain an exception if available. The enumerator will only return the available value.
     /// It provides implicit operator for the expected <typeparamref name="T"/> value and <see cref="System.Exception"/>.
@@ -33,125 +30,150 @@ namespace System
     /// <typeparam name="T">The Type of the value.</typeparam>
     public sealed partial class Optional<T> : IEnumerable<T>
     {
-        private static readonly MethodInfo ArrayEmpty = typeof(Array).GetMethod("Empty");
-        private readonly Type[] GenericType = typeof(T).IsEnumerable() ? typeof(T).GetGenericArguments() : Type.EmptyTypes;
-        private readonly T[] Values;
-        private readonly Exception[] Exceptions;
+        private readonly Type[] _genericType = typeof(T).IsEnumerable() ? typeof(T).GetGenericArguments() : Type.EmptyTypes;
+        private readonly T[] _values;
+        private readonly Exception[] _exceptions;
 
         /// <summary>
         /// Gets the underlying value if exists.
         /// </summary>
-        internal T InternalValue => Values[0];
+        internal T InternalValue => _values[0];
 
         /// <summary>
         /// Gets the underlying exception if exists.
         /// </summary>
-        internal Exception InternalException => Exceptions[0];
+        private Exception InternalException => _exceptions[0];
 
         /// <summary>
         /// Determines whether the instance contains a value or not.
         /// If so, returns <see langword="true"/>, otherwise returns <see langword="false"/>.
         /// </summary>
-        internal bool IsValue() => Values.Length > 0;
+        internal bool IsValue() => _values.Length > 0;
 
         /// <summary>
         /// Determines whether the instance contains an exception or not.
         /// If so, returns <see langword="true"/>, otherwise returns <see langword="false"/>.
         /// </summary>
-        internal bool IsException() => Exceptions.Length > 0;
+        private bool IsException() => _exceptions.Length > 0;
 
         /// <summary>
         /// Determines whether the instance is empty (no value no exception) or not.
         /// If so, returns <see langword="true"/>, otherwise returns <see langword="false"/>.
         /// </summary>
-        internal bool IsEmpty() => !IsValue() && !IsException();
-
-        /// <summary>
-        /// Provides with an optional of the specific type that is empty.
-        /// </summary>
-        /// <returns>An optional with no value nor exception.</returns>
-        [SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques",
-            Justification = "<En attente>")]
-        public static Optional<T> Empty() => new Optional<T>();
-
-        /// <summary>
-        /// Provides with an optional that contains a value of specific type.
-        /// </summary>
-        /// <param name="value">The value to be used for optional.</param>
-        /// <returns>An optional with a value.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="value"/> is null.</exception>
-        [SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques",
-            Justification = "<En attente>")]
-        public static Optional<T> Some([NotNull] T value)
-        {
-#nullable disable
-            if (EqualityComparer<T>.Default.Equals(value, default)) throw new ArgumentNullException(nameof(value));
-#nullable enable
-            return new Optional<T>(new T[] { value });
-        }
-
-        /// <summary>
-        /// Provides with an optional of specific type that contains the specified exception.
-        /// </summary>
-        /// <param name="exception">The exception to store.</param>
-        /// <returns>An optional with exception value.</returns>
-        /// <exception cref="ArgumentNullException">The <paramref name="exception"/> is null.</exception>
-        [SuppressMessage("Design", "CA1000:Ne pas déclarer de membres comme étant static sur les types génériques",
-            Justification = "<En attente>")]
-        public static Optional<T> Exception([NotNull] Exception exception)
-        {
-            if (exception is null) throw new ArgumentNullException(nameof(exception));
-            return new Optional<T>(new Exception[] { exception });
-        }
+        private bool IsEmpty() => !IsValue() && !IsException();
 
         /// <summary>
         /// Returns an enumerator that iterates through the values.
-        /// Do not use when <typeparamref name="T"/> is an enumerable, see <see cref="GetEnumerable"/>.
+        /// Do not use when <typeparamref name="T"/> is an enumerable, see <see cref="GetEnumerable"/>,
+        /// otherwise it'll throw an <see cref="InvalidOperationException"/>.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the values.</returns>
-        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)Values).GetEnumerator();
+        /// <exception cref="InvalidOperationException">The <typeparamref name="T"/> is an enumerable, use <see cref="GetEnumerable"/>.
+        /// </exception>
+        public IEnumerator<T> GetEnumerator()
+        {
+            if (typeof(T).IsEnumerable())
+            {
+                throw new InvalidOperationException(
+                    ErrorMessageResources.GetEnumeratorInvalidOperation.StringFormat(typeof(T).Name, nameof(GetEnumerable)));
+            }
+
+            return ((IEnumerable<T>)_values).GetEnumerator();
+        }
 
         /// <summary>
-        /// Returns the available value when <typeparamref name="T"/> is an enumerable.
+        /// Returns an System.Collections.IEnumerator for the System.Array.
+        /// Do not use when <typeparamref name="T"/> is an enumerable, see <see cref="GetEnumerable"/>,
+        /// otherwise it'll throw an <see cref="InvalidOperationException"/>.
+        /// </summary>
+        /// <returns>An System.Collections.IEnumerator for the System.Array.</returns>
+        /// <exception cref="InvalidOperationException">The <typeparamref name="T"/> is an enumerable, use <see cref="GetEnumerable"/>.
+        /// </exception>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            if (typeof(T).IsEnumerable())
+            {
+                throw new InvalidOperationException(
+                    ErrorMessageResources.GetEnumeratorInvalidOperation.StringFormat(typeof(T).Name, nameof(GetEnumerable)));
+            }
+
+            return _values.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Returns the available enumerable value when <typeparamref name="T"/> is an enumerable.
+        /// If enumerable value is null, it'll return an empty enumerable.
         /// Otherwise, its will throw an exception.
         /// </summary>
         /// <exception cref="InvalidOperationException">The <typeparamref name="T"/> is not an enumerable.</exception>
         public T GetEnumerable()
         {
-            if (typeof(T).IsEnumerable())
+            if (!typeof(T).IsEnumerable())
             {
-                if (IsValue()) return Values[0];
-
-                var runtimeMethod = ArrayEmpty.MakeGenericMethod(GenericType[0]);
-                return (T)runtimeMethod.Invoke(null, null);
+                throw new InvalidOperationException(
+                    ErrorMessageResources.GetEnumerableInvalidOperation.StringFormat(typeof(T).Name));
             }
 
-            throw new InvalidOperationException(ErrorMessageResources.GetEnumerableInvalidOperation.StringFormat(typeof(T).Name));
+            return IsValue() ? _values[0] : GetDefaultEnumerable();
         }
 
         /// <summary>
-        /// Returns an System.Collections.IEnumerator for the System.Array.
-        /// Do not use when <typeparamref name="T"/> is an enumerable, see <see cref="GetEnumerable"/>.
+        /// Get the stored value, or the default value for it's type.
+        /// if the type is not null-able, it'll throw an exception.
         /// </summary>
-        /// <returns>An System.Collections.IEnumerator for the System.Array.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => Values.GetEnumerator();
+        public T GetValueOrDefault()
+            => IsValue()
+                ? _values[0]
+                : typeof(T).IsEnumerable()
+                    ? GetDefaultEnumerable()
+                    : default;
 
-        private Optional(Exception[] exceptions)
+        /// <summary>
+        /// Get the stored value, or return the provided default value
+        /// Be aware if the type is not null-able.
+        /// </summary>
+        /// <param name="default">the value to be returned in replacement.</param>
+        public T GetValueOrDefault(T @default)
+            => IsValue()
+                ? _values[0]
+                : @default;
+
+        /// <summary>
+        /// Get the stored value, or return the provided default value.
+        /// </summary>
+        /// <param name="default">The delegate that provides with the replacement value.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="default"/> is null.</exception>
+        public T GetValueOrDefault(Func<T> @default)
         {
-            Values = Array.Empty<T>();
-            Exceptions = exceptions ?? throw new ArgumentNullException(nameof(exceptions));
+            if (@default is null) throw new ArgumentNullException(nameof(@default));
+            return IsValue() ? _values[0] : @default();
         }
 
-        private Optional(T[] values)
+        /// <summary>
+        /// Returns an empty T enumerable.
+        /// </summary>
+        private T GetDefaultEnumerable()
         {
-            Values = values ?? throw new ArgumentNullException(nameof(values));
-            Exceptions = Array.Empty<Exception>();
+            var runtimeMethod = OptionalBuilder.ArrayEmpty.MakeGenericMethod(_genericType[0]);
+            return (T)runtimeMethod.Invoke(null, null);
         }
 
-        private Optional()
+        internal Optional(Exception[] exceptions)
         {
-            Values = Array.Empty<T>();
-            Exceptions = Array.Empty<Exception>();
+            _values = Array.Empty<T>();
+            _exceptions = exceptions ?? throw new ArgumentNullException(nameof(exceptions));
+        }
+
+        internal Optional(T[] values)
+        {
+            _values = values ?? throw new ArgumentNullException(nameof(values));
+            _exceptions = Array.Empty<Exception>();
+        }
+
+        internal Optional()
+        {
+            _values = Array.Empty<T>();
+            _exceptions = Array.Empty<Exception>();
         }
     }
 }

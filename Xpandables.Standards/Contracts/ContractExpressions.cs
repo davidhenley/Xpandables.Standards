@@ -19,7 +19,6 @@ using System.Collections.Generic;
 
 namespace System
 {
-#nullable disable
     /// <summary>
     ///  Contains static methods for representing program contracts that check for argument null or empty,
     ///  customs conditions and throws customs exceptions. If you don't want to use message,
@@ -39,7 +38,7 @@ namespace System
         public static Contract<T> WhenNull<T>(this T source, string exceptionMessage)
             => new Contract<T>(
                 source,
-                value => !EqualityComparer<T>.Default.Equals(value, default),
+                value => !(value is null),
                 exceptionMessage ?? throw new ArgumentNullException(nameof(exceptionMessage)));
 
         /// <summary>
@@ -159,5 +158,4 @@ namespace System
                 value => value.CompareTo(min) >= 0 && value.CompareTo(max) <= 0,
                 exceptionMessage ?? throw new ArgumentNullException(nameof(exceptionMessage)));
     }
-#nullable enable
 }

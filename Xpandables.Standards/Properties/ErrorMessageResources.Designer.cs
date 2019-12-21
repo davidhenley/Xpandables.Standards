@@ -124,6 +124,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The {0} type is an enumerable, use {1}..
+        /// </summary>
+        public static string GetEnumeratorInvalidOperation {
+            get {
+                return ResourceManager.GetString("GetEnumeratorInvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Sequence contains no elements..
         /// </summary>
         public static string LinqAggregateBalanceNoItems {

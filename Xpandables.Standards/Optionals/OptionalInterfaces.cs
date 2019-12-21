@@ -19,15 +19,14 @@ using System.Collections.Generic;
 
 namespace System
 {
-#nullable disable
     public partial class Optional<T>
         : IEquatable<Optional<T>>, IEquatable<T>, IComparable<Optional<T>>, IComparable<T>, IFormattable
     {
         /// <summary>
-        /// Compares the order of two optionals.
+        /// Compares the order of two optional.
         /// </summary>
         /// <param name="other">The other optional to compare with.</param>
-        /// <returns>An <see cref="int"/> that indicates the order of the optionals being compared.</returns>
+        /// <returns>An <see cref="int"/> that indicates the order of the optional being compared.</returns>
         public int CompareTo(Optional<T> other)
         {
             if (other is null) return 1;
@@ -44,8 +43,8 @@ namespace System
 
         public int CompareTo(T other)
         {
-            if (IsValue() && EqualityComparer<T>.Default.Equals(other, default)) return 1;
-            return !IsValue() && !EqualityComparer<T>.Default.Equals(other, default)
+            if (IsValue() && other is null) return 1;
+            return !IsValue() && !(other is null)
                 ? -1
                 : Comparer<T>.Default.Compare(InternalValue, other);
         }
@@ -58,7 +57,7 @@ namespace System
         /// <param name="other">Option to compare with</param>
         public bool Equals(Optional<T> other)
         {
-            if (other == null) return false;
+            if (other is null) return false;
             if (IsEmpty() && other.IsEmpty()) return true;
             if (IsValue() && other.IsValue())
                 return EqualityComparer<T>.Default.Equals(InternalValue, other.InternalValue);
@@ -90,7 +89,7 @@ namespace System
         {
             const int hash = 17;
             if (IsValue())
-                return InternalValue.GetHashCode() ^ 31;
+                return InternalValue!.GetHashCode() ^ 31;
             if (IsException())
                 return InternalException.GetHashCode() ^ 31;
             return hash ^ 29;
@@ -107,7 +106,6 @@ namespace System
         /// </summary>
         /// <param name="format"></param>
         /// <param name="formatProvider"></param>
-        /// <returns></returns>
         public string ToString(string format, IFormatProvider formatProvider)
             => IsValue()
                 ? string.Format(formatProvider, "{0:" + format + "}", InternalValue)
@@ -115,5 +113,4 @@ namespace System
                     ? string.Format(formatProvider, "{0:" + format + "}", InternalException)
                     : string.Empty;
     }
-#nullable enable
 }

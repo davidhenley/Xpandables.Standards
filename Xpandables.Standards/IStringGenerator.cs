@@ -67,10 +67,9 @@ namespace System
                 return stringResult.ToString();
             }
             catch (Exception exception) when (exception is ArgumentNullException
-                                            || exception is ArgumentException
-                                            || exception is ArgumentOutOfRangeException)
+                                            || exception is ArgumentException)
             {
-                return Optional<string>.Exception(exception);
+                return exception.AsOptional<string>();
             }
         }
     }

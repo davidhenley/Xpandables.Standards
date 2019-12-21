@@ -49,7 +49,7 @@ namespace System
             }
             catch (Exception exception) when (exception is Text.EncoderFallbackException || exception is ObjectDisposedException)
             {
-                return Optional<string>.Exception(exception);
+                return exception.AsOptional<string>();
             }
         }
     }

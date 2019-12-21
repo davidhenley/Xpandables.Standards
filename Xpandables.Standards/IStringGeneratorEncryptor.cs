@@ -40,7 +40,7 @@ namespace System
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
-            string password = _stringEncryptor.Encrypt(value, encrypted.Key);
+            var password = _stringEncryptor.Encrypt(value, encrypted.Key).GetValueOrDefault();
             return password == encrypted.Value;
         }
 

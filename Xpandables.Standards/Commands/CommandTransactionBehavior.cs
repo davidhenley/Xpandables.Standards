@@ -46,7 +46,8 @@ namespace System.Design
 
             if (attribute.IsValue())
             {
-                using TransactionScope scope = attribute.Map(attr => attr.GetTransactionScope());
+                using TransactionScope scope = attribute
+                    .Map(attr => attr.GetTransactionScope()).GetValueOrDefault();
                 await _decoratee.HandleAsync(command, cancellationToken).ConfigureAwait(false);
                 scope.Complete();
             }

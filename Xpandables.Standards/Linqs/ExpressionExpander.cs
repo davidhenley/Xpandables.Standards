@@ -29,8 +29,8 @@ using System.Reflection;
 namespace System.Design.Linq
 {
     /// <summary>
-    /// Custom expresssion visitor for ExpandableQuery. This expands calls to Expression.Compile() and
-    /// collapses captured lambda references in subqueries which LINQ to SQL can't otherwise handle.
+    /// Custom expression visitor for ExpandableQuery. This expands calls to Expression.Compile() and
+    /// collapses captured lambda references in sub queries which LINQ to SQL can't otherwise handle.
     /// </summary>
     internal class ExpressionExpander : ExpressionVisitor
     {
@@ -39,7 +39,7 @@ namespace System.Design.Linq
 
         internal ExpressionExpander()
         {
-            _replaceVars = Optional<Dictionary<ParameterExpression, Expression>>.Empty();
+            _replaceVars = OptionalBuilder.Empty<Dictionary<ParameterExpression, Expression>>();
         }
 
         private ExpressionExpander(Dictionary<ParameterExpression, Expression> replaceVars)
@@ -70,14 +70,15 @@ namespace System.Design.Linq
             if (target is ConstantExpression constantExpression) target = (Expression)constantExpression.Value;
 
             var lambda = (LambdaExpression)target;
-            Dictionary<ParameterExpression, Expression> replaceVars =
+            var replaceVars =
                 _replaceVars
                     .Map(dict => new Dictionary<ParameterExpression, Expression>(dict))
-                    .WhenEmpty(() => new Dictionary<ParameterExpression, Expression>());
+                    .WhenEmpty(() => new Dictionary<ParameterExpression, Expression>())
+                    .GetValueOrDefault();
 
             try
             {
-                for (int i = 0; i < lambda.Parameters.Count; i++)
+                for (var i = 0; i < lambda.Parameters.Count; i++)
                     replaceVars.Add(lambda.Parameters[i], Visit(node.Arguments[i]));
             }
             catch (ArgumentException exception)
@@ -104,14 +105,15 @@ namespace System.Design.Linq
 
                 if (target is LambdaExpression lambda)
                 {
-                    Dictionary<ParameterExpression, Expression> replaceVars =
-                      _replaceVars
-                          .Map(dict => new Dictionary<ParameterExpression, Expression>(dict))
-                          .WhenEmpty(() => new Dictionary<ParameterExpression, Expression>());
+                    var replaceVars =
+                        _replaceVars
+                            .Map(dict => new Dictionary<ParameterExpression, Expression>(dict))
+                            .WhenEmpty(() => new Dictionary<ParameterExpression, Expression>())
+                            .GetValueOrDefault();
 
                     try
                     {
-                        for (int i = 0; i < lambda.Parameters.Count; i++)
+                        for (var i = 0; i < lambda.Parameters.Count; i++)
                             replaceVars.Add(lambda.Parameters[i], Visit(node.Arguments[i + 1]));
                     }
                     catch (ArgumentException exception)

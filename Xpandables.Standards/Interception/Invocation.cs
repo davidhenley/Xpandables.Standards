@@ -45,8 +45,8 @@ namespace System.Interception
             _instance = targetInstance ?? throw new ArgumentNullException(nameof(targetInstance));
 
             ReturnType = _method.ReturnType;
-            ReturnValue = Optional<object>.Empty();
-            Exception = Optional<Exception>.Empty();
+            ReturnValue = OptionalBuilder.Empty<object>();
+            Exception = OptionalBuilder.Empty<Exception>();
             Arguments = GetParametersFromMethod(_method, argsValue).ToArray();
         }
 

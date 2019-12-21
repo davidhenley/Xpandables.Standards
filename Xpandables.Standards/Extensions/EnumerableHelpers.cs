@@ -459,7 +459,7 @@ namespace System
                 where TKey : notnull
         {
             if (lookup is null) throw new ArgumentNullException(nameof(lookup));
-            return lookup.Contains(key) ? Optional<IEnumerable<TValue>>.Some(lookup[key]) : Optional<IEnumerable<TValue>>.Empty();
+            return lookup.Contains(key) ? lookup[key].AsOptional() : Enumerable.Empty<TValue>().AsOptional();
         }
 
         /// <summary>
@@ -599,7 +599,7 @@ namespace System
         /// <returns>An <see cref="IEnumerable{T}"/> whose elements are the result of invoking the transform function on each element of source.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        public static async IAsyncEnumerable<TResult> SelectOptionalAsync<T, TResult>(this IQueryable<T> source, Func<T, ValueTask<Optional<TResult>>> selector)
+        public static async IAsyncEnumerable<TResult> SelectAsync<T, TResult>(this IQueryable<T> source, Func<T, ValueTask<Optional<TResult>>> selector)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (selector is null) throw new ArgumentNullException(nameof(selector));
@@ -620,7 +620,7 @@ namespace System
         /// <returns>An <see cref="IEnumerable{T}"/> whose elements are the result of invoking the transform function on each element of source.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="selector"/> is null.</exception>
-        public static async IAsyncEnumerable<T> SelectOptionalAsync<T>(this IQueryable<Optional<T>> source, Func<Optional<T>, ValueTask<bool>> selector)
+        public static async IAsyncEnumerable<T> SelectAsync<T>(this IQueryable<Optional<T>> source, Func<Optional<T>, ValueTask<bool>> selector)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (selector is null) throw new ArgumentNullException(nameof(selector));
@@ -645,7 +645,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="source"/> is null.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="action"/> is null.</exception>
         /// <exception cref="InvalidOperationException">An element of the collection has be modified outside the process.</exception>
-        public static Optional<IEnumerable<TResult>> ForEachOptional<T, TResult>(
+        public static Optional<IEnumerable<TResult>> ForEach<T, TResult>(
             this Optional<IEnumerable<T>> source, Func<T, Optional<TResult>> action)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
@@ -659,8 +659,8 @@ namespace System
             }
 
             return results.Count > 0
-                ? Optional<IEnumerable<TResult>>.Some(results.AsEnumerable())
-                : Optional<IEnumerable<TResult>>.Empty();
+                ? results.AsEnumerable().AsOptional()
+                : OptionalBuilder.Empty<IEnumerable<TResult>>();
         }
 
         /// <summary>
