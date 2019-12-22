@@ -50,7 +50,7 @@ namespace System
             }
             finally
             {
-                Reset();
+                Reset("post");
             }
         }
 
@@ -66,17 +66,18 @@ namespace System
             }
             finally
             {
-                Reset();
+                Reset("rollback");
             }
         }
 
         /// <summary>
         /// Clears the event.
         /// </summary>
-        private void Reset()
+        /// <param name="event">The event to reset.</param>
+        private void Reset(string @event = "post")
         {
-            PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
-            RollbackEvent = async (_) => await Task.CompletedTask.ConfigureAwait(false);
+            if (@event == "post") PostEvent = async () => await Task.CompletedTask.ConfigureAwait(false);
+            if (@event == "rollback") RollbackEvent = async (_) => await Task.CompletedTask.ConfigureAwait(false);
         }
     }
 }
